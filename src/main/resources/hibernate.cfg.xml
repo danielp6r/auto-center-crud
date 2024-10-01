@@ -10,7 +10,7 @@
         <property name="hibernate.connection.password">12345</property>
         
         <!-- Dialeto -->
-        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
         
         <!-- Configurações adicionais -->
         <property name="hibernate.show_sql">true</property>
