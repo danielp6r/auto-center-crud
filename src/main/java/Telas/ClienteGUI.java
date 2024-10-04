@@ -207,6 +207,8 @@ public class ClienteGUI extends javax.swing.JFrame {
         }
     }
     
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -219,10 +221,11 @@ public class ClienteGUI extends javax.swing.JFrame {
         paneTela = new javax.swing.JPanel();
         lblHead = new javax.swing.JLabel();
         lblNome = new javax.swing.JLabel();
-        lblTel = new javax.swing.JLabel();
-        lblEmail = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
-        txtTel = new javax.swing.JTextField();
+        lblTel = new javax.swing.JLabel();
+        txtTel = new javax.swing.JFormattedTextField();
+        lblEmail = new javax.swing.JLabel();
+        txtEmail = new javax.swing.JTextField();
         lblImgCliente = new javax.swing.JLabel();
         paneOpcoes = new javax.swing.JPanel();
         btnSalvar = new javax.swing.JButton();
@@ -232,7 +235,6 @@ public class ClienteGUI extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         btnPF = new javax.swing.JRadioButton();
         btnPJ = new javax.swing.JRadioButton();
-        txtEmail = new javax.swing.JTextField();
         lblCPFouCNPJ = new javax.swing.JLabel();
         txtCPFouCNPJ = new javax.swing.JTextField();
         paneListagem = new javax.swing.JScrollPane();
@@ -254,19 +256,25 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblNome.setForeground(new java.awt.Color(0, 0, 0));
         lblNome.setText("Nome");
 
+        txtNome.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNomeKeyTyped(evt);
+            }
+        });
+
         lblTel.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblTel.setForeground(new java.awt.Color(0, 0, 0));
         lblTel.setText("Telefone");
 
+        try {
+            txtTel.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("(##)#####-####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+
         lblEmail.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblEmail.setForeground(new java.awt.Color(0, 0, 0));
         lblEmail.setText("e-mail:");
-
-        txtTel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTelActionPerformed(evt);
-            }
-        });
 
         lblImgCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imgs/cliente.png"))); // NOI18N
 
@@ -309,7 +317,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
                 .addComponent(lblImgLupa, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -337,6 +345,12 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblCPFouCNPJ.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblCPFouCNPJ.setForeground(new java.awt.Color(0, 0, 0));
         lblCPFouCNPJ.setText("CPF/CNPJ");
+
+        txtCPFouCNPJ.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCPFouCNPJKeyTyped(evt);
+            }
+        });
 
         tblListagem.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -382,12 +396,12 @@ public class ClienteGUI extends javax.swing.JFrame {
                                 .addGap(6, 6, 6))
                             .addComponent(txtCPFouCNPJ, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
                             .addComponent(lblEmail)
                             .addComponent(lblTel)
-                            .addComponent(txtTel, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 11, Short.MAX_VALUE))
+                            .addComponent(txtTel))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(paneTelaLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(paneListagem))
@@ -410,9 +424,9 @@ public class ClienteGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(paneTelaLayout.createSequentialGroup()
-                        .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTel, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtNome, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
+                            .addComponent(txtTel))
                         .addGap(18, 18, 18)
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblCPFouCNPJ)
@@ -442,10 +456,6 @@ public class ClienteGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txtTelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTelActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTelActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         // Captura os dados da GUI
@@ -562,6 +572,24 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnExcluirActionPerformed
+    
+    //Aceita somente entrada de números
+    private void txtCPFouCNPJKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCPFouCNPJKeyTyped
+        char c = evt.getKeyChar();
+        
+        if (!Character.isDigit(c)){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtCPFouCNPJKeyTyped
+    
+    //Não aceita entrada de números
+    private void txtNomeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNomeKeyTyped
+        char c = evt.getKeyChar();
+        
+        if (Character.isDigit(c)){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtNomeKeyTyped
 
     /**
      * @param args the command line arguments
@@ -619,6 +647,6 @@ public class ClienteGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txtCPFouCNPJ;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtNome;
-    private javax.swing.JTextField txtTel;
+    private javax.swing.JFormattedTextField txtTel;
     // End of variables declaration//GEN-END:variables
 }
