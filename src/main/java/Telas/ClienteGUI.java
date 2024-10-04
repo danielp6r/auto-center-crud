@@ -232,7 +232,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         btnExcluir = new javax.swing.JButton();
         txtBusca = new javax.swing.JTextField();
         lblImgLupa = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
         btnPF = new javax.swing.JRadioButton();
         btnPJ = new javax.swing.JRadioButton();
         lblCPFouCNPJ = new javax.swing.JLabel();
@@ -266,11 +266,8 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblTel.setForeground(new java.awt.Color(0, 0, 0));
         lblTel.setText("Telefone");
 
-        try {
-            txtTel.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("(##)#####-####")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
+        txtTel.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("###0.###"))));
+        txtTel.setText("");
 
         lblEmail.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblEmail.setForeground(new java.awt.Color(0, 0, 0));
@@ -304,7 +301,12 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblImgLupa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imgs/pesquisar.png"))); // NOI18N
         lblImgLupa.setText(" ");
 
-        jButton1.setText("Editar");
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout paneOpcoesLayout = new javax.swing.GroupLayout(paneOpcoes);
         paneOpcoes.setLayout(paneOpcoesLayout);
@@ -314,7 +316,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
@@ -330,7 +332,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                 .addGroup(paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnSalvar)
-                        .addComponent(jButton1)
+                        .addComponent(btnEditar)
                         .addComponent(btnExcluir))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -591,6 +593,59 @@ public class ClienteGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtNomeKeyTyped
 
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        // TODO add your handling code here:
+        // Obtém a linha e a coluna selecionadas
+        int selectedRow = tblListagem.getSelectedRow();
+        int selectedColumn = tblListagem.getSelectedColumn();
+
+        if (selectedRow == -1 || selectedColumn == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione uma célula para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Obter o nome da coluna que está sendo editada
+        String columnName = tblListagem.getColumnName(selectedColumn);
+
+        // Obter o valor atual da célula
+        Object valorAtual = tblListagem.getValueAt(selectedRow, selectedColumn);
+
+        // Exibir uma caixa de diálogo para confirmar a edição
+        int confirmacao = JOptionPane.showConfirmDialog(this, "Deseja editar o valor da coluna " + columnName + "?", "Confirmar Edição", JOptionPane.YES_NO_OPTION);
+
+        if (confirmacao == JOptionPane.YES_OPTION) {
+            // O usuário confirmou a edição
+            // Exibe um input dialog para o usuário digitar o novo valor
+            Object novoValor = JOptionPane.showInputDialog(this, "Digite o novo valor para " + columnName + ":", valorAtual);
+
+            // Verifica se o novo valor não está vazio
+            if (novoValor != null && !novoValor.toString().trim().isEmpty()) {
+                // Atualizar a célula da tabela
+                tblListagem.setValueAt(novoValor, selectedRow, selectedColumn);
+
+                // Atualizar o banco de dados
+                long idCliente = (long) tblListagem.getValueAt(selectedRow, 4); // Supondo que a coluna 4 é o ID do cliente
+                Session session = SessionManager.getInstance().getSession();
+                ClienteDAO clienteDAO = new ClienteDAO();
+
+                try {
+                    session.beginTransaction();
+
+                    // Atualizar o cliente no banco de dados
+                    clienteDAO.atualizarCliente(idCliente, columnName, novoValor.toString(), session);
+
+                    session.getTransaction().commit();
+                    JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
+                } catch (Exception ex) {
+                    session.getTransaction().rollback();
+                    JOptionPane.showMessageDialog(this, "Erro ao atualizar cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    session.close();
+                }
+            }
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -627,11 +682,11 @@ public class ClienteGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JRadioButton btnPF;
     private javax.swing.JRadioButton btnPJ;
     private javax.swing.JButton btnSalvar;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel lblCPFouCNPJ;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblHead;

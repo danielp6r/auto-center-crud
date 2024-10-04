@@ -62,4 +62,15 @@ public class ClienteDAO {
             throw e; // Propaga a exceção para o método chamador
         }
     }
+    
+    public void atualizarCliente(long idCliente, String coluna, String novoValor, Session session) {
+        // Cria a query de atualização no banco de dados
+        String query = "UPDATE clientes SET " + coluna + " = :novoValor WHERE id_cliente = :idCliente";
+
+        // Executa a atualização no banco de dados
+        session.createNativeQuery(query)
+                .setParameter("novoValor", novoValor)
+                .setParameter("idCliente", idCliente)
+                .executeUpdate();
+    }
 }
