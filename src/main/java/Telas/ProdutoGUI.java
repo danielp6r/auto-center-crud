@@ -2,7 +2,6 @@ package Telas;
 
 import Classes.SessionManager;
 import DAO.ItemOrcamentoDAO;
-import DAO.OrcamentoDAO;
 import DAO.ProdutoDAO;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;

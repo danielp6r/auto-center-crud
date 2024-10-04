@@ -10,10 +10,7 @@ abrir uma nova sessão toda vez que uma consulta será realizada.
  *
  * @author danielp6r
  */
-import com.fasterxml.classmate.AnnotationConfiguration;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

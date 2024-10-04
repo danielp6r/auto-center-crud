@@ -1,7 +1,6 @@
 package Telas;
 
 import Classes.ItemOrcamento;
-import Classes.Orcamento;
 import javax.swing.JOptionPane;
 import Classes.SessionManager;
 import DAO.ClienteDAO;
@@ -9,11 +8,8 @@ import DAO.ItemOrcamentoDAO;
 import DAO.OrcamentoDAO;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.hibernate.Hibernate;
 import org.hibernate.Transaction;
 import org.hibernate.Session;
-import javax.swing.GroupLayout;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
