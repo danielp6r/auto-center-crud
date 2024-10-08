@@ -223,7 +223,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblNome = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
         lblTel = new javax.swing.JLabel();
-        txtTel = new javax.swing.JFormattedTextField();
+        txtTel = new javax.swing.JTextField();
         lblEmail = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
         lblImgCliente = new javax.swing.JLabel();
@@ -266,12 +266,21 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblTel.setForeground(new java.awt.Color(0, 0, 0));
         lblTel.setText("Telefone");
 
-        txtTel.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("###0.###"))));
-        txtTel.setText("");
+        txtTel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelKeyTyped(evt);
+            }
+        });
 
         lblEmail.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblEmail.setForeground(new java.awt.Color(0, 0, 0));
         lblEmail.setText("e-mail:");
+
+        txtEmail.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtEmailKeyTyped(evt);
+            }
+        });
 
         lblImgCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imgs/cliente.png"))); // NOI18N
 
@@ -578,18 +587,19 @@ public class ClienteGUI extends javax.swing.JFrame {
     //Aceita somente entrada de números
     private void txtCPFouCNPJKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCPFouCNPJKeyTyped
         char c = evt.getKeyChar();
-        
-        if (!Character.isDigit(c)){
-            evt.consume();
+        if (!Character.isDigit(c)) {
+            evt.consume(); // impede a digitação de qualquer coisa que não seja número
+        }
+
+        int maxLength = btnPF.isSelected() ? 11 : 14; // 11 para CPF, 14 para CNPJ
+        if (txtCPFouCNPJ.getText().length() >= maxLength) {
+            evt.consume(); // Limita o tamanho conforme o tipo de cliente
         }
     }//GEN-LAST:event_txtCPFouCNPJKeyTyped
     
-    //Não aceita entrada de números
     private void txtNomeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNomeKeyTyped
-        char c = evt.getKeyChar();
-        
-        if (Character.isDigit(c)){
-            evt.consume();
+        if (txtNome.getText().length() >= 30) {
+            evt.consume(); // Limita o tamanho a 30 caracteres
         }
     }//GEN-LAST:event_txtNomeKeyTyped
 
@@ -645,6 +655,26 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void txtTelKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+            evt.consume(); // impede a digitação de qualquer coisa que não seja número
+        }
+        if (txtTel.getText().length() >= 11) {
+            evt.consume(); // Limita o tamanho a 11 caracteres
+        }
+    }//GEN-LAST:event_txtTelKeyTyped
+
+    private void txtEmailKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isLetterOrDigit(c) && c != '@' && c != '.' && c != '-' && c != '_') {
+            evt.consume(); // Impede caracteres que não são válidos em endereços de e-mail
+        }
+        if (txtEmail.getText().length() >= 30) {
+            evt.consume(); // Limita o tamanho a 30 caracteres
+        }
+    }//GEN-LAST:event_txtEmailKeyTyped
 
     /**
      * @param args the command line arguments
@@ -702,6 +732,6 @@ public class ClienteGUI extends javax.swing.JFrame {
     private javax.swing.JTextField txtCPFouCNPJ;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtNome;
-    private javax.swing.JFormattedTextField txtTel;
+    private javax.swing.JTextField txtTel;
     // End of variables declaration//GEN-END:variables
 }
