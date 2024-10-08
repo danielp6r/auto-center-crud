@@ -142,7 +142,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                         cliente.getTelefone(),
                         cliente.getEmail(),
                         pessoaFisica.getCpf(),
-                        cliente.getId() 
+                        cliente.getIdCliente() 
                     };
                 } else if (cliente instanceof PessoaJuridica) {
                     PessoaJuridica pessoaJuridica = (PessoaJuridica) cliente;
@@ -151,7 +151,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                         cliente.getTelefone(),
                         cliente.getEmail(),
                         pessoaJuridica.getCnpj(),
-                        cliente.getId()
+                        cliente.getIdCliente()
                     };
                 } else {
                     // Se não for nem Pessoa Física nem Pessoa Jurídica, adiciona uma mensagem genérica
@@ -160,7 +160,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                         cliente.getTelefone(),
                         cliente.getEmail(),
                         "CPF/CNPJ não disponível",
-                        cliente.getId() 
+                        cliente.getIdCliente() 
                     };
                 }
                 // Adiciona os dados do cliente à tabela
@@ -572,7 +572,7 @@ public class ClienteGUI extends javax.swing.JFrame {
             Session session = SessionManager.getInstance().getSession();
             ClienteDAO clienteDAO = new ClienteDAO();
             try {
-                clienteDAO.excluirClientePorId(idCliente, session);
+                clienteDAO.excluirClientePorId(idCliente);
                 JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso!");
                 carregarClientes(); // Atualiza a lista de clientes na tabela após a exclusão
             } catch (Exception ex) {
@@ -603,57 +603,31 @@ public class ClienteGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtNomeKeyTyped
 
+    private Long clienteIdEdicao = null;
+    
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        // TODO add your handling code here:
-        // Obtém a linha e a coluna selecionadas
         int selectedRow = tblListagem.getSelectedRow();
-        int selectedColumn = tblListagem.getSelectedColumn();
-
-        if (selectedRow == -1 || selectedColumn == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione uma célula para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um cliente para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Obter o nome da coluna que está sendo editada
-        String columnName = tblListagem.getColumnName(selectedColumn);
+        // Pega os dados da linha selecionada
+        String nome = (String) tblListagem.getValueAt(selectedRow, 0); // Nome
+        String telefone = (String) tblListagem.getValueAt(selectedRow, 1); // Telefone
+        String email = (String) tblListagem.getValueAt(selectedRow, 2); // Email
+        String cpfOuCnpj = (String) tblListagem.getValueAt(selectedRow, 3); // CPF ou CNPJ
+        Long idCliente = (Long) tblListagem.getValueAt(selectedRow, 4); // ID
 
-        // Obter o valor atual da célula
-        Object valorAtual = tblListagem.getValueAt(selectedRow, selectedColumn);
+        // Preenche os campos de edição com os dados do cliente
+        txtNome.setText(nome);
+        txtTel.setText(telefone);
+        txtEmail.setText(email);
+        txtCPFouCNPJ.setText(cpfOuCnpj);
 
-        // Exibir uma caixa de diálogo para confirmar a edição
-        int confirmacao = JOptionPane.showConfirmDialog(this, "Deseja editar o valor da coluna " + columnName + "?", "Confirmar Edição", JOptionPane.YES_NO_OPTION);
-
-        if (confirmacao == JOptionPane.YES_OPTION) {
-            // O usuário confirmou a edição
-            // Exibe um input dialog para o usuário digitar o novo valor
-            Object novoValor = JOptionPane.showInputDialog(this, "Digite o novo valor para " + columnName + ":", valorAtual);
-
-            // Verifica se o novo valor não está vazio
-            if (novoValor != null && !novoValor.toString().trim().isEmpty()) {
-                // Atualizar a célula da tabela
-                tblListagem.setValueAt(novoValor, selectedRow, selectedColumn);
-
-                // Atualizar o banco de dados
-                long idCliente = (long) tblListagem.getValueAt(selectedRow, 4); // Supondo que a coluna 4 é o ID do cliente
-                Session session = SessionManager.getInstance().getSession();
-                ClienteDAO clienteDAO = new ClienteDAO();
-
-                try {
-                    session.beginTransaction();
-
-                    // Atualizar o cliente no banco de dados
-                    clienteDAO.atualizarCliente(idCliente, columnName, novoValor.toString(), session);
-
-                    session.getTransaction().commit();
-                    JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
-                } catch (Exception ex) {
-                    session.getTransaction().rollback();
-                    JOptionPane.showMessageDialog(this, "Erro ao atualizar cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    session.close();
-                }
-            }
-        }
+        // Guarda o ID do cliente em edição para usá-lo no botão Salvar
+        clienteIdEdicao = idCliente;
+       
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void txtTelKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelKeyTyped

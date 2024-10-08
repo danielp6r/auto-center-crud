@@ -9,12 +9,18 @@ import java.util.List;
 
 public class ClienteDAO {
 
-    // Salva um cliente no banco de dados
+    // Salva ou atualiza um cliente no banco de dados
     public void save(Cliente cliente) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.save(cliente);
+            if (cliente.getIdCliente() == null) {
+                // Novo cliente, então salva
+                session.save(cliente);
+            } else {
+                // Cliente existente, então atualiza
+                session.update(cliente);
+            }
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -31,8 +37,6 @@ public class ClienteDAO {
         return (Long) maxId + 1;
     }
 
-
-    
     // Retorna todos os clientes cadastrados no banco de dados
     public List<Cliente> getAllClientes() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -43,9 +47,10 @@ public class ClienteDAO {
         }
     }
 
-    public void excluirClientePorId(long idCliente, Session session) {
+    // Exclui um cliente pelo ID
+    public void excluirClientePorId(long idCliente) {
         Transaction transaction = null;
-        try {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             Cliente cliente = session.get(Cliente.class, idCliente);
             if (cliente != null) {
@@ -62,15 +67,14 @@ public class ClienteDAO {
             throw e; // Propaga a exceção para o método chamador
         }
     }
-    
-    public void atualizarCliente(long idCliente, String coluna, String novoValor, Session session) {
-        // Cria a query de atualização no banco de dados
-        String query = "UPDATE clientes SET " + coluna + " = :novoValor WHERE id_cliente = :idCliente";
 
-        // Executa a atualização no banco de dados
-        session.createNativeQuery(query)
-                .setParameter("novoValor", novoValor)
-                .setParameter("idCliente", idCliente)
-                .executeUpdate();
+    // Retorna um cliente pelo ID
+    public Cliente getClienteById(Long idCliente) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.get(Cliente.class, idCliente);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

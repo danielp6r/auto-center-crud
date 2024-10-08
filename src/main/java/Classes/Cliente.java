@@ -37,7 +37,7 @@ public abstract class Cliente {
         this.nomeCliente = nomeCliente;
     }
 
-    public Long getId() {
+    public Long getIdCliente() {
         return idCliente;
     }
 

@@ -15,7 +15,7 @@ public class TestDelete {
             var session = HibernateUtil.getSessionFactory().openSession();
 
             // Exclui o cliente pelo ID utilizando o método da classe ClienteDAO
-            clienteDAO.excluirClientePorId(idClienteParaExcluir, session);
+            clienteDAO.excluirClientePorId(idClienteParaExcluir);
 
             // Fecha a sessão do Hibernate
             session.close();
