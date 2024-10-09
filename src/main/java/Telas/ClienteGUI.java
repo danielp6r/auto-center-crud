@@ -72,6 +72,9 @@ public class ClienteGUI extends javax.swing.JFrame {
         column.setPreferredWidth(0);
         column.setWidth(0);
         
+        //Impedindo que o usuário reorganize os índices das colunas
+        tblListagem.getTableHeader().setReorderingAllowed(false);
+        
     }
     
     /*
