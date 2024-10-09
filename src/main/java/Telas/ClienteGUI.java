@@ -567,7 +567,7 @@ public class ClienteGUI extends javax.swing.JFrame {
 
         long idCliente = (long) tblListagem.getValueAt(selectedRow, 4); // 4 é o índice da coluna ID na tabela
 
-        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este cliente?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir " + tblListagem.getValueAt(selectedRow, 0) + "?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
             Session session = SessionManager.getInstance().getSession();
             ClienteDAO clienteDAO = new ClienteDAO();
@@ -580,6 +580,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                 ex.printStackTrace();
             } finally {
                 session.close(); // Fecha a sessão
+                limparCampos(); // Limpar os campos de texto
             }
         }
     }//GEN-LAST:event_btnExcluirActionPerformed
@@ -607,26 +608,42 @@ public class ClienteGUI extends javax.swing.JFrame {
     
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         int selectedRow = tblListagem.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um cliente para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Selecione um cliente para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        // Pega os dados da linha selecionada
-        String nome = (String) tblListagem.getValueAt(selectedRow, 0); // Nome
-        String telefone = (String) tblListagem.getValueAt(selectedRow, 1); // Telefone
-        String email = (String) tblListagem.getValueAt(selectedRow, 2); // Email
-        String cpfOuCnpj = (String) tblListagem.getValueAt(selectedRow, 3); // CPF ou CNPJ
-        Long idCliente = (Long) tblListagem.getValueAt(selectedRow, 4); // ID
+    // Pega os dados da linha selecionada
+    String nome = (String) tblListagem.getValueAt(selectedRow, 0); // Nome
+    String telefone = (String) tblListagem.getValueAt(selectedRow, 1); // Telefone
+    String email = (String) tblListagem.getValueAt(selectedRow, 2); // Email
+    String cpfOuCnpj = (String) tblListagem.getValueAt(selectedRow, 3); // CPF ou CNPJ
+    Long idCliente = (Long) tblListagem.getValueAt(selectedRow, 4); // ID
 
-        // Preenche os campos de edição com os dados do cliente
-        txtNome.setText(nome);
-        txtTel.setText(telefone);
-        txtEmail.setText(email);
-        txtCPFouCNPJ.setText(cpfOuCnpj);
+    // Preenche os campos de edição com os dados do cliente
+    txtNome.setText(nome);
+    txtTel.setText(telefone);
+    txtEmail.setText(email);
+    txtCPFouCNPJ.setText(cpfOuCnpj);
 
-        // Guarda o ID do cliente em edição para usá-lo no botão Salvar
-        clienteIdEdicao = idCliente;
+    // Verifique se o cliente é Pessoa Física ou Jurídica e selecione o radio button correspondente
+    Session session = SessionManager.getInstance().getSession();
+    ClienteDAO clienteDAO = new ClienteDAO();
+    Cliente cliente = clienteDAO.getClienteById(idCliente);
+
+    if (cliente instanceof PessoaFisica) {
+        btnPF.setSelected(true);  // Seleciona Pessoa Física
+        btnPJ.setSelected(false); // Desmarca Pessoa Jurídica
+    } else if (cliente instanceof PessoaJuridica) {
+        btnPJ.setSelected(true);  // Seleciona Pessoa Jurídica
+        btnPF.setSelected(false); // Desmarca Pessoa Física
+    }
+
+    // Guarda o ID do cliente em edição para usá-lo no botão Salvar
+    clienteIdEdicao = idCliente;
+
+    session.close(); // Fecha a sessão
+
        
     }//GEN-LAST:event_btnEditarActionPerformed
 
