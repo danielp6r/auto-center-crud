@@ -20,6 +20,8 @@ import java.util.Comparator;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
 /**
@@ -60,7 +62,16 @@ public class ClienteGUI extends javax.swing.JFrame {
         
         // Adiciona o DocumentListener para filtrar os clientes
         addSearchListener();
-
+        
+        // Ocultando a coluna num
+        TableColumnModel columnModel = tblListagem.getColumnModel();
+        TableColumn column = columnModel.getColumn(4); // 4 é o índice da coluna
+        // Definindo a largura mínima, máxima e preferida da coluna como 0
+        column.setMinWidth(0);
+        column.setMaxWidth(0);
+        column.setPreferredWidth(0);
+        column.setWidth(0);
+        
     }
     
     /*
@@ -368,7 +379,7 @@ public class ClienteGUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Nome", "Telefone", "email", "CPF/CNPJ", "Número"
+                "Nome", "Telefone", "email", "CPF/CNPJ", "Num"
             }
         ) {
             boolean[] canEdit = new boolean [] {
