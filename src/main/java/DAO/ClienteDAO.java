@@ -10,7 +10,7 @@ import java.util.List;
 public class ClienteDAO {
 
     // Salva ou atualiza um cliente no banco de dados
-    public void save(Cliente cliente) {
+    /*public void save(Cliente cliente) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
@@ -28,7 +28,7 @@ public class ClienteDAO {
             }
             e.printStackTrace();
         }
-    }
+    }*/
 
     // Encontra o próximo ID disponível para um novo cliente
     public long findNextId(Session session) {

@@ -78,7 +78,7 @@ public class ClienteGUI extends javax.swing.JFrame {
     }
     
     /*
-    MÉTODOS ESPECÍFICOS PARA ESSA TELA
+    MÉTODOS ESPECÍFICOS PARA ESTA TELA
     */
     
     // Método para adicionar o MouseListener à lupa
@@ -581,7 +581,7 @@ public class ClienteGUI extends javax.swing.JFrame {
 
         long idCliente = (long) tblListagem.getValueAt(selectedRow, 4); // 4 é o índice da coluna ID na tabela
 
-        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir " + tblListagem.getValueAt(selectedRow, 0) + "?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir o cliente " + tblListagem.getValueAt(selectedRow, 0) + "?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
             Session session = SessionManager.getInstance().getSession();
             ClienteDAO clienteDAO = new ClienteDAO();
@@ -621,7 +621,7 @@ public class ClienteGUI extends javax.swing.JFrame {
     private Long clienteIdEdicao = null;
     
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        int selectedRow = tblListagem.getSelectedRow();
+    int selectedRow = tblListagem.getSelectedRow();
     if (selectedRow == -1) {
         JOptionPane.showMessageDialog(this, "Selecione um cliente para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
         return;
