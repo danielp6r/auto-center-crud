@@ -10,25 +10,38 @@ import java.util.List;
 public class ClienteDAO {
 
     // Salva ou atualiza um cliente no banco de dados
-    /*public void save(Cliente cliente) {
+    public void saveOrUpdateCliente(String nome, String telefone, String email, String cpfOuCnpj, boolean isPessoaFisica, Session session) {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
             transaction = session.beginTransaction();
-            if (cliente.getIdCliente() == null) {
-                // Novo cliente, então salva
-                session.save(cliente);
+            long idCliente = findNextId(session); // Obtém o próximo ID
+
+            String tipoCliente = isPessoaFisica ? "PessoaFisica" : "PessoaJuridica";
+            String comandoSqlCliente = "INSERT INTO clientes (id_cliente, tipo_cliente, nome_cliente, telefone, email";
+            String values = " VALUES (" + idCliente + ", '" + tipoCliente + "', '" + nome + "', '" + telefone + "', '" + email + "'";
+
+            if (isPessoaFisica && !cpfOuCnpj.isEmpty()) {
+                comandoSqlCliente += ", cpf)";
+                values += ", '" + cpfOuCnpj + "')";
+            } else if (!isPessoaFisica && !cpfOuCnpj.isEmpty()) {
+                comandoSqlCliente += ", cnpj)";
+                values += ", '" + cpfOuCnpj + "')";
             } else {
-                // Cliente existente, então atualiza
-                session.update(cliente);
+                comandoSqlCliente += ")";
+                values += ")";
             }
+
+            String comandoSqlFinal = comandoSqlCliente + values;
+            session.createNativeQuery(comandoSqlFinal).executeUpdate();
             transaction.commit();
-        } catch (Exception e) {
+        } catch (Exception ex) {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            ex.printStackTrace();
+            throw new RuntimeException("Erro ao salvar cliente: " + ex.getMessage());
         }
-    }*/
+    }
 
     // Encontra o próximo ID disponível para um novo cliente
     public long findNextId(Session session) {

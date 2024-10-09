@@ -510,61 +510,17 @@ public class ClienteGUI extends javax.swing.JFrame {
         String cpfOuCnpj = txtCPFouCNPJ.getText().trim();
 
         // Verifica se é Pessoa Física ou Pessoa Jurídica
-        Cliente novoCliente;
-        if (btnPF.isSelected()) {
-            novoCliente = new PessoaFisica(nome);
-            if (!cpfOuCnpj.isEmpty()) {
-                ((PessoaFisica) novoCliente).setCpf(cpfOuCnpj); // Define CPF se não estiver vazio
-            }
-        } else {
-            novoCliente = new PessoaJuridica(nome);
-            if (!cpfOuCnpj.isEmpty()) {
-                ((PessoaJuridica) novoCliente).setCnpj(cpfOuCnpj); // Define CNPJ se não estiver vazio
-            }
-        }
+        boolean isPessoaFisica = btnPF.isSelected();
 
-        // Configura os dados opcionais do cliente
-        novoCliente.setTelefone(telefone);
-        novoCliente.setEmail(email);
-
-        // Salva o cliente no banco de dados
-        Transaction transaction = session.beginTransaction();
         try {
-            long idCliente = clienteDAO.findNextId(session);
-
-            String tipoCliente = (novoCliente instanceof PessoaFisica) ? "PessoaFisica" : "PessoaJuridica";
-            String comandoSqlCliente = "insert into clientes(id_cliente, tipo_cliente, nome_cliente, telefone, email";
-            String values = " values (" + idCliente + ", '" + tipoCliente + "', '" + nome + "', '" + telefone + "', '" + email + "'";
-
-            if (novoCliente instanceof PessoaFisica && !cpfOuCnpj.isEmpty()) {
-                comandoSqlCliente += ", cpf)";
-                values += ", '" + cpfOuCnpj + "')";
-            } else if (novoCliente instanceof PessoaJuridica && !cpfOuCnpj.isEmpty()) {
-                comandoSqlCliente += ", cnpj)";
-                values += ", '" + cpfOuCnpj + "')";
-            } else {
-                comandoSqlCliente += ")";
-                values += ")";
-            }
-
-            String comandoSqlFinal = comandoSqlCliente + values;
-            session.createNativeQuery(comandoSqlFinal).executeUpdate();
-
-            transaction.commit();
+            clienteDAO.saveOrUpdateCliente(nome, telefone, email, cpfOuCnpj, isPessoaFisica, session);
             JOptionPane.showMessageDialog(this, "Cliente salvo com sucesso!");
-
-            // Após salvar o cliente com sucesso, atualiza a lista de clientes na tabela
             carregarClientes();
-
-        } catch (Exception ex) {
-            //se der erro, dá um rollback na transação
-            transaction.rollback();
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao salvar cliente: " + ex.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } finally {
             session.close(); // Fechar a sessão após o uso
             limparCampos(); // Limpar os campos de texto
-            //this.dispose(); // Fecha a tela após salvar o cliente
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
