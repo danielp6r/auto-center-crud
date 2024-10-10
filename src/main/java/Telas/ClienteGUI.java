@@ -5,6 +5,8 @@ import Classes.PessoaFisica;
 import Classes.PessoaJuridica;
 import Classes.SessionManager;
 import DAO.ClienteDAO;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -28,6 +30,9 @@ import javax.swing.table.TableRowSorter;
  * @author danielp6r
  */
 public class ClienteGUI extends javax.swing.JFrame {
+    
+    // Variável para saber se está no modo de edição ou criação de cliente
+    private boolean isEditing = false;
     
     // Campo estático para armazenar a instância única
     private static ClienteGUI instance;
@@ -72,8 +77,19 @@ public class ClienteGUI extends javax.swing.JFrame {
         column.setPreferredWidth(0);
         column.setWidth(0);
         
-        //Impedindo que o usuário reorganize os índices das colunas
+        // Impedindo que o usuário reorganize os índices das colunas
         tblListagem.getTableHeader().setReorderingAllowed(false);
+        
+        // Listeners para Labels de Criação e nome do Cliente
+        txtNome.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (clienteIdEdicao == null) { // Verifica se estamos criando um cliente
+                    lblCliente.setText(txtNome.getText()); // Atualiza o nome enquanto digita
+                    lblCriandoOuEditando.setText("Criando Novo Cliente"); // Atualiza para "Criando Novo Cliente"
+                }
+            }
+        });
              
     }
     
@@ -116,6 +132,7 @@ public class ClienteGUI extends javax.swing.JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 limparCampos();
+                isEditing = false; // Resetar o estado de edição ao fechar a janela
             }
         });
     }
@@ -126,6 +143,9 @@ public class ClienteGUI extends javax.swing.JFrame {
         txtTel.setText("");
         txtEmail.setText("");
         txtCPFouCNPJ.setText("");
+        lblCliente.setText(""); // Limpa o label de nome do cliente
+        lblCriandoOuEditando.setText(""); // Limpa o label de estado
+        clienteIdEdicao = null; // Reseta o ID do cliente em edição
     }
     
     // Método para listar os clientes em ordem alfabética, ignorando diferenças de maiúsculas/minúsculas
@@ -249,10 +269,10 @@ public class ClienteGUI extends javax.swing.JFrame {
         btnPJ = new javax.swing.JRadioButton();
         lblCPFouCNPJ = new javax.swing.JLabel();
         txtCPFouCNPJ = new javax.swing.JTextField();
-        paneListagem = new javax.swing.JScrollPane();
-        tblListagem = new javax.swing.JTable();
         lblCliente = new javax.swing.JLabel();
         lblCriandoOuEditando = new javax.swing.JLabel();
+        paneListagem = new javax.swing.JScrollPane();
+        tblListagem = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Clientes");
@@ -377,12 +397,17 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         });
 
+        lblCliente.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        lblCriandoOuEditando.setForeground(new java.awt.Color(153, 153, 153));
+        lblCriandoOuEditando.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         tblListagem.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Nome", "Telefone", "email", "CPF/CNPJ", "Num"
+                "Nome", "Telefone", "e-mail", "CPF/CNPJ", "Num"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -394,11 +419,6 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         });
         paneListagem.setViewportView(tblListagem);
-
-        lblCliente.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
-        lblCriandoOuEditando.setForeground(new java.awt.Color(153, 153, 153));
-        lblCriandoOuEditando.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout paneTelaLayout = new javax.swing.GroupLayout(paneTela);
         paneTela.setLayout(paneTelaLayout);
@@ -414,19 +434,16 @@ public class ClienteGUI extends javax.swing.JFrame {
                             .addComponent(paneOpcoes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(paneTelaLayout.createSequentialGroup()
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneTelaLayout.createSequentialGroup()
-                                .addGap(19, 19, 19)
-                                .addComponent(lblCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(40, 40, 40))
                             .addGroup(paneTelaLayout.createSequentialGroup()
-                                .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(paneTelaLayout.createSequentialGroup()
-                                        .addGap(80, 80, 80)
-                                        .addComponent(lblImgCliente))
-                                    .addGroup(paneTelaLayout.createSequentialGroup()
-                                        .addGap(24, 24, 24)
-                                        .addComponent(lblCriandoOuEditando, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(29, 29, 29)))
+                                .addGap(80, 80, 80)
+                                .addComponent(lblImgCliente))
+                            .addGroup(paneTelaLayout.createSequentialGroup()
+                                .addGap(37, 37, 37)
+                                .addComponent(lblCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(paneTelaLayout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addComponent(lblCriandoOuEditando, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(29, 29, 29)
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(txtNome, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -546,6 +563,9 @@ public class ClienteGUI extends javax.swing.JFrame {
             limparCampos(); // Limpar os campos de texto
             clienteIdEdicao = null; // Reseta o ID após a operação
         }
+        // Limpa os labels após a ação
+        lblCliente.setText(""); // Limpa o nome do cliente
+        lblCriandoOuEditando.setText(""); // Limpa o texto de criando ou editando
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void txtBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscaActionPerformed
@@ -577,6 +597,9 @@ public class ClienteGUI extends javax.swing.JFrame {
                 limparCampos(); // Limpar os campos de texto
             }
         }
+        // Limpa os labels após a ação
+        lblCliente.setText(""); // Limpa o nome do cliente
+        lblCriandoOuEditando.setText(""); // Limpa o texto de criando ou editando
     }//GEN-LAST:event_btnExcluirActionPerformed
     
     //Aceita somente entrada de números
@@ -619,9 +642,13 @@ public class ClienteGUI extends javax.swing.JFrame {
         txtTel.setText(telefone);
         txtEmail.setText(email);
         txtCPFouCNPJ.setText(cpfOuCnpj);
-        
+
         // Atualiza o label para mostrar que está editando
-        lblCliente.setText("Editando " + nome);
+        lblCliente.setText(nome);
+        lblCriandoOuEditando.setText("Editando Cliente"); // Atualiza o label para indicar que está editando
+
+        // Muda o estado para edição
+        isEditing = true; // Adicione esta linha
 
         // Verifique se o cliente é Pessoa Física ou Jurídica e selecione o radio button correspondente
         Session session = SessionManager.getInstance().getSession();
@@ -647,7 +674,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         if (!Character.isDigit(c)) {
             evt.consume(); // impede a digitação de qualquer coisa que não seja número
         }
-        if (txtTel.getText().length() >= 11) {
+        if (txtTel.getText().length() >= 15) {
             evt.consume(); // Limita o tamanho a 11 caracteres
         }
     }//GEN-LAST:event_txtTelKeyTyped
