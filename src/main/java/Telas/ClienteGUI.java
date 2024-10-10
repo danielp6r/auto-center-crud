@@ -14,7 +14,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.swing.RowFilter;
@@ -29,8 +28,6 @@ import javax.swing.table.TableRowSorter;
  * @author danielp6r
  */
 public class ClienteGUI extends javax.swing.JFrame {
-    
-    private long idClienteEditando = -1; // -1 indica que não estamos editando
     
     // Campo estático para armazenar a instância única
     private static ClienteGUI instance;
@@ -77,9 +74,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         
         //Impedindo que o usuário reorganize os índices das colunas
         tblListagem.getTableHeader().setReorderingAllowed(false);
-        
-        
-        
+             
     }
     
     /*
