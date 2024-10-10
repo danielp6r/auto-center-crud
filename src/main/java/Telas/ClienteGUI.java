@@ -500,7 +500,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         ClienteDAO clienteDAO = new ClienteDAO();
         List<Cliente> clientes = clienteDAO.getAllClientes();
         for (Cliente cliente : clientes) {
-            if (cliente.getNomeCliente().equalsIgnoreCase(nome) && cliente.getIdCliente() != idClienteEditando) {
+            if (cliente.getNomeCliente().equalsIgnoreCase(nome) && cliente.getIdCliente() != clienteIdEdicao) { // Alterado de idClienteEditando para clienteIdEdicao
                 JOptionPane.showMessageDialog(this, "Já existe um cliente cadastrado com o mesmo nome.", "Erro", JOptionPane.ERROR_MESSAGE);
                 session.close(); // Fecha a sessão
                 return;
@@ -516,20 +516,20 @@ public class ClienteGUI extends javax.swing.JFrame {
         boolean isPessoaFisica = btnPF.isSelected();
 
         try {
-            if (idClienteEditando > 0) { // Se um cliente está sendo editado
-                clienteDAO.atualizarCliente(idClienteEditando, nome, telefone, email, cpfOuCnpj, isPessoaFisica, session);
-                JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
+            if (clienteIdEdicao != null) { // Se um cliente está sendo editado
+                clienteDAO.atualizarCliente(clienteIdEdicao, nome, telefone, email, cpfOuCnpj, isPessoaFisica, session);
+                JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!"); // Mensagem de sucesso
             } else { // Caso contrário, salve um novo cliente
                 clienteDAO.salvarCliente(nome, telefone, email, cpfOuCnpj, isPessoaFisica, session);
                 JOptionPane.showMessageDialog(this, "Cliente salvo com sucesso!");
             }
-            carregarClientes();
+            carregarClientes(); // Atualiza a lista de clientes na tabela
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } finally {
             session.close(); // Fechar a sessão após o uso
             limparCampos(); // Limpar os campos de texto
-            idClienteEditando = -1; // Reseta o ID após a operação
+            clienteIdEdicao = null; // Reseta o ID após a operação
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
@@ -586,44 +586,42 @@ public class ClienteGUI extends javax.swing.JFrame {
     private Long clienteIdEdicao = null;
     
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-    int selectedRow = tblListagem.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Selecione um cliente para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        int selectedRow = tblListagem.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um cliente para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    // Pega os dados da linha selecionada
-    String nome = (String) tblListagem.getValueAt(selectedRow, 0); // Nome
-    String telefone = (String) tblListagem.getValueAt(selectedRow, 1); // Telefone
-    String email = (String) tblListagem.getValueAt(selectedRow, 2); // Email
-    String cpfOuCnpj = (String) tblListagem.getValueAt(selectedRow, 3); // CPF ou CNPJ
-    Long idCliente = (Long) tblListagem.getValueAt(selectedRow, 4); // ID
+        // Pega os dados da linha selecionada
+        String nome = (String) tblListagem.getValueAt(selectedRow, 0); // Nome
+        String telefone = (String) tblListagem.getValueAt(selectedRow, 1); // Telefone
+        String email = (String) tblListagem.getValueAt(selectedRow, 2); // Email
+        String cpfOuCnpj = (String) tblListagem.getValueAt(selectedRow, 3); // CPF ou CNPJ
+        Long idCliente = (Long) tblListagem.getValueAt(selectedRow, 4); // ID
 
-    // Preenche os campos de edição com os dados do cliente
-    txtNome.setText(nome);
-    txtTel.setText(telefone);
-    txtEmail.setText(email);
-    txtCPFouCNPJ.setText(cpfOuCnpj);
+        // Preenche os campos de edição com os dados do cliente
+        txtNome.setText(nome);
+        txtTel.setText(telefone);
+        txtEmail.setText(email);
+        txtCPFouCNPJ.setText(cpfOuCnpj);
 
-    // Verifique se o cliente é Pessoa Física ou Jurídica e selecione o radio button correspondente
-    Session session = SessionManager.getInstance().getSession();
-    ClienteDAO clienteDAO = new ClienteDAO();
-    Cliente cliente = clienteDAO.getClienteById(idCliente);
+        // Verifique se o cliente é Pessoa Física ou Jurídica e selecione o radio button correspondente
+        Session session = SessionManager.getInstance().getSession();
+        ClienteDAO clienteDAO = new ClienteDAO();
+        Cliente cliente = clienteDAO.getClienteById(idCliente);
 
-    if (cliente instanceof PessoaFisica) {
-        btnPF.setSelected(true);  // Seleciona Pessoa Física
-        btnPJ.setSelected(false); // Desmarca Pessoa Jurídica
-    } else if (cliente instanceof PessoaJuridica) {
-        btnPJ.setSelected(true);  // Seleciona Pessoa Jurídica
-        btnPF.setSelected(false); // Desmarca Pessoa Física
-    }
+        if (cliente instanceof PessoaFisica) {
+            btnPF.setSelected(true);  // Seleciona Pessoa Física
+            btnPJ.setSelected(false); // Desmarca Pessoa Jurídica
+        } else if (cliente instanceof PessoaJuridica) {
+            btnPJ.setSelected(true);  // Seleciona Pessoa Jurídica
+            btnPF.setSelected(false); // Desmarca Pessoa Física
+        }
 
-    // Guarda o ID do cliente em edição para usá-lo no botão Salvar
-    clienteIdEdicao = idCliente;
+        // Guarda o ID do cliente em edição para usá-lo no botão Salvar
+        clienteIdEdicao = idCliente; // Aqui foi utilizado clienteIdEdicao para armazenar o ID
 
-    session.close(); // Fecha a sessão
-
-       
+        session.close(); // Fecha a sessão
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void txtTelKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelKeyTyped
