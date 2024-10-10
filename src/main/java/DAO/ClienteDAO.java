@@ -9,8 +9,8 @@ import java.util.List;
 
 public class ClienteDAO {
 
-    // Salva ou atualiza um cliente no banco de dados
-    public void saveOrUpdateCliente(String nome, String telefone, String email, String cpfOuCnpj, boolean isPessoaFisica, Session session) {
+    // Salva um novo cliente no banco de dados
+    public void salvarCliente(String nome, String telefone, String email, String cpfOuCnpj, boolean isPessoaFisica, Session session) {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
@@ -40,6 +40,41 @@ public class ClienteDAO {
             }
             ex.printStackTrace();
             throw new RuntimeException("Erro ao salvar cliente: " + ex.getMessage());
+        }
+    }
+
+    // Atualiza um cliente existente no banco de dados
+    public void atualizarCliente(long idCliente, String nome, String telefone, String email, String cpfOuCnpj, boolean isPessoaFisica, Session session) {
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            String comandoSqlCliente = "UPDATE clientes SET nome_cliente = :nome, telefone = :telefone, email = :email";
+            if (isPessoaFisica) {
+                comandoSqlCliente += ", cpf = :cpf WHERE id_cliente = :idCliente";
+            } else {
+                comandoSqlCliente += ", cnpj = :cnpj WHERE id_cliente = :idCliente";
+            }
+
+            var query = session.createNativeQuery(comandoSqlCliente);
+            query.setParameter("nome", nome);
+            query.setParameter("telefone", telefone);
+            query.setParameter("email", email);
+            query.setParameter("idCliente", idCliente);
+
+            if (isPessoaFisica) {
+                query.setParameter("cpf", cpfOuCnpj);
+            } else {
+                query.setParameter("cnpj", cpfOuCnpj);
+            }
+
+            query.executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            ex.printStackTrace();
+            throw new RuntimeException("Erro ao atualizar cliente: " + ex.getMessage());
         }
     }
 

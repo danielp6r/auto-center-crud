@@ -29,6 +29,9 @@ import javax.swing.table.TableRowSorter;
  * @author danielp6r
  */
 public class ClienteGUI extends javax.swing.JFrame {
+    
+    private long idClienteEditando = -1; // -1 indica que não estamos editando
+    
     // Campo estático para armazenar a instância única
     private static ClienteGUI instance;
 
@@ -74,6 +77,8 @@ public class ClienteGUI extends javax.swing.JFrame {
         
         //Impedindo que o usuário reorganize os índices das colunas
         tblListagem.getTableHeader().setReorderingAllowed(false);
+        
+        
         
     }
     
@@ -207,7 +212,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         });
     }
 
-// Método para filtrar os clientes de acordo com o texto digitado no campo de busca
+    // Método para filtrar os clientes de acordo com o texto digitado no campo de busca
     private void filterClients() {
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
@@ -220,8 +225,6 @@ public class ClienteGUI extends javax.swing.JFrame {
             sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text)); // Ignora maiúsculas/minúsculas
         }
     }
-    
-    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -484,7 +487,7 @@ public class ClienteGUI extends javax.swing.JFrame {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         // Captura os dados da GUI
-        String nome = txtNome.getText().trim(); // Nome é obrigatório, trim() remove espaços extras
+        String nome = txtNome.getText().trim();
 
         // Verifica se o campo Nome não está vazio
         if (nome.isEmpty()) {
@@ -497,7 +500,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         ClienteDAO clienteDAO = new ClienteDAO();
         List<Cliente> clientes = clienteDAO.getAllClientes();
         for (Cliente cliente : clientes) {
-            if (cliente.getNomeCliente().equalsIgnoreCase(nome)) {
+            if (cliente.getNomeCliente().equalsIgnoreCase(nome) && cliente.getIdCliente() != idClienteEditando) {
                 JOptionPane.showMessageDialog(this, "Já existe um cliente cadastrado com o mesmo nome.", "Erro", JOptionPane.ERROR_MESSAGE);
                 session.close(); // Fecha a sessão
                 return;
@@ -513,14 +516,20 @@ public class ClienteGUI extends javax.swing.JFrame {
         boolean isPessoaFisica = btnPF.isSelected();
 
         try {
-            clienteDAO.saveOrUpdateCliente(nome, telefone, email, cpfOuCnpj, isPessoaFisica, session);
-            JOptionPane.showMessageDialog(this, "Cliente salvo com sucesso!");
+            if (idClienteEditando > 0) { // Se um cliente está sendo editado
+                clienteDAO.atualizarCliente(idClienteEditando, nome, telefone, email, cpfOuCnpj, isPessoaFisica, session);
+                JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
+            } else { // Caso contrário, salve um novo cliente
+                clienteDAO.salvarCliente(nome, telefone, email, cpfOuCnpj, isPessoaFisica, session);
+                JOptionPane.showMessageDialog(this, "Cliente salvo com sucesso!");
+            }
             carregarClientes();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } finally {
             session.close(); // Fechar a sessão após o uso
             limparCampos(); // Limpar os campos de texto
+            idClienteEditando = -1; // Reseta o ID após a operação
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
