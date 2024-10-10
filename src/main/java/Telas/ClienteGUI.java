@@ -251,6 +251,8 @@ public class ClienteGUI extends javax.swing.JFrame {
         txtCPFouCNPJ = new javax.swing.JTextField();
         paneListagem = new javax.swing.JScrollPane();
         tblListagem = new javax.swing.JTable();
+        lblCliente = new javax.swing.JLabel();
+        lblCriandoOuEditando = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Clientes");
@@ -393,6 +395,11 @@ public class ClienteGUI extends javax.swing.JFrame {
         });
         paneListagem.setViewportView(tblListagem);
 
+        lblCliente.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        lblCriandoOuEditando.setForeground(new java.awt.Color(153, 153, 153));
+        lblCriandoOuEditando.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout paneTelaLayout = new javax.swing.GroupLayout(paneTela);
         paneTela.setLayout(paneTelaLayout);
         paneTelaLayout.setHorizontalGroup(
@@ -401,11 +408,25 @@ public class ClienteGUI extends javax.swing.JFrame {
                 .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(paneTelaLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(lblHead, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblHead, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(paneListagem)
+                            .addComponent(paneOpcoes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(paneTelaLayout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addComponent(lblImgCliente)
-                        .addGap(103, 103, 103)
+                        .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneTelaLayout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(lblCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(40, 40, 40))
+                            .addGroup(paneTelaLayout.createSequentialGroup()
+                                .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(paneTelaLayout.createSequentialGroup()
+                                        .addGap(80, 80, 80)
+                                        .addComponent(lblImgCliente))
+                                    .addGroup(paneTelaLayout.createSequentialGroup()
+                                        .addGap(24, 24, 24)
+                                        .addComponent(lblCriandoOuEditando, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(29, 29, 29)))
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(txtNome, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -424,13 +445,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                             .addComponent(lblEmail)
                             .addComponent(lblTel)
                             .addComponent(txtTel))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(paneTelaLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(paneListagem))
-                    .addGroup(paneTelaLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(paneOpcoes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         paneTelaLayout.setVerticalGroup(
@@ -438,15 +453,15 @@ public class ClienteGUI extends javax.swing.JFrame {
             .addGroup(paneTelaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblHead, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
-                .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNome)
-                    .addComponent(lblTel)
-                    .addComponent(btnPJ)
-                    .addComponent(btnPF))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(29, 29, 29)
+                .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(paneTelaLayout.createSequentialGroup()
+                        .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblNome)
+                            .addComponent(lblTel)
+                            .addComponent(btnPJ)
+                            .addComponent(btnPF))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtNome, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
                             .addComponent(txtTel))
@@ -457,12 +472,17 @@ public class ClienteGUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtCPFouCNPJ, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(27, 27, 27)
-                        .addComponent(paneOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(paneTelaLayout.createSequentialGroup()
+                        .addComponent(lblCriandoOuEditando, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(paneListagem, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lblImgCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lblImgCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(27, 27, 27)
+                .addComponent(paneOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(paneListagem, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -575,7 +595,7 @@ public class ClienteGUI extends javax.swing.JFrame {
     private void txtNomeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNomeKeyTyped
         if (txtNome.getText().length() >= 30) {
             evt.consume(); // Limita o tamanho a 30 caracteres
-        }
+        } 
     }//GEN-LAST:event_txtNomeKeyTyped
 
     private Long clienteIdEdicao = null;
@@ -599,6 +619,9 @@ public class ClienteGUI extends javax.swing.JFrame {
         txtTel.setText(telefone);
         txtEmail.setText(email);
         txtCPFouCNPJ.setText(cpfOuCnpj);
+        
+        // Atualiza o label para mostrar que está editando
+        lblCliente.setText("Editando " + nome);
 
         // Verifique se o cliente é Pessoa Física ou Jurídica e selecione o radio button correspondente
         Session session = SessionManager.getInstance().getSession();
@@ -681,6 +704,8 @@ public class ClienteGUI extends javax.swing.JFrame {
     private javax.swing.JRadioButton btnPJ;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JLabel lblCPFouCNPJ;
+    private javax.swing.JLabel lblCliente;
+    private javax.swing.JLabel lblCriandoOuEditando;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblHead;
     private javax.swing.JLabel lblImgCliente;
