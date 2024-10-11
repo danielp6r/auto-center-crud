@@ -43,6 +43,7 @@ public class ClienteGUI extends javax.swing.JFrame {
     public ClienteGUI() {
         initComponents();
         carregarClientes();
+        padrao();
         
         // Ajusta para fechar apenas a janela atual
         setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
@@ -105,6 +106,8 @@ public class ClienteGUI extends javax.swing.JFrame {
         btnPJ.setSelected(false); // Desmarca Pessoa Jurídica
         lblCPFouCNPJ.setText("CPF");
         tblListagem.clearSelection();
+        txtNome.requestFocusInWindow();
+         
     }
     
     // Método para adicionar o MouseListener à lupa
@@ -134,6 +137,8 @@ public class ClienteGUI extends javax.swing.JFrame {
         }
         instance.setVisible(true);
         instance.requestFocus(); // Garante que a janela receba o foco
+        
+        instance.padrao(); // Seta para padrão toda vez que abre a tela
     }
     
     // Limpas os campos e seta pada padrão ao fechar a janela
@@ -160,19 +165,23 @@ public class ClienteGUI extends javax.swing.JFrame {
         clienteIdEdicao = null; // Reseta o ID do cliente em edição
     }
     
-    // Método para listar os clientes em ordem alfabética, ignorando diferenças de maiúsculas/minúsculas
+    // Método ordenar os clientes (true: id decrescente , false: alfabetico)
+    private void ordenarClientes(List<Cliente> clientes, boolean porID) {
+        if (porID == true) {
+            // Ordena a lista de clientes em ordem decrescente pelo ID
+            Collections.sort(clientes, (c1, c2) -> Long.compare(c2.getIdCliente(), c1.getIdCliente()));
+        } else {
+            // Ordena a lista de clientes em ordem alfabética pelo nome, ignorando maiúsculas/minúsculas
+            Collections.sort(clientes, (c1, c2) -> c1.getNomeCliente().compareToIgnoreCase(c2.getNomeCliente()));
+        }
+    }
+    
+    // Método para listar os clientes 
     private void carregarClientes() {
         ClienteDAO clienteDAO = new ClienteDAO();
         List<Cliente> clientes = clienteDAO.getAllClientes();
 
-        // Ordena a lista de clientes em ordem alfabética pelo nome, ignorando maiúsculas/minúsculas
-        Collections.sort(clientes, new Comparator<Cliente>() {
-            @Override
-            public int compare(Cliente c1, Cliente c2) {
-                // Utilize compareToIgnoreCase para ignorar diferenças de maiúsculas/minúsculas
-                return c1.getNomeCliente().compareToIgnoreCase(c2.getNomeCliente());
-            }
-        });
+        ordenarClientes(clientes, true); // true por id decrescente , false para alfabetico
 
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
         model.setRowCount(0); // Limpa a tabela antes de preencher com os novos dados
