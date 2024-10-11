@@ -97,6 +97,16 @@ public class ClienteGUI extends javax.swing.JFrame {
     MÉTODOS ESPECÍFICOS PARA ESTA TELA
     */
     
+    // Redefine os padrões da tela
+    public void padrao() {
+        btnPF.setEnabled(true); // Reativa o botão Pessoa Física
+        btnPJ.setEnabled(true); // Reativa o botão Pessoa Jurídica
+        btnPF.setSelected(true);  // Seleciona Pessoa Física
+        btnPJ.setSelected(false); // Desmarca Pessoa Jurídica
+        lblCPFouCNPJ.setText("CPF");
+        tblListagem.clearSelection();
+    }
+    
     // Método para adicionar o MouseListener à lupa
     private void addLupaClickListener() {
         lblImgLupa.addMouseListener(new MouseAdapter() {
@@ -126,7 +136,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         instance.requestFocus(); // Garante que a janela receba o foco
     }
     
-    // Método para adicionar um WindowListener para limpar os campos ao fechar a janela
+    // Limpas os campos e seta pada padrão ao fechar a janela
     private void addWindowClosingListener() {
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -134,8 +144,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                 limparCampos();
                 isEditing = false; // Resetar o estado de edição ao fechar a janela
                 
-                btnPF.setEnabled(true); // Reativa o botão Pessoa Física
-                btnPJ.setEnabled(true); // Reativa o botão Pessoa Jurídica
+                padrao();
             }
         });
     }
@@ -570,8 +579,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblCliente.setText(""); // Limpa o nome do cliente
         lblCriandoOuEditando.setText(""); // Limpa o texto de criando ou editando
         
-        btnPF.setEnabled(true); // Reativa o botão Pessoa Física
-        btnPJ.setEnabled(true); // Reativa o botão Pessoa Jurídica
+        padrao();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void txtBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscaActionPerformed
@@ -607,8 +615,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblCliente.setText(""); // Limpa o nome do cliente
         lblCriandoOuEditando.setText(""); // Limpa o texto de criando ou editando
         
-        btnPF.setEnabled(true); // Reabilita o botão Pessoa Física
-        btnPJ.setEnabled(true); // Reabilita o botão Pessoa Jurídica
+        padrao();
     }//GEN-LAST:event_btnExcluirActionPerformed
     
     //Aceita somente entrada de números
@@ -671,9 +678,11 @@ public class ClienteGUI extends javax.swing.JFrame {
         if (cliente instanceof PessoaFisica) {
             btnPF.setSelected(true);  // Seleciona Pessoa Física
             btnPJ.setSelected(false); // Desmarca Pessoa Jurídica
+            lblCPFouCNPJ.setText("CPF");
         } else if (cliente instanceof PessoaJuridica) {
             btnPJ.setSelected(true);  // Seleciona Pessoa Jurídica
             btnPF.setSelected(false); // Desmarca Pessoa Física
+            lblCPFouCNPJ.setText("CNPJ");
         }
 
         // Guarda o ID do cliente em edição para usá-lo no botão Salvar
