@@ -5,6 +5,7 @@ import Classes.PessoaFisica;
 import Classes.PessoaJuridica;
 import Classes.SessionManager;
 import DAO.ClienteDAO;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -18,6 +19,10 @@ import javax.swing.table.DefaultTableModel;
 import org.hibernate.Session;
 import java.util.Collections;
 import java.util.Comparator;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -85,6 +90,11 @@ public class ClienteGUI extends javax.swing.JFrame {
         txtNome.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
+                // Ignora o evento se a tecla pressionada for Enter
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    return; // Não faz nada se Enter for pressionado
+                }
+
                 if (clienteIdEdicao == null) { // Verifica se estamos criando um cliente
                     lblCliente.setText(txtNome.getText()); // Atualiza o nome enquanto digita
                     lblCriandoOuEditando.setText("Criando Novo Cliente"); // Atualiza para "Criando Novo Cliente"
@@ -98,6 +108,54 @@ public class ClienteGUI extends javax.swing.JFrame {
     MÉTODOS ESPECÍFICOS PARA ESTA TELA
     */
     
+    // Método personalizado para configurar os atalhos de teclado
+    private void atalhos() {
+        JRootPane rootPane = this.getRootPane();
+
+        // Mapeamento global da tecla F1 para Salvar
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F1"), "salvarAction");
+        rootPane.getActionMap().put("salvarAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnSalvar.doClick(); // Simula o clique no botão Salvar
+            }
+        });
+        
+        // Mapeamento da tecla F2 para Editar dentro da JTable
+        tblListagem.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("F2"), "editarAction");
+        tblListagem.getActionMap().put("editarAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("F2 pressionado - Editar na JTable"); // Para depuração
+                int selectedRow = tblListagem.getSelectedRow(); // Verifica a linha selecionada
+                if (selectedRow != -1) { // Se uma linha está selecionada
+                    btnEditar.doClick(); // Simula o clique no botão Editar
+                } else {
+                    JOptionPane.showMessageDialog(ClienteGUI.this, "Selecione um cliente para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        
+        // Mapeamento da tecla F2 para Editar fora da JTable
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F2"), "editarAction");
+        rootPane.getActionMap().put("editarAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("F2 pressionado - Editar fora da JTable"); // Para depuração
+                btnEditar.doClick(); // Simula o clique no botão Editar
+            }
+        });
+
+        // Mapeamento global da tecla Delete para Excluir
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE"), "excluirAction");
+        rootPane.getActionMap().put("excluirAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnExcluir.doClick(); // Simula o clique no botão Excluir
+            }
+        });
+    }
+    
     // Redefine os padrões da tela
     public void padrao() {
         btnPF.setEnabled(true); // Reativa o botão Pessoa Física
@@ -107,7 +165,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblCPFouCNPJ.setText("CPF");
         tblListagem.clearSelection();
         txtNome.requestFocusInWindow();
-         
+        atalhos();
     }
     
     // Método para adicionar o MouseListener à lupa
@@ -342,14 +400,16 @@ public class ClienteGUI extends javax.swing.JFrame {
         paneOpcoes.setBackground(new java.awt.Color(255, 255, 255));
         paneOpcoes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        btnSalvar.setText("Salvar");
+        btnSalvar.setForeground(new java.awt.Color(76, 175, 80));
+        btnSalvar.setText("Salvar (F1)");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalvarActionPerformed(evt);
             }
         });
 
-        btnExcluir.setText("Excluir");
+        btnExcluir.setForeground(new java.awt.Color(244, 67, 54));
+        btnExcluir.setText("Excluir (Del)");
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcluirActionPerformed(evt);
@@ -365,7 +425,8 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblImgLupa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imgs/pesquisar.png"))); // NOI18N
         lblImgLupa.setText(" ");
 
-        btnEditar.setText("Editar");
+        btnEditar.setForeground(new java.awt.Color(90, 155, 213));
+        btnEditar.setText("Editar (F2)");
         btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditarActionPerformed(evt);
@@ -378,12 +439,12 @@ public class ClienteGUI extends javax.swing.JFrame {
             paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneOpcoesLayout.createSequentialGroup()
                 .addGap(8, 8, 8)
-                .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
+                .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
                 .addComponent(lblImgLupa, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -597,34 +658,46 @@ public class ClienteGUI extends javax.swing.JFrame {
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
         int selectedRow = tblListagem.getSelectedRow();
+
+        // Verifica se algum cliente está selecionado
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Selecione um cliente para excluir.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
+        // Obtém o ID do cliente a partir da tabela
         long idCliente = (long) tblListagem.getValueAt(selectedRow, 4); // 4 é o índice da coluna ID na tabela
 
-        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir o cliente " + tblListagem.getValueAt(selectedRow, 0) + "?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+        // Cria a caixa de confirmação
+        int confirmacao = JOptionPane.showConfirmDialog(this,
+                "Tem certeza que deseja excluir o cliente " + tblListagem.getValueAt(selectedRow, 0) + "?",
+                "Confirmar Exclusão",
+                JOptionPane.YES_NO_OPTION);
+
+        // Verifica se o usuário confirmou a exclusão
         if (confirmacao == JOptionPane.YES_OPTION) {
-            Session session = SessionManager.getInstance().getSession();
-            ClienteDAO clienteDAO = new ClienteDAO();
+            Session session = SessionManager.getInstance().getSession(); // Abre a sessão
+            ClienteDAO clienteDAO = new ClienteDAO(); // Cria uma instância do DAO
             try {
+                // Tenta excluir o cliente
                 clienteDAO.excluirClientePorId(idCliente);
-                JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso!");
+                JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                 carregarClientes(); // Atualiza a lista de clientes na tabela após a exclusão
             } catch (Exception ex) {
+                // Exibe uma mensagem de erro se a exclusão falhar
                 JOptionPane.showMessageDialog(this, "Erro ao excluir cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
+                ex.printStackTrace(); // Imprime o erro no console para depuração
             } finally {
                 session.close(); // Fecha a sessão
-                limparCampos(); // Limpar os campos de texto
+                limparCampos(); // Limpa os campos de texto
             }
         }
+
         // Limpa os labels após a ação
         lblCliente.setText(""); // Limpa o nome do cliente
         lblCriandoOuEditando.setText(""); // Limpa o texto de criando ou editando
-        
-        padrao();
+
+        padrao(); // Restaura o estado padrão
     }//GEN-LAST:event_btnExcluirActionPerformed
     
     //Aceita somente entrada de números

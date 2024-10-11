@@ -237,12 +237,12 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                      <Component id="btnSalvar" min="-2" pref="90" max="-2" attributes="0"/>
+                      <Component id="btnSalvar" min="-2" pref="95" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnEditar" min="-2" pref="90" max="-2" attributes="0"/>
+                      <Component id="btnEditar" min="-2" pref="95" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnExcluir" min="-2" pref="91" max="-2" attributes="0"/>
-                      <EmptySpace pref="92" max="32767" attributes="0"/>
+                      <Component id="btnExcluir" min="-2" pref="110" max="-2" attributes="0"/>
+                      <EmptySpace pref="63" max="32767" attributes="0"/>
                       <Component id="lblImgLupa" min="-2" pref="16" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="txtBusca" min="-2" pref="223" max="-2" attributes="0"/>
@@ -273,7 +273,10 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="btnSalvar">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Salvar"/>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="50" green="af" red="4c" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Salvar (F1)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalvarActionPerformed"/>
@@ -281,7 +284,10 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnExcluir">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Excluir"/>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="43" red="f4" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Excluir (Del)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExcluirActionPerformed"/>
@@ -302,7 +308,10 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnEditar">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Editar"/>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="d5" green="9b" red="5a" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Editar (F2)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEditarActionPerformed"/>

@@ -13,6 +13,7 @@ DAO\PessoaFisicaDAO.class
 Classes\Orcamento.class
 Telas\ClienteGUI$2.class
 com\mycompany\mvhib\util\CriarTabelas.class
+Telas\ClienteGUI$16.class
 Telas\OrcamentoGUI$11.class
 DAO\ItemOrcamentoDAO.class
 Telas\ListagemGUI$6.class
@@ -30,6 +31,7 @@ Telas\ClienteGUI$1.class
 Telas\ListagemGUI$2.class
 Telas\OrcamentoGUI$1.class
 Telas\ProdutoGUI$4.class
+Telas\ClienteGUI$17.class
 Telas\ListagemGUI$5.class
 DAO\ClienteDAO.class
 Telas\ProdutoGUI.class
@@ -53,12 +55,14 @@ DAO\GenericDAO.class
 DAO\OrcamentoDAO.class
 Telas\ListagemGUI$4.class
 Telas\ProdutoGUI$2.class
+Telas\ClienteGUI$18.class
 Telas\ClienteGUI$9.class
 Telas\ServicoGUI$1.class
 Telas\ServicoGUI.class
 Classes\TesteConexao.class
 Telas\ProdutoGUI$5.class
 Telas\OrcamentoGUI$6.class
+Telas\ClienteGUI$15.class
 Telas\ListagemGUI$7.class
 Telas\OrcamentoGUI.class
 Classes\Produto.class
