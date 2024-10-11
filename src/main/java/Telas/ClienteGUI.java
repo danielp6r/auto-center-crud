@@ -133,6 +133,9 @@ public class ClienteGUI extends javax.swing.JFrame {
             public void windowClosing(WindowEvent e) {
                 limparCampos();
                 isEditing = false; // Resetar o estado de edição ao fechar a janela
+                
+                btnPF.setEnabled(true); // Reativa o botão Pessoa Física
+                btnPJ.setEnabled(true); // Reativa o botão Pessoa Jurídica
             }
         });
     }
@@ -566,6 +569,9 @@ public class ClienteGUI extends javax.swing.JFrame {
         // Limpa os labels após a ação
         lblCliente.setText(""); // Limpa o nome do cliente
         lblCriandoOuEditando.setText(""); // Limpa o texto de criando ou editando
+        
+        btnPF.setEnabled(true); // Reativa o botão Pessoa Física
+        btnPJ.setEnabled(true); // Reativa o botão Pessoa Jurídica
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void txtBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscaActionPerformed
@@ -600,13 +606,16 @@ public class ClienteGUI extends javax.swing.JFrame {
         // Limpa os labels após a ação
         lblCliente.setText(""); // Limpa o nome do cliente
         lblCriandoOuEditando.setText(""); // Limpa o texto de criando ou editando
+        
+        btnPF.setEnabled(true); // Reabilita o botão Pessoa Física
+        btnPJ.setEnabled(true); // Reabilita o botão Pessoa Jurídica
     }//GEN-LAST:event_btnExcluirActionPerformed
     
     //Aceita somente entrada de números
     private void txtCPFouCNPJKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCPFouCNPJKeyTyped
         char c = evt.getKeyChar();
         if (!Character.isDigit(c)) {
-            evt.consume(); // impede a digitação de qualquer coisa que não seja número
+            evt.consume(); // Impede a digitação de qualquer coisa que não seja número
         }
 
         int maxLength = btnPF.isSelected() ? 11 : 14; // 11 para CPF, 14 para CNPJ
@@ -624,10 +633,14 @@ public class ClienteGUI extends javax.swing.JFrame {
     private Long clienteIdEdicao = null;
     
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+       
         int selectedRow = tblListagem.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Selecione um cliente para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
+        } else {
+            btnPF.setEnabled(false); // Desabilita o botão Pessoa Física
+            btnPJ.setEnabled(false); // Desabilita o botão Pessoa Jurídica
         }
 
         // Pega os dados da linha selecionada
