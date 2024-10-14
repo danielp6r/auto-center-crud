@@ -71,22 +71,51 @@ public class ProdutoGUI extends javax.swing.JFrame {
             double valorUnitario = Double.parseDouble(valorUnitarioStr.replace(",", "."));
             int quantidade = Integer.parseInt(quantidadeStr.isEmpty() ? "0" : quantidadeStr); // Se vazio, assume 0
             double subtotal = valorUnitario * quantidade;
-            lblSubtotal.setText(String.format("R$ %.2f", subtotal));
+            lblSubtotal.setText(String.format("%.2f", subtotal));
         } catch (NumberFormatException e) {
-            lblSubtotal.setText("R$ 0,00");
+            lblSubtotal.setText("0,00");
         }
     }
     
     private void addListeners() {
+        // Listener para atualizar subtotal ao soltar teclas em txtValorUn
         txtValorUn.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 atualizarSubtotal();
             }
         });
 
+        // Listener para atualizar subtotal ao soltar teclas em txtQuantidade
         txtQuantidade.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 atualizarSubtotal();
+            }
+        });
+
+        // Listener para focar e sempre selecionar os números no campo txtValorUn
+        txtValorUn.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        String text = txtValorUn.getText();
+                        // Seleciona apenas a parte numérica, sem o "R$"
+                        if (text != null && text.length() > 3) {
+                            txtValorUn.setCaretPosition(3); // Coloca o cursor após "R$ "
+                            txtValorUn.select(3, text.length()); // Seleciona o número
+                        }
+                    }
+                });
+            }
+        });
+
+        // Listener para focar e sempre selecionar tudo no campo txtQuantidade
+        txtQuantidade.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        txtQuantidade.selectAll(); // Seleciona todo o texto da quantidade
+                    }
+                });
             }
         });
     }
@@ -110,6 +139,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
         lblSubtotal = new javax.swing.JLabel();
         txtValorUn = new javax.swing.JFormattedTextField();
         txtQuantidade = new javax.swing.JFormattedTextField();
+        lblRs = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Incluir Mercadoria");
@@ -151,7 +181,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
             }
         });
 
-        lblSubtotal.setText("R$ 0,00");
+        lblSubtotal.setText("0,00");
 
         txtValorUn.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txtValorUn.setText("R$ 0,00");
@@ -190,6 +220,8 @@ public class ProdutoGUI extends javax.swing.JFrame {
             }
         });
 
+        lblRs.setText("R$");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -205,17 +237,19 @@ public class ProdutoGUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblQuantidade))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblValorTotal)
-                                    .addComponent(lblSubtotal, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnInserirProduto)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(lblCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblQuantidade)
+                                .addGap(18, 18, 18)
+                                .addComponent(lblValorTotal))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblRs)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblSubtotal, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(txtDescricao))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -232,11 +266,12 @@ public class ProdutoGUI extends javax.swing.JFrame {
                     .addComponent(lblQuantidade)
                     .addComponent(lblValorTotal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblSubtotal, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblSubtotal, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtValorUn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblRs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCancelar)
@@ -348,8 +383,8 @@ public class ProdutoGUI extends javax.swing.JFrame {
         }
 
         // Limita o tamanho do texto a 5 caracteres
-        if (txtValorUn.getText().length() >= 5) {
-            evt.consume(); // Limita o tamanho a 5 caracteres
+        if (txtValorUn.getText().length() >= 10) {
+            evt.consume(); // Limita o tamanho a 10 caracteres
         }     
     }//GEN-LAST:event_txtValorUnKeyTyped
     
@@ -435,6 +470,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
     private javax.swing.JButton lblCancelar;
     private javax.swing.JLabel lblDescricao;
     private javax.swing.JLabel lblQuantidade;
+    private javax.swing.JLabel lblRs;
     private javax.swing.JLabel lblSubtotal;
     private javax.swing.JLabel lblValorTotal;
     private javax.swing.JLabel lblValorUn;
