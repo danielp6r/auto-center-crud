@@ -140,18 +140,48 @@ public class ProdutoGUI extends javax.swing.JFrame {
                 txtDescricaoActionPerformed(evt);
             }
         });
+        txtDescricao.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDescricaoKeyTyped(evt);
+            }
+        });
 
         lblSubtotal.setText("R$0,00");
 
-        txtValorUn.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00#"))));
+        txtValorUn.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtValorUnFocusLost(evt);
+            }
+        });
         txtValorUn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtValorUnActionPerformed(evt);
             }
         });
+        txtValorUn.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtValorUnKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtValorUnKeyTyped(evt);
+            }
+        });
 
         txtQuantidade.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
         txtQuantidade.setText("1");
+        txtQuantidade.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtQuantidadeFocusLost(evt);
+            }
+        });
+        txtQuantidade.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtQuantidadeKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtQuantidadeKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -300,6 +330,67 @@ public class ProdutoGUI extends javax.swing.JFrame {
     private void txtValorUnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValorUnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtValorUnActionPerformed
+
+    private void txtDescricaoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescricaoKeyTyped
+        if (txtDescricao.getText().length() >= 50) {
+            evt.consume(); // Limita o tamanho a 50 caracteres
+        }
+    }//GEN-LAST:event_txtDescricaoKeyTyped
+    // Método para impedir a digitação de caracteres inválidos no campo de Valor Unitário
+    private void txtValorUnKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorUnKeyTyped
+        char c = evt.getKeyChar();
+
+        // Permite apenas números e vírgula para valor decimal
+        if (!Character.isDigit(c) && c != ',') {
+            evt.consume(); // Impede a digitação de qualquer caractere que não seja número ou vírgula
+        }
+
+        // Limita o tamanho do texto a 5 caracteres
+        if (txtValorUn.getText().length() >= 5) {
+            evt.consume(); // Limita o tamanho a 5 caracteres
+        }     
+    }//GEN-LAST:event_txtValorUnKeyTyped
+    
+    // Método para impedir a digitação de caracteres inválidos no campo de Quantidade
+    private void txtQuantidadeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtQuantidadeKeyTyped
+        char c = evt.getKeyChar();
+
+        // Permite apenas números
+        if (!Character.isDigit(c)) {
+            evt.consume(); // Impede a digitação de qualquer caractere que não seja número
+        }
+
+        // Limita o tamanho do texto a 5 caracteres
+        if (txtQuantidade.getText().length() >= 5) {
+            evt.consume(); // Limita o tamanho a 5 caracteres
+        }
+    }//GEN-LAST:event_txtQuantidadeKeyTyped
+
+    private void txtValorUnKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorUnKeyReleased
+        
+    }//GEN-LAST:event_txtValorUnKeyReleased
+
+    private void txtQuantidadeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtQuantidadeKeyReleased
+        
+    }//GEN-LAST:event_txtQuantidadeKeyReleased
+    
+    // Quando o campo perder o foco, define o valor padrão como "0,00" se estiver vazio
+    private void txtValorUnFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtValorUnFocusLost
+        if (txtValorUn.getText().trim().isEmpty()) {
+            txtValorUn.setText("0,00"); // Define o valor padrão se estiver vazio
+        } else {
+            atualizarSubtotal(); // Atualiza o subtotal quando o campo perde o foco
+        }
+    }//GEN-LAST:event_txtValorUnFocusLost
+    
+    // Quando o campo perder o foco, define o valor padrão como "1" se estiver vazio
+    private void txtQuantidadeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtQuantidadeFocusLost
+        if (txtQuantidade.getText().trim().isEmpty()) {
+            txtQuantidade.setText("1"); // Define o valor padrão se estiver vazio
+        } else {
+            atualizarSubtotal(); // Atualiza o subtotal quando o campo perde o foco
+        }
+    }//GEN-LAST:event_txtQuantidadeFocusLost
 
     /**
      * @param args the command line arguments

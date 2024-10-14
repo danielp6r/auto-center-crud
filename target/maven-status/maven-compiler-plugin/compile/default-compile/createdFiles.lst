@@ -7,6 +7,7 @@ Classes\PessoaJuridica.class
 DAO\PessoaJuridicaDAO.class
 Telas\ListagemGUI$3.class
 Telas\ServicoGUI$2.class
+Telas\ProdutoGUI$11.class
 DAO\GenericDAOService.class
 Telas\ClienteGUI$8.class
 DAO\PessoaFisicaDAO.class
@@ -30,6 +31,7 @@ Telas\ClienteGUI$4.class
 Telas\ClienteGUI$1.class
 Telas\ListagemGUI$2.class
 Telas\OrcamentoGUI$1.class
+Telas\ProdutoGUI$10.class
 Telas\ProdutoGUI$4.class
 Telas\ClienteGUI$17.class
 Telas\ListagemGUI$5.class
@@ -45,6 +47,7 @@ Telas\ListagemGUI$8.class
 Telas\ClienteGUI$10.class
 Telas\OrcamentoGUI$4.class
 Telas\ClienteGUI$7.class
+Telas\ProdutoGUI$8.class
 Telas\OrcamentoGUI$7.class
 Classes\PessoaFisica.class
 Classes\SessionManager.class
@@ -57,6 +60,8 @@ Telas\ListagemGUI$4.class
 Telas\ProdutoGUI$2.class
 Telas\ClienteGUI$18.class
 Telas\ClienteGUI$9.class
+Telas\ProdutoGUI$12.class
+Telas\ProdutoGUI$9.class
 Telas\ServicoGUI$1.class
 Telas\ServicoGUI.class
 Classes\TesteConexao.class
