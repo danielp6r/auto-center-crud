@@ -404,7 +404,26 @@ public class ProdutoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_txtQuantidadeKeyTyped
 
     private void txtValorUnKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorUnKeyReleased
-        
+        // Armazenar o texto válido anterior
+        String lastValidText = txtValorUn.getText(); // Inicializa com o texto atual
+        String currentText = txtValorUn.getText();
+
+        // Verifica se o último caractere é válido
+        if (currentText.length() > 0) {
+            char lastChar = currentText.charAt(currentText.length() - 1);
+
+            // Verifica se o último caractere é um número ou vírgula
+            if (!Character.isDigit(lastChar) && lastChar != ',') {
+                // Se não for, restaura o texto anterior
+                txtValorUn.setText(lastValidText);
+            } else {
+                // Se for válido, atualiza lastValidText
+                lastValidText = currentText;
+            }
+        } else {
+            // Se o campo estiver vazio, restaura ao valor inicial
+            txtValorUn.setText("R$ ");
+        }
     }//GEN-LAST:event_txtValorUnKeyReleased
 
     private void txtQuantidadeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtQuantidadeKeyReleased
