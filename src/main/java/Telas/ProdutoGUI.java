@@ -57,9 +57,9 @@ public class ProdutoGUI extends javax.swing.JFrame {
     // Método para limpar os campos de texto
     private void limparCampos() {
         txtDescricao.setText("");
-        txtValorUn.setText("");
+        txtValorUn.setText("R$ 0,00");
         txtQuantidade.setText("");
-        lblSubtotal.setText("R$0,00");
+        lblSubtotal.setText("0,00");
     }
     
     private void atualizarSubtotal() {
@@ -351,6 +351,20 @@ public class ProdutoGUI extends javax.swing.JFrame {
         if (txtDescricao.getText().trim().isEmpty() || txtValorUn.getText().trim().isEmpty() || txtQuantidade.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Os campos são obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
+        }
+
+        // Adicionando validação de número para txtValorUn
+        try {
+            Double.parseDouble(txtValorUn.getText().replace(",", "."));
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "O valor unitário deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Adicionando validação de quantidade
+        if (Integer.parseInt(txtQuantidade.getText()) <= 0) {
+            JOptionPane.showMessageDialog(this, "A quantidade deve ser maior que zero.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
             
         } else{
             //Preciso pegar o idOrcamento para salvar o orçamento_item e depois o produto
@@ -381,14 +395,14 @@ public class ProdutoGUI extends javax.swing.JFrame {
     private void txtValorUnKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorUnKeyTyped
         char c = evt.getKeyChar();
 
-        // Permite apenas números e vírgula para valor decimal
+        // Permite apenas números e vírgula (mudar para apenas uma vírgula)
         if (!Character.isDigit(c) && c != ',') {
-            evt.consume(); // Impede a digitação de qualquer caractere que não seja número ou vírgula
+            evt.consume();
         }
 
-        // Limita o tamanho do texto a 5 caracteres
+        // Limita o tamanho do texto
         if (txtValorUn.getText().length() >= 10) {
-            evt.consume(); // Limita o tamanho a 10 caracteres
+            evt.consume();
         }     
     }//GEN-LAST:event_txtValorUnKeyTyped
     
@@ -408,14 +422,14 @@ public class ProdutoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_txtQuantidadeKeyTyped
 
     private void txtValorUnKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorUnKeyReleased
-        
+    
     }//GEN-LAST:event_txtValorUnKeyReleased
 
     private void txtQuantidadeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtQuantidadeKeyReleased
-        
+    
     }//GEN-LAST:event_txtQuantidadeKeyReleased
     
-    // Quando o campo perder o foco, define o valor padrão como "0,00" se estiver vazio
+    // Quando o campo perder o foco, define o valor padrão como "R$ 0,00" se estiver vazio
     private void txtValorUnFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtValorUnFocusLost
         if (txtValorUn.getText().trim().isEmpty()) {
             txtValorUn.setText("R$ 0,00"); // Define o valor padrão se estiver vazio
@@ -428,6 +442,10 @@ public class ProdutoGUI extends javax.swing.JFrame {
     private void txtQuantidadeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtQuantidadeFocusLost
         if (txtQuantidade.getText().trim().isEmpty()) {
             txtQuantidade.setText("1"); // Define o valor padrão se estiver vazio
+        } // Certificando-se de que a quantidade é válida
+        else if (Integer.parseInt(txtQuantidade.getText()) <= 0) {
+            JOptionPane.showMessageDialog(this, "A quantidade deve ser maior que zero.", "Erro", JOptionPane.ERROR_MESSAGE);
+            txtQuantidade.setText("1"); // Reconfigura para 1 em caso de erro
         } else {
             atualizarSubtotal(); // Atualiza o subtotal quando o campo perde o foco
         }
