@@ -3,6 +3,7 @@ package Telas;
 import Classes.SessionManager;
 import DAO.ItemOrcamentoDAO;
 import DAO.ProdutoDAO;
+import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -196,6 +197,9 @@ public class ProdutoGUI extends javax.swing.JFrame {
             }
         });
         txtValorUn.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtValorUnKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtValorUnKeyReleased(evt);
             }
@@ -404,26 +408,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_txtQuantidadeKeyTyped
 
     private void txtValorUnKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorUnKeyReleased
-        // Armazenar o texto válido anterior
-        String lastValidText = txtValorUn.getText(); // Inicializa com o texto atual
-        String currentText = txtValorUn.getText();
-
-        // Verifica se o último caractere é válido
-        if (currentText.length() > 0) {
-            char lastChar = currentText.charAt(currentText.length() - 1);
-
-            // Verifica se o último caractere é um número ou vírgula
-            if (!Character.isDigit(lastChar) && lastChar != ',') {
-                // Se não for, restaura o texto anterior
-                txtValorUn.setText(lastValidText);
-            } else {
-                // Se for válido, atualiza lastValidText
-                lastValidText = currentText;
-            }
-        } else {
-            // Se o campo estiver vazio, restaura ao valor inicial
-            txtValorUn.setText("R$ ");
-        }
+        
     }//GEN-LAST:event_txtValorUnKeyReleased
 
     private void txtQuantidadeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtQuantidadeKeyReleased
@@ -447,6 +432,29 @@ public class ProdutoGUI extends javax.swing.JFrame {
             atualizarSubtotal(); // Atualiza o subtotal quando o campo perde o foco
         }
     }//GEN-LAST:event_txtQuantidadeFocusLost
+
+    private void txtValorUnKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorUnKeyPressed
+        // Captura o código da tecla pressionada
+        int key = evt.getKeyCode();
+
+        // Se a tecla for BACKSPACE
+        if (key == KeyEvent.VK_BACK_SPACE) {
+            String currentText = txtValorUn.getText();
+
+            // Se o texto atual não estiver vazio
+            if (currentText.length() > 0) {
+                // Pega o índice do último caractere a ser removido
+                int lastIndex = currentText.length() - 1;
+                char charToRemove = currentText.charAt(lastIndex);
+
+                // Verifica se o caractere que está sendo removido é inválido
+                if (!(Character.isDigit(charToRemove) || charToRemove == ',')) {
+                    // Se for inválido, consome o evento e bloqueia o backspace
+                    evt.consume();
+                }
+            }
+        }
+    }//GEN-LAST:event_txtValorUnKeyPressed
 
     /**
      * @param args the command line arguments
