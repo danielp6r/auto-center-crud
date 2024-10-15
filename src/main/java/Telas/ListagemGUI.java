@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.table.DefaultTableModel;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JFrame;
@@ -14,6 +15,8 @@ import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 import org.hibernate.Session;
 
@@ -58,19 +61,27 @@ public class ListagemGUI extends javax.swing.JFrame {
         
         btnRelatorios.setVisible(false);
         
+        // Coluna num com tamanho pequeno definido
+        TableColumnModel columnModel = tblListagem.getColumnModel();
+        TableColumn column = columnModel.getColumn(0); // 0 é o índice da coluna num
+        column.setMinWidth(50);
+        column.setMaxWidth(50);
+ 
     }
     
     //MÉTODOS ESPECÍFICOS PARA ESTA TELA:
      
-    //Método para listar os Orçamentos na tabela
+    // Método para listar os Orçamentos na tabela
     private void loadOrcamentosIntoTable() {
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
         model.setRowCount(0); // Limpar tabela antes de adicionar dados
-        OrcamentoDAO orcamentoDAO = new OrcamentoDAO(); 
+        OrcamentoDAO orcamentoDAO = new OrcamentoDAO();
 
         List<Orcamento> orcamentos = orcamentoDAO.getAllOrcamentos();
 
         if (orcamentos != null) {
+            Collections.reverse(orcamentos); // Inverte a lista para mostrar os mais novos no topo
+
             for (Orcamento orcamento : orcamentos) {
                 String nome;
                 if (orcamento.getCliente() == null) {
@@ -83,13 +94,11 @@ public class ListagemGUI extends javax.swing.JFrame {
                     nome, // Certifique-se de que está obtendo o nome do cliente
                     orcamento.getCarro(),
                     orcamento.getPlaca(),
-                    
-                    orcamento.getDataHora() != null ? 
-                        (orcamento.getDataHora().getDayOfMonth() < 10 ? "0" + orcamento.getDataHora().getDayOfMonth() : orcamento.getDataHora().getDayOfMonth()) + 
-                    "/" + 
-                        (orcamento.getDataHora().getMonthValue() < 10 ? "0" + orcamento.getDataHora().getMonthValue() : orcamento.getDataHora().getMonthValue()) + 
-                    "/" + orcamento.getDataHora().getYear() : "",
-                    
+                    orcamento.getDataHora() != null
+                    ? (orcamento.getDataHora().getDayOfMonth() < 10 ? "0" + orcamento.getDataHora().getDayOfMonth() : orcamento.getDataHora().getDayOfMonth())
+                    + "/"
+                    + (orcamento.getDataHora().getMonthValue() < 10 ? "0" + orcamento.getDataHora().getMonthValue() : orcamento.getDataHora().getMonthValue())
+                    + "/" + orcamento.getDataHora().getYear() : "",
                     orcamento.getValTotal()
                 };
                 model.addRow(row);
@@ -257,7 +266,7 @@ public class ListagemGUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Número", "Cliente", "Veículo", "Placa", "Data", "Valor"
+                "Num", "Cliente", "Veículo", "Placa", "Data", "Valor"
             }
         ) {
             boolean[] canEdit = new boolean [] {
