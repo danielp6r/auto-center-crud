@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
@@ -30,11 +31,10 @@ public class ListagemGUI extends javax.swing.JFrame {
         
         initComponents();
         
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Inicializa Maximizado
+        
         // Fecha todas as janelas quando clicar no x
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE); 
-        
-        //ABRE O A TELA MAXIMIZADA.
-        setExtendedState(MAXIMIZED_BOTH);
         
         // Configurar datas padrão
         Calendar calendar = Calendar.getInstance();
@@ -142,8 +142,7 @@ public class ListagemGUI extends javax.swing.JFrame {
             }
         });
     }
-
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -156,7 +155,6 @@ public class ListagemGUI extends javax.swing.JFrame {
         paneAll = new javax.swing.JPanel();
         lblHead = new javax.swing.JLabel();
         panebotoes = new javax.swing.JPanel();
-        txtListagem = new javax.swing.JLabel();
         lbla = new javax.swing.JLabel();
         lblPeriodo = new javax.swing.JLabel();
         lblImgLupa = new javax.swing.JLabel();
@@ -172,24 +170,21 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Orçamentos");
-        setResizable(false);
+        setExtendedState(6);
+        setFocusCycleRoot(false);
+        setMaximumSize(new java.awt.Dimension(1366, 768));
+        setMinimumSize(new java.awt.Dimension(1366, 768));
 
         paneAll.setBackground(new java.awt.Color(255, 255, 255));
 
         lblHead.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblHead.setForeground(new java.awt.Color(0, 0, 0));
         lblHead.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblHead.setText("ORÇAMENTOS");
+        lblHead.setText("LISTAGEM DE ORÇAMENTOS");
         lblHead.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         panebotoes.setBackground(new java.awt.Color(255, 255, 255));
         panebotoes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        txtListagem.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        txtListagem.setForeground(new java.awt.Color(0, 0, 0));
-        txtListagem.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        txtListagem.setText("LISTAGEM DE ORÇAMENTOS");
-        txtListagem.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         lbla.setText("a");
 
@@ -204,7 +199,7 @@ public class ListagemGUI extends javax.swing.JFrame {
             }
         });
 
-        btnExcluir.setText("Excluir");
+        btnExcluir.setText("Excluir (Del)");
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcluirActionPerformed(evt);
@@ -218,24 +213,19 @@ public class ListagemGUI extends javax.swing.JFrame {
             .addGroup(panebotoesLayout.createSequentialGroup()
                 .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panebotoesLayout.createSequentialGroup()
-                        .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbla)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnExcluir))
                     .addComponent(lblPeriodo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 675, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 630, Short.MAX_VALUE)
                 .addComponent(lblImgLupa, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26))
-            .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panebotoesLayout.createSequentialGroup()
-                    .addContainerGap(327, Short.MAX_VALUE)
-                    .addComponent(txtListagem, javax.swing.GroupLayout.PREFERRED_SIZE, 709, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(320, Short.MAX_VALUE)))
         );
         panebotoesLayout.setVerticalGroup(
             panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -243,25 +233,20 @@ public class ListagemGUI extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panebotoesLayout.createSequentialGroup()
-                        .addComponent(lblPeriodo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lbla))
-                            .addComponent(btnExcluir))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panebotoesLayout.createSequentialGroup()
                         .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblImgLupa))
-                        .addGap(17, 17, 17))))
-            .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panebotoesLayout.createSequentialGroup()
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtListagem)
-                    .addContainerGap(7, Short.MAX_VALUE)))
+                        .addGap(17, 17, 17))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panebotoesLayout.createSequentialGroup()
+                        .addComponent(lblPeriodo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lbla)
+                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnExcluir))
+                        .addContainerGap())))
         );
 
         paneListagem.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -286,7 +271,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         paneListagem.setViewportView(tblListagem);
 
         btnNovoOrcamento.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
-        btnNovoOrcamento.setText("Novo Orçamento");
+        btnNovoOrcamento.setText("Novo Orçamento (F1)");
         btnNovoOrcamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNovoOrcamentoActionPerformed(evt);
@@ -294,7 +279,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         });
 
         btnCadastro.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
-        btnCadastro.setText("Cadastros");
+        btnCadastro.setText("Cadastros (F2)");
         btnCadastro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCadastroActionPerformed(evt);
@@ -317,7 +302,7 @@ public class ListagemGUI extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(paneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(panebotoes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 1360, Short.MAX_VALUE)))
+                            .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 1354, Short.MAX_VALUE)))
                     .addGroup(paneAllLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(btnNovoOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -356,6 +341,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovoOrcamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoOrcamentoActionPerformed
@@ -465,6 +451,5 @@ public class ListagemGUI extends javax.swing.JFrame {
     private javax.swing.JPanel panebotoes;
     private javax.swing.JTable tblListagem;
     private javax.swing.JTextField txtBusca;
-    private javax.swing.JLabel txtListagem;
     // End of variables declaration//GEN-END:variables
 }
