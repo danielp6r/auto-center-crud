@@ -125,4 +125,18 @@ public class ClienteDAO {
             return null;
         }
     }
+    
+    // Verifica se o cliente está vinculado a algum orçamento
+    public boolean clienteTemOrcamento(long idCliente) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Consulta para contar quantos orçamentos estão associados ao cliente
+            Query query = session.createQuery("SELECT COUNT(o) FROM Orcamento o WHERE o.cliente.id = :idCliente");
+            query.setParameter("idCliente", idCliente);
+            Long count = (Long) query.getSingleResult();
+            return count > 0; // Retorna true se houver orçamentos vinculados
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Em caso de erro, considera que não tem orçamentos
+        }
+    }
 }

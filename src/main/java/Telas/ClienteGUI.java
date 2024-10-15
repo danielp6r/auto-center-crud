@@ -667,6 +667,16 @@ public class ClienteGUI extends javax.swing.JFrame {
 
         // Obtém o ID do cliente a partir da tabela
         long idCliente = (long) tblListagem.getValueAt(selectedRow, 4); // 4 é o índice da coluna ID na tabela
+        
+        
+        // Declaração da variável clienteDAO
+        ClienteDAO clienteDAO = new ClienteDAO(); // Cria uma instância do DAO
+        
+        // Verifica se o cliente está vinculado a algum orçamento
+        if (clienteDAO.clienteTemOrcamento(idCliente)) {
+            JOptionPane.showMessageDialog(this, "Não é possível excluir o cliente! Há orçamento(s) vinculado(s).", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         // Cria a caixa de confirmação
         int confirmacao = JOptionPane.showConfirmDialog(this,
@@ -677,7 +687,6 @@ public class ClienteGUI extends javax.swing.JFrame {
         // Verifica se o usuário confirmou a exclusão
         if (confirmacao == JOptionPane.YES_OPTION) {
             Session session = SessionManager.getInstance().getSession(); // Abre a sessão
-            ClienteDAO clienteDAO = new ClienteDAO(); // Cria uma instância do DAO
             try {
                 // Tenta excluir o cliente
                 clienteDAO.excluirClientePorId(idCliente);
