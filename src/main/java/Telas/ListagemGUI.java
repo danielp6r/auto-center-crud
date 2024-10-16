@@ -7,11 +7,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.NumberFormat;
 import javax.swing.table.DefaultTableModel;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
@@ -91,6 +93,7 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         if (orcamentos != null) {
             Collections.reverse(orcamentos); // Inverte a lista para mostrar os mais novos no topo
+            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR")); // Formato de moeda brasileira
 
             for (Orcamento orcamento : orcamentos) {
                 String nome;
@@ -111,13 +114,18 @@ public class ListagemGUI extends javax.swing.JFrame {
                                 orcamento.getDataHora().getDayOfMonth())
                         : "";
 
+                // Verifica se o valor total não é nulo antes de formatar
+                String valorFormatado = orcamento.getValTotal() != null
+                        ? currencyFormat.format(orcamento.getValTotal())
+                        : "R$ 0,00"; // Ou algum valor padrão
+
                 Object[] row = {
                     idFormatado, // ID formatado
                     nome, // Nome do cliente
                     orcamento.getCarro(),
                     orcamento.getPlaca(),
                     dataFormatada, // Data formatada para ordenação
-                    orcamento.getValTotal()
+                    valorFormatado // Valor formatado como moeda
                 };
                 model.addRow(row);
             }
@@ -265,15 +273,16 @@ public class ListagemGUI extends javax.swing.JFrame {
                             .addComponent(lblImgLupa))
                         .addGap(17, 17, 17))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panebotoesLayout.createSequentialGroup()
-                        .addComponent(lblPeriodo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lbla)
-                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnExcluir))
-                        .addContainerGap())))
+                        .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnExcluir)
+                            .addGroup(panebotoesLayout.createSequentialGroup()
+                                .addComponent(lblPeriodo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lbla)
+                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(7, 7, 7))))
         );
 
         paneListagem.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -401,7 +410,9 @@ public class ListagemGUI extends javax.swing.JFrame {
             return;
         }
 
-        long idOrcamento = (long) tblListagem.getValueAt(selectedRow, 0); // 0 é o índice da coluna ID na tabela
+        // Obtém o ID formatado como String e remove os zeros à esquerda
+        String idFormatado = (String) tblListagem.getValueAt(selectedRow, 0); // 0 é o índice da coluna ID na tabela
+        long idOrcamento = Long.parseLong(idFormatado); // Converte o ID de String para Long
 
         int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este Orçamento?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
