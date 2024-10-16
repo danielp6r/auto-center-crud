@@ -5,6 +5,8 @@ import Classes.SessionManager;
 import DAO.OrcamentoDAO;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.table.DefaultTableModel;
 import java.util.Calendar;
 import java.util.Collections;
@@ -66,6 +68,14 @@ public class ListagemGUI extends javax.swing.JFrame {
         TableColumn column = columnModel.getColumn(0); // 0 é o índice da coluna num
         column.setMinWidth(50);
         column.setMaxWidth(50);
+        
+        // Adiciona um listener para quando a janela ganhar foco
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                loadOrcamentosIntoTable(); // Chama o método ao ativar a janela
+            }
+        });
  
     }
     
