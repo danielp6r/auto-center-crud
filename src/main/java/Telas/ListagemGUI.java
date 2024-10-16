@@ -99,16 +99,24 @@ public class ListagemGUI extends javax.swing.JFrame {
                 } else {
                     nome = orcamento.getCliente().getNomeCliente();
                 }
+
+                // Formata o ID do orçamento com zeros à esquerda
+                String idFormatado = String.format("%04d", orcamento.getIdOrcamento());
+
+                // Formata a data para AAAA-MM-DD para ordenação
+                String dataFormatada = orcamento.getDataHora() != null
+                        ? String.format("%d-%02d-%02d",
+                                orcamento.getDataHora().getYear(),
+                                orcamento.getDataHora().getMonthValue(),
+                                orcamento.getDataHora().getDayOfMonth())
+                        : "";
+
                 Object[] row = {
-                    orcamento.getIdOrcamento(),
-                    nome, // Certifique-se de que está obtendo o nome do cliente
+                    idFormatado, // ID formatado
+                    nome, // Nome do cliente
                     orcamento.getCarro(),
                     orcamento.getPlaca(),
-                    orcamento.getDataHora() != null
-                    ? (orcamento.getDataHora().getDayOfMonth() < 10 ? "0" + orcamento.getDataHora().getDayOfMonth() : orcamento.getDataHora().getDayOfMonth())
-                    + "/"
-                    + (orcamento.getDataHora().getMonthValue() < 10 ? "0" + orcamento.getDataHora().getMonthValue() : orcamento.getDataHora().getMonthValue())
-                    + "/" + orcamento.getDataHora().getYear() : "",
+                    dataFormatada, // Data formatada para ordenação
                     orcamento.getValTotal()
                 };
                 model.addRow(row);
@@ -117,7 +125,7 @@ public class ListagemGUI extends javax.swing.JFrame {
             System.out.println("Nenhum orçamento encontrado ou erro ao carregar dados.");
         }
     }
-    
+
     // Método para adicionar um DocumentListener ao campo de busca
     private void addSearchListener() {
         txtBusca.getDocument().addDocumentListener(new DocumentListener() {
@@ -188,7 +196,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         btnRelatorios = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Orçamentos");
+        setTitle("Listagem de Orçamentos");
         setExtendedState(6);
         setFocusCycleRoot(false);
         setMaximumSize(new java.awt.Dimension(1366, 768));
