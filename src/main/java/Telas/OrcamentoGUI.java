@@ -21,13 +21,6 @@ import javax.swing.table.DefaultTableModel;
 public class OrcamentoGUI extends javax.swing.JFrame {
     // Adiciona um campo estático para armazenar a instância única
     private static OrcamentoGUI instance;
-    private ListagemGUI listagemGUI;
-    
-    // Construtor da classe
-    public OrcamentoGUI(ListagemGUI listagemGUI) {
-        this.listagemGUI = listagemGUI; // Inicialize a referência
-        initComponents();
-    }
     
     // Campos para os componentes dinâmicos
     private JTextField txtPeca;
@@ -54,7 +47,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         //ABRE O A TELA MAXIMIZADA.
         //setExtendedState(MAXIMIZED_BOTH);
         
-        // Esconde a data e hora (Preciso formatar para uma saída correta)
         lblDataHora.setText(LocalDateTime.now().toString());
         lblDataHora.setVisible(false);
     }
@@ -120,7 +112,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lblObs = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Orçamento");
+        setTitle("Orçamentos");
         setResizable(false);
 
         PaneAll.setBackground(new java.awt.Color(255, 255, 255));
@@ -257,7 +249,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lblPlaca.setText("Placa");
 
         lblDataHora.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        lblDataHora.setText(" ");
+        lblDataHora.setText("Data - Hora");
 
         javax.swing.GroupLayout paneBotLayout = new javax.swing.GroupLayout(paneBot);
         paneBot.setLayout(paneBotLayout);
@@ -375,8 +367,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                             .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(PaneAllLayout.createSequentialGroup()
                                 .addComponent(lblPlaca)
-                                .addGap(118, 118, 118)
-                                .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(68, 68, 68)
+                                .addComponent(lblDataHora)))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PaneAllLayout.createSequentialGroup()
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -486,7 +478,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 //
             }
         }
-        listagemGUI.loadOrcamentosIntoTable();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     // Variável global para guardar a id do Orçamento;

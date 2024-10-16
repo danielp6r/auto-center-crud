@@ -72,7 +72,7 @@ public class ListagemGUI extends javax.swing.JFrame {
     //MÉTODOS ESPECÍFICOS PARA ESTA TELA:
      
     // Método para listar os Orçamentos na tabela
-    public void loadOrcamentosIntoTable() {
+    private void loadOrcamentosIntoTable() {
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
         model.setRowCount(0); // Limpar tabela antes de adicionar dados
         OrcamentoDAO orcamentoDAO = new OrcamentoDAO();
@@ -178,9 +178,10 @@ public class ListagemGUI extends javax.swing.JFrame {
         btnRelatorios = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Listagem");
+        setTitle("Orçamentos");
         setExtendedState(6);
         setFocusCycleRoot(false);
+        setMaximumSize(new java.awt.Dimension(1366, 768));
         setMinimumSize(new java.awt.Dimension(1366, 768));
 
         paneAll.setBackground(new java.awt.Color(255, 255, 255));
@@ -357,8 +358,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         //OrcamentoGUI orcamentoGUI = new OrcamentoGUI();
         // Torna a tela visível
         //orcamentoGUI.setVisible(true);
-        OrcamentoGUI orcamentoGUI = new OrcamentoGUI(this);
-        orcamentoGUI.setVisible(true);
+        OrcamentoGUI.abrirNovaInstancia();
         
     }//GEN-LAST:event_btnNovoOrcamentoActionPerformed
 
