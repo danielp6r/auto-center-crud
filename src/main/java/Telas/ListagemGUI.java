@@ -8,6 +8,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import javax.swing.table.DefaultTableModel;
 import java.util.Calendar;
 import java.util.Collections;
@@ -38,6 +40,9 @@ public class ListagemGUI extends javax.swing.JFrame {
         
         initComponents();
         
+        // Carregar orçamentos na tabela
+        loadOrcamentosIntoTable();
+        
         setExtendedState(JFrame.MAXIMIZED_BOTH); // Inicializa Maximizado
         
         // Fecha todas as janelas quando clicar no x
@@ -51,8 +56,9 @@ public class ListagemGUI extends javax.swing.JFrame {
         calendar.add(Calendar.DAY_OF_MONTH, -7); // uma semana atrás
         jDateChooser2.setDate(calendar.getTime());
         
-        // Carregar orçamentos na tabela
-        loadOrcamentosIntoTable();
+        // Listeners para os JDateChooser
+        jDateChooser1.addPropertyChangeListener(evt -> filtrarPorData());
+        jDateChooser2.addPropertyChangeListener(evt -> filtrarPorData());
         
         // Adicionar listener ao campo de busca
         addSearchListener();
@@ -176,6 +182,41 @@ public class ListagemGUI extends javax.swing.JFrame {
                 txtBusca.requestFocus();
             }
         });
+    }
+    
+    // Método para filtrar orçamentos por data pelos JCalendars
+    private void filtrarPorData() {
+        Date dataInicial = jDateChooser1.getDate();
+        Date dataFinal = jDateChooser2.getDate();
+
+        DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        tblListagem.setRowSorter(sorter);
+
+        // Se ambas as datas forem selecionadas
+        if (dataInicial != null && dataFinal != null) {
+            // Definindo o filtro
+            sorter.setRowFilter(new RowFilter<DefaultTableModel, Integer>() {
+                @Override
+                public boolean include(RowFilter.Entry<? extends DefaultTableModel, ? extends Integer> entry) {
+                    // A data na tabela deve ser obtida como String
+                    String dataOrcamentoStr = (String) entry.getValue(4); // Índice 4 para a coluna de data
+                    try {
+                        // Definindo o formato da data
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        Date dataOrcamento = sdf.parse(dataOrcamentoStr);
+                        // Verifica se a dataOrcamento está no intervalo
+                        return !dataOrcamento.before(dataFinal) && !dataOrcamento.after(dataInicial);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+            });
+        } else {
+            // Se as datas não forem válidas, mostra todos os orçamentos
+            sorter.setRowFilter(null); // Mostra todos os orçamentos
+        }
     }
     
     /**
