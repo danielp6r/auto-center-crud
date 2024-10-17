@@ -40,6 +40,10 @@ public class ListagemGUI extends javax.swing.JFrame {
         
         initComponents();
         
+        // Remove foco de todos os componentes
+        setFocusable(true);
+        requestFocusInWindow(); // Remove o foco de qualquer componente
+        
         // Carregar orçamentos na tabela
         loadOrcamentosIntoTable();
         filtrarPorData(); // Garante a filtragem depois de atualizar
@@ -49,13 +53,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         // Fecha todas as janelas quando clicar no x
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE); 
         
-        // Configurar datas padrão
-        Calendar calendar = Calendar.getInstance();
-        Date currentDate = new Date();
-        calendar.setTime(currentDate);
-        calendar.add(Calendar.DAY_OF_MONTH, -7); // uma semana atrás
-        jDateChooser1.setDate(calendar.getTime()); // data uma semana atrás
-        jDateChooser2.setDate(currentDate); // data atual
+        setarDatasPadrao();
         
         // Listeners para os JDateChooser
         jDateChooser1.addPropertyChangeListener(evt -> filtrarPorData());
@@ -84,10 +82,11 @@ public class ListagemGUI extends javax.swing.JFrame {
             public void windowActivated(WindowEvent e) {
                 loadOrcamentosIntoTable(); // Chama o método ao ativar a janela
                 filtrarPorData(); // Garante a filtragem depois de atualizar
+                //filtrarOrcamentos(); // conflito com o outro filtro
+                
             }
         });
         
-        //debugCalendar();
  
     }
     
@@ -226,6 +225,16 @@ public class ListagemGUI extends javax.swing.JFrame {
         }
     }
     
+    // Método para setar datas padrão nos calendários
+    private void setarDatasPadrao() {
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = new Date();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.DAY_OF_MONTH, -7); // uma semana atrás
+        jDateChooser1.setDate(calendar.getTime()); // data uma semana atrás
+        jDateChooser2.setDate(currentDate); // data atual
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -274,10 +283,25 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         lblImgLupa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imgs/pesquisar.png"))); // NOI18N
         lblImgLupa.setText(" ");
+        lblImgLupa.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                lblImgLupaMouseExited(evt);
+            }
+        });
 
+        txtBusca.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                txtBuscaMouseEntered(evt);
+            }
+        });
         txtBusca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtBuscaActionPerformed(evt);
+            }
+        });
+        txtBusca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscaKeyReleased(evt);
             }
         });
 
@@ -477,6 +501,36 @@ public class ListagemGUI extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void txtBuscaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscaKeyReleased
+        // Verifica se o campo de texto está completamente vazio
+        if (txtBusca.getText().isEmpty()) {
+            setarDatasPadrao(); // Chama o método para setar as datas padrão
+            // Habilita os jDateChooser quando o campo de busca está vazio
+            jDateChooser1.setEnabled(true);
+            jDateChooser2.setEnabled(true);
+        } else {
+            // Altera a data inicial para 1º de janeiro de 2000
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(2000, Calendar.JANUARY, 1); // Define para 1º de janeiro de 2000
+            jDateChooser1.setDate(calendar.getTime());
+
+            // Desabilita os jDateChooser para evitar que sejam acessados
+            jDateChooser1.setEnabled(false);
+            jDateChooser2.setEnabled(false);
+
+            // Chama o método para filtrar os orçamentos
+            filtrarOrcamentos(); // Certifique-se de ter o método que filtra os orçamentos
+        }
+    }//GEN-LAST:event_txtBuscaKeyReleased
+
+    private void lblImgLupaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblImgLupaMouseExited
+        lblImgLupa.setToolTipText("Clique para allTimeSearch!");
+    }//GEN-LAST:event_lblImgLupaMouseExited
+
+    private void txtBuscaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBuscaMouseEntered
+        txtBusca.setToolTipText("Digite a tecla de espaço para exibir todos os Orçamentos.");
+    }//GEN-LAST:event_txtBuscaMouseEntered
 
     /**
      * @param args the command line arguments
