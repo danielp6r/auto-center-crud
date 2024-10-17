@@ -42,6 +42,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         
         // Carregar orçamentos na tabela
         loadOrcamentosIntoTable();
+        filtrarPorData(); // Garante a filtragem depois de atualizar
         
         setExtendedState(JFrame.MAXIMIZED_BOTH); // Inicializa Maximizado
         
@@ -51,10 +52,10 @@ public class ListagemGUI extends javax.swing.JFrame {
         // Configurar datas padrão
         Calendar calendar = Calendar.getInstance();
         Date currentDate = new Date();
-        jDateChooser1.setDate(currentDate); // data atual
         calendar.setTime(currentDate);
         calendar.add(Calendar.DAY_OF_MONTH, -7); // uma semana atrás
-        jDateChooser2.setDate(calendar.getTime());
+        jDateChooser1.setDate(calendar.getTime()); // data uma semana atrás
+        jDateChooser2.setDate(currentDate); // data atual
         
         // Listeners para os JDateChooser
         jDateChooser1.addPropertyChangeListener(evt -> filtrarPorData());
@@ -82,12 +83,18 @@ public class ListagemGUI extends javax.swing.JFrame {
             @Override
             public void windowActivated(WindowEvent e) {
                 loadOrcamentosIntoTable(); // Chama o método ao ativar a janela
+                filtrarPorData(); // Garante a filtragem depois de atualizar
             }
         });
+        
+        //debugCalendar();
  
     }
     
     //MÉTODOS ESPECÍFICOS PARA ESTA TELA:
+    
+    
+    
      
     // Método para listar os Orçamentos na tabela
     private void loadOrcamentosIntoTable() {
@@ -186,8 +193,8 @@ public class ListagemGUI extends javax.swing.JFrame {
     
     // Método para filtrar orçamentos por data pelos JCalendars
     private void filtrarPorData() {
-        Date dataInicial = jDateChooser1.getDate();
-        Date dataFinal = jDateChooser2.getDate();
+        Date dataInicial = jDateChooser2.getDate();
+        Date dataFinal = jDateChooser1.getDate();
 
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
@@ -248,7 +255,6 @@ public class ListagemGUI extends javax.swing.JFrame {
         setTitle("Listagem de Orçamentos");
         setExtendedState(6);
         setFocusCycleRoot(false);
-        setMaximumSize(new java.awt.Dimension(1366, 768));
         setMinimumSize(new java.awt.Dimension(1366, 768));
 
         paneAll.setBackground(new java.awt.Color(255, 255, 255));
@@ -289,11 +295,11 @@ public class ListagemGUI extends javax.swing.JFrame {
             .addGroup(panebotoesLayout.createSequentialGroup()
                 .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panebotoesLayout.createSequentialGroup()
-                        .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbla)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnExcluir))
                     .addComponent(lblPeriodo))
@@ -320,9 +326,9 @@ public class ListagemGUI extends javax.swing.JFrame {
                                 .addComponent(lblPeriodo)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lbla)
-                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(7, 7, 7))))
         );
 
