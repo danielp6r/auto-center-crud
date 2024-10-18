@@ -14,6 +14,27 @@ public class ItemOrcamentoDAO extends GenericDAO<ItemOrcamento, Long> {
 
     public ItemOrcamentoDAO() {}
     
+    public void inserirItemOrcamento(long produtoId, String valorUnitario, String quantidade, long idOrcamento) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            long itemOrcamentoId = findNextId(session);
+            String comandoSqlOrcamentoItem = "insert into itens_orcamento(id_item_orcamento, preco_un, quantidade, id_orcamento, id_produto) values ("
+                    + itemOrcamentoId + "," + valorUnitario + " , " + quantidade + " , " + idOrcamento + " , " + produtoId + ")";
+            session.createNativeQuery(comandoSqlOrcamentoItem).executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            ex.printStackTrace();
+            throw new IllegalArgumentException("Erro ao salvar item no orçamento: " + ex.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
     public void setarPrecoProduto(Session session){
             Transaction transaction = null;
         try {
