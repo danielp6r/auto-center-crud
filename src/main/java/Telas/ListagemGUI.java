@@ -82,19 +82,17 @@ public class ListagemGUI extends javax.swing.JFrame {
             public void windowActivated(WindowEvent e) {
                 loadOrcamentosIntoTable(); // Chama o método ao ativar a janela
                 filtrarPorData(); // Garante a filtragem depois de atualizar
-                //filtrarOrcamentos(); // conflito com o outro filtro
-                
+                if (txtBusca.getText().isEmpty()) {
+                    //Não faz nada se tiver vazio
+                } else {
+                    filtrarOrcamentos(); // Filtra pelo allTimeSearch
+                }               
             }
         });
-        
- 
     }
     
     //MÉTODOS ESPECÍFICOS PARA ESTA TELA:
-    
-    
-    
-     
+       
     // Método para listar os Orçamentos na tabela
     private void loadOrcamentosIntoTable() {
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
