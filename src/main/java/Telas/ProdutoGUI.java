@@ -2,7 +2,6 @@ package Telas;
 
 import Classes.SessionManager;
 import DAO.ItemOrcamentoDAO;
-import DAO.ProdutoDAO;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
@@ -295,7 +294,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
         Transaction transaction = session.beginTransaction();
         try {
             
-            ProdutoDAO produto = new ProdutoDAO();
+            ItemOrcamentoDAO produto = new ItemOrcamentoDAO();
             long produtoId = produto.findNextId(session);
             
             String descricaoProduto = txtDescricao.getText();
