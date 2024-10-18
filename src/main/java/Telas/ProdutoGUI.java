@@ -184,7 +184,6 @@ public class ProdutoGUI extends javax.swing.JFrame {
         lblSubtotal.setText("0,00");
 
         txtValorUn.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
-        txtValorUn.setText("R$ 0,00");
         txtValorUn.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtValorUnFocusLost(evt);
@@ -321,26 +320,28 @@ public class ProdutoGUI extends javax.swing.JFrame {
         Session session = SessionManager.getInstance().getSession();
         Transaction transaction = session.beginTransaction();
         try {
-            ItemOrcamentoDAO itemOrcamento = new ItemOrcamentoDAO();
-            long itemOrcamentoId = itemOrcamento.findNextId(session);
-            
+            ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO();
+            long itemOrcamentoId = itemOrcamentoDAO.findNextId(session);
+
             // pega o valor unitário e substitui a vírgula por ponto para não dar erro no comando do sql
-            String valorUnitario =  txtValorUn.getText().replace(",", ".");
+            String valorUnitario = txtValorUn.getText().replace(",", ".");
             String quantidade = txtQuantidade.getText();
             long idOrcamento = orcamentoGUI.idOrcamentoGlobal;
-            
-            String comandoSqlOrcamentoItem = "insert into itens_orcamento(id_item_orcamento, preco_un, quantidade, id_orcamento, id_produto) values (" + itemOrcamentoId + "," + valorUnitario +" , " + quantidade + " , " + idOrcamento + " , " + produtoId + ")";
-            session.createNativeQuery(comandoSqlOrcamentoItem).executeUpdate();
-            
-            transaction.commit();
-            
+
+            // Chamada para o método no DAO
+            itemOrcamentoDAO.saveOrcamentoItem(session, itemOrcamentoId, valorUnitario, quantidade, idOrcamento, produtoId);
+
+            transaction.commit();  // Commit da transação
+
         } catch (Exception ex) {
-            //se der erro, dá um rollback na transação
+            // se der erro, dá um rollback na transação
             transaction.rollback();
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro ao salvar orcamento item: " + ex.getMessage());
+        } finally {
+            // Fechar a sessão se necessário
+            session.close();
         }
-
     }
     
             
