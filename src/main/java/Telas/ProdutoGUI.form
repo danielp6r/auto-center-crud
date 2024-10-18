@@ -154,9 +154,7 @@
     </Component>
     <Component class="javax.swing.JFormattedTextField" name="txtValorUn">
       <Properties>
-        <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-          <Format subtype="0" type="4"/>
-        </Property>
+        <Property name="text" type="java.lang.String" value="R$ 0,00"/>
       </Properties>
       <Events>
         <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtValorUnFocusLost"/>

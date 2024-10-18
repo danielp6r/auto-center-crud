@@ -183,7 +183,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
 
         lblSubtotal.setText("0,00");
 
-        txtValorUn.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
+        txtValorUn.setText("R$ 0,00");
         txtValorUn.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtValorUnFocusLost(evt);
