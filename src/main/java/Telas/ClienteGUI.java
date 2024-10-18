@@ -91,7 +91,7 @@ public class ClienteGUI extends javax.swing.JFrame {
             @Override
             public void keyReleased(KeyEvent e) {
                 // Ignora o evento se a tecla pressionada for Enter
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_F2 || e.getKeyCode() == KeyEvent.VK_F5) {
                     return; // Não faz nada se Enter for pressionado
                 }
 
@@ -100,6 +100,14 @@ public class ClienteGUI extends javax.swing.JFrame {
                     lblCriandoOuEditando.setText("Criando Novo Cliente"); // Atualiza para "Criando Novo Cliente"
                 }
             }
+        });
+        
+        // Atualiza ao ativar a janela
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                carregarClientes();
+                }
         });
              
     }
@@ -152,6 +160,26 @@ public class ClienteGUI extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 btnExcluir.doClick(); // Simula o clique no botão Excluir
+            }
+        });
+        
+        // Mapeamento global da tecla F5 para atualizar a tela (reset)
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F5"), "reset");
+        rootPane.getActionMap().put("reset", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new ClienteGUI().setVisible(true);
+                
+            }
+        });
+        
+        // Mapeamento global da tecla esc para fechar a tela
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "dispose");
+        rootPane.getActionMap().put("dispose", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
             }
         });
     }

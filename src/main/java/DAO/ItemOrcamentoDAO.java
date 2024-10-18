@@ -14,7 +14,28 @@ public class ItemOrcamentoDAO extends GenericDAO<ItemOrcamento, Long> {
 
     public ItemOrcamentoDAO() {}
     
-    public void setarprecoproduto(Session session){
+    public void inserirItemOrcamento(long produtoId, String valorUnitario, String quantidade, long idOrcamento) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            long itemOrcamentoId = findNextId(session);
+            String comandoSqlOrcamentoItem = "insert into itens_orcamento(id_item_orcamento, preco_un, quantidade, id_orcamento, id_produto) values ("
+                    + itemOrcamentoId + "," + valorUnitario + " , " + quantidade + " , " + idOrcamento + " , " + produtoId + ")";
+            session.createNativeQuery(comandoSqlOrcamentoItem).executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            ex.printStackTrace();
+            throw new IllegalArgumentException("Erro ao salvar item no orçamento: " + ex.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+    
+    public void setarPrecoProduto(Session session){
             Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
@@ -28,10 +49,9 @@ public class ItemOrcamentoDAO extends GenericDAO<ItemOrcamento, Long> {
             }
 }
     public long findNextId(Session session) {
-            Query query = session.createQuery("select coalesce(max(idItemOrcamento),0) from ItemOrcamento", Long.class);
-            Object maxId = query.getSingleResult();
-            
-            return (Long)maxId+1;
+        Query query = session.createQuery("select coalesce(max(idProduto), 0) from Produto", Long.class);
+        Object maxId = query.getSingleResult();
+        return (Long) maxId + 1;
     }
     
     public void excluirItemPorId(long idItem, Session session) {
@@ -59,7 +79,7 @@ public class ItemOrcamentoDAO extends GenericDAO<ItemOrcamento, Long> {
         
         List<ItemOrcamento> itemOrcamentos = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {            
-            setarprecoproduto(session);
+            setarPrecoProduto(session);
             return session.createQuery("from ItemOrcamento where orcamento.id = :idOrcamento", ItemOrcamento.class)
                                                                 .setParameter("idOrcamento", idOrcamentoGlobal)
                                                                 .list();

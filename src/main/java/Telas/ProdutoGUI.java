@@ -2,7 +2,6 @@ package Telas;
 
 import Classes.SessionManager;
 import DAO.ItemOrcamentoDAO;
-import DAO.ProdutoDAO;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import org.hibernate.Session;
@@ -185,7 +184,6 @@ public class ProdutoGUI extends javax.swing.JFrame {
         lblSubtotal.setText("0,00");
 
         txtValorUn.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
-        txtValorUn.setText("R$ 0,00");
         txtValorUn.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtValorUnFocusLost(evt);
@@ -295,7 +293,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
         Transaction transaction = session.beginTransaction();
         try {
             
-            ProdutoDAO produto = new ProdutoDAO();
+            ItemOrcamentoDAO produto = new ItemOrcamentoDAO();
             long produtoId = produto.findNextId(session);
             
             String descricaoProduto = txtDescricao.getText();
@@ -319,29 +317,12 @@ public class ProdutoGUI extends javax.swing.JFrame {
     
     private void salvarOrcamentoItem() {
         long produtoId = salvarProduto();
-        Session session = SessionManager.getInstance().getSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            ItemOrcamentoDAO itemOrcamento = new ItemOrcamentoDAO();
-            long itemOrcamentoId = itemOrcamento.findNextId(session);
-            
-            // pega o valor unitário e substitui a vírgula por ponto para não dar erro no comando do sql
-            String valorUnitario =  txtValorUn.getText().replace(",", ".");
-            String quantidade = txtQuantidade.getText();
-            long idOrcamento = orcamentoGUI.idOrcamentoGlobal;
-            
-            String comandoSqlOrcamentoItem = "insert into itens_orcamento(id_item_orcamento, preco_un, quantidade, id_orcamento, id_produto) values (" + itemOrcamentoId + "," + valorUnitario +" , " + quantidade + " , " + idOrcamento + " , " + produtoId + ")";
-            session.createNativeQuery(comandoSqlOrcamentoItem).executeUpdate();
-            
-            transaction.commit();
-            
-        } catch (Exception ex) {
-            //se der erro, dá um rollback na transação
-            transaction.rollback();
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao salvar orcamento item: " + ex.getMessage());
-        }
+        long idOrcamento = orcamentoGUI.idOrcamentoGlobal;
+        String valorUnitario = txtValorUn.getText().replace(",", ".");
+        String quantidade = txtQuantidade.getText();
 
+        ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO();
+        itemOrcamentoDAO.inserirItemOrcamento(produtoId, valorUnitario, quantidade, idOrcamento);
     }
     
             

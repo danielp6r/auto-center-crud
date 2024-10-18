@@ -3,6 +3,7 @@ package Telas;
 import Classes.Orcamento;
 import Classes.SessionManager;
 import DAO.OrcamentoDAO;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -16,8 +17,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -39,22 +44,22 @@ public class ListagemGUI extends javax.swing.JFrame {
     public ListagemGUI() {
         
         initComponents();
+        atalhos();
+        
+        // Remove foco de todos os componentes
+        setFocusable(true);
+        requestFocusInWindow(); // Remove o foco de qualquer componente
         
         // Carregar orçamentos na tabela
         loadOrcamentosIntoTable();
+        filtrarPorData(); // Garante a filtragem depois de atualizar
         
         setExtendedState(JFrame.MAXIMIZED_BOTH); // Inicializa Maximizado
         
         // Fecha todas as janelas quando clicar no x
         setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE); 
         
-        // Configurar datas padrão
-        Calendar calendar = Calendar.getInstance();
-        Date currentDate = new Date();
-        jDateChooser1.setDate(currentDate); // data atual
-        calendar.setTime(currentDate);
-        calendar.add(Calendar.DAY_OF_MONTH, -7); // uma semana atrás
-        jDateChooser2.setDate(calendar.getTime());
+        setarDatasPadrao();
         
         // Listeners para os JDateChooser
         jDateChooser1.addPropertyChangeListener(evt -> filtrarPorData());
@@ -82,13 +87,18 @@ public class ListagemGUI extends javax.swing.JFrame {
             @Override
             public void windowActivated(WindowEvent e) {
                 loadOrcamentosIntoTable(); // Chama o método ao ativar a janela
+                filtrarPorData(); // Garante a filtragem depois de atualizar
+                if (txtBusca.getText().isEmpty()) {
+                    //Não faz nada se tiver vazio
+                } else {
+                    filtrarOrcamentos(); // Filtra pelo allTimeSearch
+                }               
             }
         });
- 
     }
     
     //MÉTODOS ESPECÍFICOS PARA ESTA TELA:
-     
+       
     // Método para listar os Orçamentos na tabela
     private void loadOrcamentosIntoTable() {
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
@@ -186,8 +196,8 @@ public class ListagemGUI extends javax.swing.JFrame {
     
     // Método para filtrar orçamentos por data pelos JCalendars
     private void filtrarPorData() {
-        Date dataInicial = jDateChooser1.getDate();
-        Date dataFinal = jDateChooser2.getDate();
+        Date dataInicial = jDateChooser2.getDate();
+        Date dataFinal = jDateChooser1.getDate();
 
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
@@ -219,6 +229,73 @@ public class ListagemGUI extends javax.swing.JFrame {
         }
     }
     
+    // Método para setar datas padrão nos calendários
+    private void setarDatasPadrao() {
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = new Date();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.DAY_OF_MONTH, -8); // uma semana atrás
+        jDateChooser1.setDate(calendar.getTime()); // data uma semana atrás
+        jDateChooser2.setDate(currentDate); // data atual
+    }
+    
+    // Método personalizado para configurar os atalhos de teclado
+    private void atalhos() {
+        JRootPane rootPane = this.getRootPane();
+
+        // Mapeamento global da tecla F1 para Criar Novo Orçamento
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F1"), "NovoOrçamento");
+        rootPane.getActionMap().put("NovoOrçamento", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnNovoOrcamento.doClick(); // Simula o clique no botão
+            }
+        });
+
+        // Mapeamento global da tecla F2 para abrir a tela de cadastros
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F2"), "Cadastros");
+        rootPane.getActionMap().put("Cadastros", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnCadastro.doClick(); // Simula o clique no botão
+            }
+        });
+        
+        // Mapeamento da tecla F2 para abrir cadastros se tiver dentro da jTable
+        tblListagem.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("F2"), "Cadastros");
+        tblListagem.getActionMap().put("Cadastros", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tblListagem.getSelectedRow(); // Verifica a linha selecionada
+                if (selectedRow != -1) { // Se uma linha está selecionada
+                    btnCadastro.doClick(); // Simula o clique no botão de Cadastro
+                } else {
+                    btnCadastro.doClick(); // Simula o clique no botão de Cadastro
+                }
+            }
+        });
+
+        // Mapeamento global da tecla Delete para Excluir
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE"), "excluirAction");
+        rootPane.getActionMap().put("excluirAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnExcluir.doClick(); // Simula o clique no botão Excluir
+            }
+        });
+        
+        // Mapeamento global da tecla F5 para atualizar a tela (reset)
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F5"), "reset");
+        rootPane.getActionMap().put("reset", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new ListagemGUI().setVisible(true);
+
+            }
+        });
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -248,7 +325,6 @@ public class ListagemGUI extends javax.swing.JFrame {
         setTitle("Listagem de Orçamentos");
         setExtendedState(6);
         setFocusCycleRoot(false);
-        setMaximumSize(new java.awt.Dimension(1366, 768));
         setMinimumSize(new java.awt.Dimension(1366, 768));
 
         paneAll.setBackground(new java.awt.Color(255, 255, 255));
@@ -268,10 +344,25 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         lblImgLupa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imgs/pesquisar.png"))); // NOI18N
         lblImgLupa.setText(" ");
+        lblImgLupa.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                lblImgLupaMouseExited(evt);
+            }
+        });
 
+        txtBusca.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                txtBuscaMouseEntered(evt);
+            }
+        });
         txtBusca.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtBuscaActionPerformed(evt);
+            }
+        });
+        txtBusca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscaKeyReleased(evt);
             }
         });
 
@@ -289,11 +380,11 @@ public class ListagemGUI extends javax.swing.JFrame {
             .addGroup(panebotoesLayout.createSequentialGroup()
                 .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panebotoesLayout.createSequentialGroup()
-                        .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbla)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnExcluir))
                     .addComponent(lblPeriodo))
@@ -320,9 +411,9 @@ public class ListagemGUI extends javax.swing.JFrame {
                                 .addComponent(lblPeriodo)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(panebotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lbla)
-                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(7, 7, 7))))
         );
 
@@ -471,6 +562,36 @@ public class ListagemGUI extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void txtBuscaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscaKeyReleased
+        // Verifica se o campo de texto está completamente vazio
+        if (txtBusca.getText().isEmpty()) {
+            setarDatasPadrao(); // Chama o método para setar as datas padrão
+            // Habilita os jDateChooser quando o campo de busca está vazio
+            jDateChooser1.setEnabled(true);
+            jDateChooser2.setEnabled(true);
+        } else {
+            // Altera a data inicial para 1º de janeiro de 2000
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(2000, Calendar.JANUARY, 1); // Define para 1º de janeiro de 2000
+            jDateChooser1.setDate(calendar.getTime());
+
+            // Desabilita os jDateChooser para evitar que sejam acessados
+            jDateChooser1.setEnabled(false);
+            jDateChooser2.setEnabled(false);
+
+            // Chama o método para filtrar os orçamentos
+            filtrarOrcamentos(); // Certifique-se de ter o método que filtra os orçamentos
+        }
+    }//GEN-LAST:event_txtBuscaKeyReleased
+
+    private void lblImgLupaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblImgLupaMouseExited
+        lblImgLupa.setToolTipText("Clique para allTimeSearch!");
+    }//GEN-LAST:event_lblImgLupaMouseExited
+
+    private void txtBuscaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtBuscaMouseEntered
+        txtBusca.setToolTipText("Digite a tecla de espaço para exibir todos os Orçamentos.");
+    }//GEN-LAST:event_txtBuscaMouseEntered
 
     /**
      * @param args the command line arguments
