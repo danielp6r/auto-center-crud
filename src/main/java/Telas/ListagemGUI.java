@@ -3,6 +3,7 @@ package Telas;
 import Classes.Orcamento;
 import Classes.SessionManager;
 import DAO.OrcamentoDAO;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -16,8 +17,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -39,6 +44,7 @@ public class ListagemGUI extends javax.swing.JFrame {
     public ListagemGUI() {
         
         initComponents();
+        atalhos();
         
         // Remove foco de todos os componentes
         setFocusable(true);
@@ -228,9 +234,66 @@ public class ListagemGUI extends javax.swing.JFrame {
         Calendar calendar = Calendar.getInstance();
         Date currentDate = new Date();
         calendar.setTime(currentDate);
-        calendar.add(Calendar.DAY_OF_MONTH, -7); // uma semana atrás
+        calendar.add(Calendar.DAY_OF_MONTH, -8); // uma semana atrás
         jDateChooser1.setDate(calendar.getTime()); // data uma semana atrás
         jDateChooser2.setDate(currentDate); // data atual
+    }
+    
+    // Método personalizado para configurar os atalhos de teclado
+    private void atalhos() {
+        JRootPane rootPane = this.getRootPane();
+
+        // Mapeamento global da tecla F1 para Criar Novo Orçamento
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F1"), "NovoOrçamento");
+        rootPane.getActionMap().put("NovoOrçamento", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnNovoOrcamento.doClick(); // Simula o clique no botão
+            }
+        });
+
+        // Mapeamento global da tecla F2 para abrir a tela de cadastros
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F2"), "Cadastros");
+        rootPane.getActionMap().put("Cadastros", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnCadastro.doClick(); // Simula o clique no botão
+            }
+        });
+        
+        // Mapeamento da tecla F2 para abrir cadastros se tiver dentro da jTable
+        tblListagem.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("F2"), "Cadastros");
+        tblListagem.getActionMap().put("Cadastros", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tblListagem.getSelectedRow(); // Verifica a linha selecionada
+                if (selectedRow != -1) { // Se uma linha está selecionada
+                    btnCadastro.doClick(); // Simula o clique no botão de Cadastro
+                } else {
+                    btnCadastro.doClick(); // Simula o clique no botão de Cadastro
+                }
+            }
+        });
+
+        // Mapeamento global da tecla Delete para Excluir
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE"), "excluirAction");
+        rootPane.getActionMap().put("excluirAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnExcluir.doClick(); // Simula o clique no botão Excluir
+            }
+        });
+        
+        // Mapeamento global da tecla F5 para atualizar a tela (reset)
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F5"), "reset");
+        rootPane.getActionMap().put("reset", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new ListagemGUI().setVisible(true);
+
+            }
+        });
     }
     
     /**
