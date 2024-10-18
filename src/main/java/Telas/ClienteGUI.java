@@ -101,6 +101,14 @@ public class ClienteGUI extends javax.swing.JFrame {
                 }
             }
         });
+        
+        // Atualiza ao ativar a janela
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                carregarClientes();
+                }
+        });
              
     }
     
