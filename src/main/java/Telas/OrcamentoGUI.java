@@ -6,11 +6,16 @@ import Classes.SessionManager;
 import DAO.ClienteDAO;
 import DAO.ItemOrcamentoDAO;
 import DAO.OrcamentoDAO;
+import java.awt.event.ActionEvent;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.JRootPane;
 import org.hibernate.Transaction;
 import org.hibernate.Session;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -32,6 +37,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
      */
     public OrcamentoGUI() {
         initComponents();
+        atalhos();
         
         // Inicializa os campos dinâmicos
         txtPeca = new JTextField();
@@ -49,6 +55,82 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         
         lblDataHora.setText(LocalDateTime.now().toString());
         lblDataHora.setVisible(false);
+    }
+    
+    /*
+    MÉTODOS ESPECÍFICOS PARA ESTA TELA
+     */
+    
+    // Método personalizado para configurar os atalhos de teclado
+    private void atalhos() {
+        JRootPane rootPane = this.getRootPane();
+
+        // Mapeamento global da tecla F1 para Salvar
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F1"), "salvarAction");
+        rootPane.getActionMap().put("salvarAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnSalvar.doClick(); // Simula o clique no botão Salvar
+            }
+        });
+
+        // Mapeamento da tecla F2 para inserir peça (dentro da JTable)
+        tblListagem.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("F2"), "inserirPeça");
+        tblListagem.getActionMap().put("inserirPeça", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("F2 pressionado - Inserir Peça (dentro da JTable)"); // Para depuração
+                btnProduto.doClick(); // Simula o clique no botão inserir Peça
+            }
+        });
+
+        // Mapeamento da tecla F2 para inserir peça (fora da JTable)
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F2"), "inserirPeça");
+        rootPane.getActionMap().put("inserirPeça", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("F2 pressionado - Inserir Peça (fora da JTable)"); // Para depuração
+                btnProduto.doClick(); // Simula o clique no botão Inserir Peça
+            }
+        });
+        
+        // Mapeamento global da tecla F3 para Inserir Serviço
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F3"), "InserirServiço");
+        rootPane.getActionMap().put("InserirServiço", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnServico.doClick(); // Simula o clique no botão Inserir Serviço
+            }
+        });
+
+
+        // Mapeamento global da tecla Delete para Excluir
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE"), "excluirAction");
+        rootPane.getActionMap().put("excluirAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnExcluir.doClick(); // Simula o clique no botão Excluir
+            }
+        });
+
+        // Mapeamento global da tecla F5 para atualizar a tela (reset)
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F5"), "reset");
+        rootPane.getActionMap().put("reset", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                OrcamentoGUI.abrirNovaInstancia();
+            }
+        });
+
+        // Mapeamento global da tecla esc para fechar a tela
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "dispose");
+        rootPane.getActionMap().put("dispose", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
     }
     
     // Método para obter a instância única da tela
@@ -70,6 +152,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         instance.requestFocus(); // Garante que a janela receba o foco
         
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -90,7 +174,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         btnServico = new javax.swing.JButton();
         btnExcluir = new javax.swing.JButton();
         paneListagem = new javax.swing.JScrollPane();
-        tableListagem = new javax.swing.JTable();
+        tblListagem = new javax.swing.JTable();
         btnCadastro = new javax.swing.JButton();
         txtVeiculo = new javax.swing.JTextField();
         txtPlaca = new javax.swing.JTextField();
@@ -209,8 +293,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
         paneListagem.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        tableListagem.setFont(new java.awt.Font("Liberation Sans", 0, 15)); // NOI18N
-        tableListagem.setModel(new javax.swing.table.DefaultTableModel(
+        tblListagem.setFont(new java.awt.Font("Liberation Sans", 0, 15)); // NOI18N
+        tblListagem.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -226,7 +310,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        paneListagem.setViewportView(tableListagem);
+        paneListagem.setViewportView(tblListagem);
 
         btnCadastro.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
         btnCadastro.setText("Cadastro");
@@ -572,7 +656,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         
     private double valorTotalGlobal;
     public void atualizarGridItens(){
-        DefaultTableModel model = (DefaultTableModel) tableListagem.getModel();
+        DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
         model.setRowCount(0); // Limpar tabela antes de adicionar dados
         ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO(); 
         double valorTotal = 0;
@@ -614,13 +698,13 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
         // TODO add your handling code here:
         //pega a lnha selecionada
-        int selectedRow = tableListagem.getSelectedRow();
+        int selectedRow = tblListagem.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Selecione um item para excluir.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        long idOrcamentoItem = (long) tableListagem.getValueAt(selectedRow, 0); // 0 é o índice da coluna ID na tabela
+        long idOrcamentoItem = (long) tblListagem.getValueAt(selectedRow, 0); // 0 é o índice da coluna ID na tabela
 
         int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este item?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
@@ -702,7 +786,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane paneListagem;
     private javax.swing.JScrollPane paneObs;
     private javax.swing.JPanel paneValores;
-    private javax.swing.JTable tableListagem;
+    private javax.swing.JTable tblListagem;
     private javax.swing.JTextField txtCliente;
     private javax.swing.JTextField txtPlaca;
     private javax.swing.JTextField txtTotalPecas;
