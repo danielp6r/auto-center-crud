@@ -21,13 +21,16 @@ public class ProdutoGUI extends javax.swing.JFrame {
     public ProdutoGUI() {
         initComponents();
         
+        setResizable(false); // Não redimensionável
         setLocationRelativeTo(null); // Centraliza a janela na tela
         
         // Ajusta para fechar apenas a janela atual
         setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         
-        // Adiciona os listeners para atualizar o subtotal
-        addListeners();
+        
+        addListeners(); // Adiciona os listeners para atualizar o subtotal
+        
+        
     }
     
     // Método para obter a instância única da tela
