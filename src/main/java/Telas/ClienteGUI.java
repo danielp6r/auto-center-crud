@@ -90,9 +90,9 @@ public class ClienteGUI extends javax.swing.JFrame {
         txtNome.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                // Ignora o evento se a tecla pressionada for Enter
-                if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_F2 || e.getKeyCode() == KeyEvent.VK_F5) {
-                    return; // Não faz nada se Enter for pressionado
+                // Ignora o evento se a tecla não for letra ou número
+                if (!Character.isLetterOrDigit(e.getKeyChar())) {
+                    return; // Ignora teclas que não são letras ou números
                 }
 
                 if (clienteIdEdicao == null) { // Verifica se estamos criando um cliente
@@ -180,6 +180,7 @@ public class ClienteGUI extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                padrao();
             }
         });
     }
