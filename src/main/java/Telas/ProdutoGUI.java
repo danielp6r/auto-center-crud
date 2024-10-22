@@ -20,22 +20,64 @@ public class ProdutoGUI extends javax.swing.JFrame {
     
     private static ProdutoGUI instance;
     private static OrcamentoGUI orcamentoGUI;
+    
     /**
      * Creates new form TelaNovoProduto
      */
     public ProdutoGUI() {
         initComponents();
         atalhos();
+        padrao();
+        
         setResizable(false); // Não redimensionável
         setLocationRelativeTo(null); // Centraliza a janela na tela
         
         // Ajusta para fechar apenas a janela atual
         setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         
-        
-        addListeners(); // Adiciona os listeners para atualizar o subtotal
-        
-        
+        addListeners(); // Adiciona os listeners para atualizar o subtotal    
+    }
+    
+    // MÉTODOS ESPECÍFICOS PARA ESTA TELA:
+    
+    private long salvarProduto() {
+        Session session = SessionManager.getInstance().getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+
+            ItemOrcamentoDAO produto = new ItemOrcamentoDAO();
+            long produtoId = produto.findNextId(session);
+
+            String descricaoProduto = txtDescricao.getText();
+
+            String comandoSqlProduto = "insert into produtos(id_produto, descricao, tipo_produto) values (" + produtoId + ",'" + descricaoProduto + "', " + "'Mercadoria')";
+            session.createNativeQuery(comandoSqlProduto).executeUpdate();
+
+            transaction.commit();
+            return produtoId;
+        } catch (Exception ex) {
+            //se der erro, dá um rollback na transação
+            transaction.rollback();
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao salvar produto: " + ex.getMessage());
+            return 0;
+        }
+
+    }
+
+    private void salvarOrcamentoItem() {
+        long produtoId = salvarProduto();
+        long idOrcamento = orcamentoGUI.idOrcamentoGlobal;
+        String valorUnitario = txtValorUn.getText().replace(",", ".");
+        String quantidade = txtQuantidade.getText();
+
+        ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO();
+        itemOrcamentoDAO.inserirItemOrcamento(produtoId, valorUnitario, quantidade, idOrcamento);
+    }
+    
+    // Método para setar o padrão 
+    private void padrao() {
+        txtDescricao.requestFocusInWindow(); 
     }
     
     // Método para obter a instância única da tela
@@ -54,11 +96,10 @@ public class ProdutoGUI extends javax.swing.JFrame {
         orcamentoGUI = instanciaOrcamento;
         if (instance == null) {
             instance = new ProdutoGUI();
-            // Define a janela como sempre no topo
+            //Define a janela como sempre no topo
             //instance.setAlwaysOnTop(true);
         }
         instance.setVisible(true);
-        instance.requestFocus(); // Garante que a janela receba o foco
     }
     
     // Método para limpar os campos de texto
@@ -333,45 +374,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
     private void lblCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lblCancelarActionPerformed
         dispose(); // Fecha a janela
     }//GEN-LAST:event_lblCancelarActionPerformed
-
-    private long salvarProduto() {
-        Session session = SessionManager.getInstance().getSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            
-            ItemOrcamentoDAO produto = new ItemOrcamentoDAO();
-            long produtoId = produto.findNextId(session);
-            
-            String descricaoProduto = txtDescricao.getText();
-            
-            
-            String comandoSqlProduto = "insert into produtos(id_produto, descricao, tipo_produto) values (" + produtoId + ",'" + descricaoProduto + "', " +  "'Mercadoria')";
-            session.createNativeQuery(comandoSqlProduto).executeUpdate();
-            
-            transaction.commit();  
-            return produtoId;
-        } catch (Exception ex) {
-            //se der erro, dá um rollback na transação
-            transaction.rollback();
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao salvar produto: " + ex.getMessage());
-            return 0;
-        }
-        
-    }
-    
-    
-    private void salvarOrcamentoItem() {
-        long produtoId = salvarProduto();
-        long idOrcamento = orcamentoGUI.idOrcamentoGlobal;
-        String valorUnitario = txtValorUn.getText().replace(",", ".");
-        String quantidade = txtQuantidade.getText();
-
-        ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO();
-        itemOrcamentoDAO.inserirItemOrcamento(produtoId, valorUnitario, quantidade, idOrcamento);
-    }
-    
-            
+       
     private void btnInserirProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirProdutoActionPerformed
         if (txtDescricao.getText().trim().isEmpty() || txtValorUn.getText().trim().isEmpty() || txtQuantidade.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Os campos são obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
