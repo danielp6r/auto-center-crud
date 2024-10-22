@@ -18,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.hibernate.Session;
 import java.util.Collections;
-import java.util.Comparator;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JRootPane;
@@ -48,6 +47,7 @@ public class ClienteGUI extends javax.swing.JFrame {
     public ClienteGUI() {
         initComponents();
         carregarClientes();
+        atalhos();
         padrao();
         
         // Ajusta para fechar apenas a janela atual
@@ -194,7 +194,6 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblCPFouCNPJ.setText("CPF");
         tblListagem.clearSelection();
         txtNome.requestFocusInWindow();
-        atalhos();
     }
     
     // Método para adicionar o MouseListener à lupa

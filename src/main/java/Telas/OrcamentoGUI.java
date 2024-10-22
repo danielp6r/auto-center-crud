@@ -17,6 +17,8 @@ import org.hibernate.Session;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 
 /**
@@ -55,6 +57,14 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         
         lblDataHora.setText(LocalDateTime.now().toString());
         lblDataHora.setVisible(false);
+        
+        // Ocultando a coluna número
+        TableColumnModel columnModel = tblListagem.getColumnModel();
+        TableColumn column = columnModel.getColumn(0); // 0 é o índice da coluna
+        column.setMinWidth(0);
+        column.setMaxWidth(0);
+        column.setPreferredWidth(0);
+        column.setWidth(0);
     }
     
     /*
@@ -365,11 +375,13 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lblValorFinal.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblValorFinal.setText("Valor Final");
 
+        txtTotalServicos.setEditable(false);
         txtTotalServicos.setBackground(new java.awt.Color(0, 0, 0));
         txtTotalServicos.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         txtTotalServicos.setForeground(new java.awt.Color(51, 204, 0));
         txtTotalServicos.setText("R$0,00");
 
+        txtTotalPecas.setEditable(false);
         txtTotalPecas.setBackground(new java.awt.Color(0, 0, 0));
         txtTotalPecas.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         txtTotalPecas.setForeground(new java.awt.Color(51, 204, 0));
@@ -380,6 +392,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             }
         });
 
+        txtValorFinal.setEditable(false);
         txtValorFinal.setBackground(new java.awt.Color(0, 0, 0));
         txtValorFinal.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
         txtValorFinal.setForeground(new java.awt.Color(51, 204, 0));
