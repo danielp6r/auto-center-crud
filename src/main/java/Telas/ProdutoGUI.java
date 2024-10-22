@@ -254,6 +254,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
 
         lblSubtotal.setText("0,00");
 
+        txtValorUn.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
         txtValorUn.setText("0,00");
         txtValorUn.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -441,7 +442,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
         }
 
         // Limita o tamanho do texto
-        if (txtValorUn.getText().length() >= 7) {
+        if (txtValorUn.getText().length() >= 10) {
             evt.consume();
         }     
     }//GEN-LAST:event_txtValorUnKeyTyped
@@ -462,11 +463,47 @@ public class ProdutoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_txtQuantidadeKeyTyped
 
     private void txtValorUnKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorUnKeyReleased
-    
+        // Verifica se a tecla pressionada é um número ou uma tecla de controle
+        if (Character.isDigit(evt.getKeyChar()) || evt.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+            // Obtém o texto atual do campo
+            String texto = txtValorUn.getText();
+
+            // Remove caracteres não numéricos
+            String numeros = texto.replaceAll("[^0-9]", "");
+
+            // Se o texto não estiver vazio
+            if (!numeros.isEmpty()) {
+                // Atualiza o campo com a formatação correta
+                if (!texto.endsWith(",00") && !texto.contains(",")) {
+                    // Adiciona a formatação ",00" se não houver vírgula
+                    txtValorUn.setText(numeros + ",00");
+                    txtValorUn.setCaretPosition(txtValorUn.getText().length() - 3); // Move o cursor para antes de ",00"
+                }
+            } else {
+                // Se o campo estiver vazio, define como "0,00" e seleciona todo o texto
+                txtValorUn.setText("0,00");
+                txtValorUn.selectAll(); // Seleciona todo o texto
+            }
+        } else if (evt.getKeyChar() == ',') {
+            // Se a vírgula for digitada, selecionar as casas decimais
+            String texto = txtValorUn.getText();
+            int indexVirgula = texto.indexOf(',');
+
+            if (indexVirgula != -1) {
+                // Se já existe uma vírgula, seleciona as casas decimais
+                txtValorUn.setSelectionStart(indexVirgula + 1); // Seleciona logo após a vírgula
+                txtValorUn.setSelectionEnd(texto.length()); // Seleciona até o final do texto
+            } else {
+                // Se não existe uma vírgula, adiciona a vírgula e seleciona as casas decimais
+                txtValorUn.setText(texto + ",");
+                txtValorUn.setSelectionStart(texto.length() + 1); // Move o cursor para a posição após a vírgula
+                txtValorUn.setSelectionEnd(texto.length() + 3); // Seleciona dois espaços para os centavos
+            }
+        }
     }//GEN-LAST:event_txtValorUnKeyReleased
 
     private void txtQuantidadeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtQuantidadeKeyReleased
-    
+        
     }//GEN-LAST:event_txtQuantidadeKeyReleased
     
     // Quando o campo perder o foco, define o valor padrão como "0,00" se estiver vazio
