@@ -352,19 +352,19 @@ public class ProdutoGUI extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                             .addGap(24, 24, 24)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                                     .addComponent(lblSubtotal, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
-                                    .addComponent(lblRs))))
+                                    .addComponent(lblRs))
+                                .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblQuantidade)
                             .addComponent(lblValorUn))
                         .addComponent(lblValorTotal)))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnInserirProduto)
-                    .addComponent(lblCancelar))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblCancelar)
+                    .addComponent(btnInserirProduto))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -376,34 +376,46 @@ public class ProdutoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_lblCancelarActionPerformed
        
     private void btnInserirProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirProdutoActionPerformed
+        // Verifica se todos os campos obrigatórios estão preenchidos
         if (txtDescricao.getText().trim().isEmpty() || txtValorUn.getText().trim().isEmpty() || txtQuantidade.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Os campos são obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Adicionando validação de número para txtValorUn
+        // Validação do valor unitário
+        double valorUnitario;
         try {
-            Double.parseDouble(txtValorUn.getText().replace(",", "."));
+            valorUnitario = Double.parseDouble(txtValorUn.getText().replace(",", "."));
+            if (valorUnitario <= 0) {
+                JOptionPane.showMessageDialog(this, "O valor unitário deve ser maior que zero.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "O valor unitário deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Adicionando validação de quantidade
-        if (Integer.parseInt(txtQuantidade.getText()) <= 0) {
-            JOptionPane.showMessageDialog(this, "A quantidade deve ser maior que zero.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-            
-        } else{
-            //Preciso pegar o idOrcamento para salvar o orçamento_item e depois o produto
-            if (orcamentoGUI.idOrcamentoGlobal > 0) {
-                salvarOrcamentoItem();
+        // Validação da quantidade
+        try {
+            int quantidade = Integer.parseInt(txtQuantidade.getText());
+            if (quantidade <= 0) {
+                JOptionPane.showMessageDialog(this, "A quantidade deve ser maior que zero.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-            orcamentoGUI.atualizarGridItens();
-            dispose(); 
-            limparCampos();
-            txtQuantidade.setValue(1);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "A quantidade deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        // Validações concluídas, prosseguir com o salvamento
+        if (orcamentoGUI.idOrcamentoGlobal > 0) {
+            salvarOrcamentoItem();
+        }
+
+        orcamentoGUI.atualizarGridItens();
+        dispose();
+        limparCampos();
+        txtQuantidade.setValue(1);
     }//GEN-LAST:event_btnInserirProdutoActionPerformed
 
     private void txtDescricaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDescricaoActionPerformed
@@ -429,7 +441,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
         }
 
         // Limita o tamanho do texto
-        if (txtValorUn.getText().length() >= 10) {
+        if (txtValorUn.getText().length() >= 7) {
             evt.consume();
         }     
     }//GEN-LAST:event_txtValorUnKeyTyped
@@ -444,7 +456,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
         }
 
         // Limita o tamanho do texto a 5 caracteres
-        if (txtQuantidade.getText().length() >= 5) {
+        if (txtQuantidade.getText().length() >= 3) {
             evt.consume(); // Limita o tamanho a 5 caracteres
         }
     }//GEN-LAST:event_txtQuantidadeKeyTyped
