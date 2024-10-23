@@ -4,6 +4,8 @@ import Classes.SessionManager;
 import DAO.ItemOrcamentoDAO;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -28,14 +30,11 @@ public class ProdutoGUI extends javax.swing.JFrame {
         initComponents();
         atalhos();
         padrao();
-        
+        addListeners();
+        setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE); // Fecha apenas a tela atual        
         setResizable(false); // Não redimensionável
         setLocationRelativeTo(null); // Centraliza a janela na tela
         
-        // Ajusta para fechar apenas a janela atual
-        setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
-        
-        addListeners(); // Adiciona os listeners para atualizar o subtotal    
     }
     
     // MÉTODOS ESPECÍFICOS PARA ESTA TELA:
@@ -162,6 +161,15 @@ public class ProdutoGUI extends javax.swing.JFrame {
                 });
             }
         });
+        
+        // Listener para Nulificar a instancia ao clicar no X de fechar
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                ProdutoGUI.instance = null; // Nulifica a instância única
+                dispose(); // Fecha a janela
+            }
+        });
     }
     
     // Método personalizado para configurar os atalhos de teclado
@@ -183,6 +191,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                ProdutoGUI.instance = null; // Nulifica a instância única
             }
         });
     }
@@ -305,7 +314,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -331,12 +340,12 @@ public class ProdutoGUI extends javax.swing.JFrame {
                                     .addComponent(lblRs)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(lblSubtotal, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(51, 51, 51))
+                            .addGap(39, 39, 39))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                             .addComponent(btnInserirProduto)
                             .addGap(18, 18, 18)
                             .addComponent(lblCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(3, 3, 3)))))
+                            .addGap(4, 4, 4)))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,22 +359,26 @@ public class ProdutoGUI extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtValorUn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(lblRs1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblValorUn)
+                        .addGap(30, 30, 30))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
-                                    .addComponent(lblSubtotal, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
-                                    .addComponent(lblRs))
-                                .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(24, 24, 24)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
+                                        .addComponent(lblSubtotal, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                                        .addComponent(lblRs)))
+                                .addComponent(lblValorTotal)))
+                        .addGroup(layout.createSequentialGroup()
                             .addComponent(lblQuantidade)
-                            .addComponent(lblValorUn))
-                        .addComponent(lblValorTotal)))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblCancelar)
-                    .addComponent(btnInserirProduto))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnInserirProduto)
+                    .addComponent(lblCancelar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -374,6 +387,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
 
     private void lblCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lblCancelarActionPerformed
         dispose(); // Fecha a janela
+        ProdutoGUI.instance = null; // Nulifica a instância única
     }//GEN-LAST:event_lblCancelarActionPerformed
        
     private void btnInserirProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirProdutoActionPerformed
