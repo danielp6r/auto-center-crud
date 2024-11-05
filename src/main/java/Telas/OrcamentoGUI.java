@@ -705,7 +705,26 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     
     
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
-        ServicoGUI.abrirNovaInstancia();
+        //Pega as strings digitadas pelo usuário na tela
+        String nome = txtCliente.getText();
+        String veiculo = txtVeiculo.getText();
+        String placa = txtPlaca.getText();
+
+        //Agora vai salvar o orçamento para poder salvar o item
+        if (nome.equals("") || veiculo.equals("") || placa.equals("")) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
+        } else {
+            OrcamentoGUI instanciaOrcamento = getInstance();
+            // consulta se o orçamento já existe na base de dados, se existir, 
+            // faz o update, senão, faz o insert do orçamento antes 
+            // de inserir o item
+            if (idOrcamentoGlobal <= 0) {;
+                SalvarOrcamento(false);
+            }
+            if (idOrcamentoGlobal > 0) {
+                ServicoGUI.abrirNovaInstancia(instanciaOrcamento);
+            }
+        }
     }//GEN-LAST:event_btnServicoActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
