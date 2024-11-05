@@ -219,7 +219,7 @@ public class ServicoGUI extends javax.swing.JFrame {
         lblRs1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Incluir Mercadoria");
+        setTitle("Incluir Serviço");
 
         lblDescricao.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblDescricao.setText("Descrição do Serviço");
@@ -374,11 +374,11 @@ public class ServicoGUI extends javax.swing.JFrame {
                                         .addComponent(lblRs)))
                                 .addComponent(lblValorTotal)))
                         .addComponent(lblQuantidade)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCancelar)
                     .addComponent(btnInserirProduto))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();

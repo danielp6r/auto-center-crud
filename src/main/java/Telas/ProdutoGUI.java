@@ -374,11 +374,11 @@ public class ProdutoGUI extends javax.swing.JFrame {
                                         .addComponent(lblRs)))
                                 .addComponent(lblValorTotal)))
                         .addComponent(lblQuantidade)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCancelar)
                     .addComponent(btnInserirProduto))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
