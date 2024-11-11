@@ -10,7 +10,6 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 
-
 @Entity
 @Table(name = "produtos")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -29,17 +28,19 @@ public class Produto {
     private String descricao;
     
     @Column(name = "preco_produto")
-     double precoProduto;
-    
+    private double precoProduto;
+
     protected Produto() {
         // Construtor vazio para JPA
     }
 
+    // Construtor com parâmetros para inicializar os atributos
     public Produto(String nomeProduto, Double precoProduto) {
         this.nomeProduto = nomeProduto;
-        this.precoProduto = precoProduto;
+        this.precoProduto = precoProduto != null ? precoProduto : 0.0; // Garantir que o preço não seja nulo
     }
 
+    // Getters e Setters
     public Long getIdProduto() {
         return idProduto;
     }
@@ -69,7 +70,16 @@ public class Produto {
     }
 
     public void setPrecoProduto(double precoProduto) {
-        this.precoProduto = precoProduto;
+        if (precoProduto >= 0) {  // Garantir que o preço não seja negativo
+            this.precoProduto = precoProduto;
+        } else {
+            throw new IllegalArgumentException("Preço do produto não pode ser negativo.");
+        }
     }
 
+    @Override
+    public String toString() {
+        return "Produto [idProduto=" + idProduto + ", nomeProduto=" + nomeProduto + ", descricao=" + descricao
+                + ", precoProduto=" + precoProduto + "]";
+    }
 }
