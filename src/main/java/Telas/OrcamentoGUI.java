@@ -625,7 +625,16 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }
             
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
-       
+        
+        // Obtém a instância única de ProdutoGUI
+        ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
+
+        // Modifica o texto do lblDescricao utilizando o método público
+        produtoGUI.setDescricaoLabel("Descrição da Peça / Mercadoria");
+
+        // Torna a tela ProdutoGUI visível
+        produtoGUI.setVisible(true);
+        
         //Pega as strings digitadas pelo usuário na tela
         String nome = txtCliente.getText();
         String veiculo = txtVeiculo.getText();
@@ -705,6 +714,16 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     
     
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
+        
+        // Obtém a instância única de ProdutoGUI
+        ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
+
+        // Modifica o texto do lblDescricao utilizando o método público
+        produtoGUI.setDescricaoLabel("Descrição do Serviço");
+
+        // Torna a tela ProdutoGUI visível
+        produtoGUI.setVisible(true);
+
         //Pega as strings digitadas pelo usuário na tela
         String nome = txtCliente.getText();
         String veiculo = txtVeiculo.getText();
