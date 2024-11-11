@@ -722,7 +722,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 SalvarOrcamento(false);
             }
             if (idOrcamentoGlobal > 0) {
-                ServicoGUI.abrirNovaInstancia(instanciaOrcamento);
+                ProdutoGUI.abrirNovaInstancia(instanciaOrcamento);
             }
         }
     }//GEN-LAST:event_btnServicoActionPerformed

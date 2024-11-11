@@ -219,7 +219,6 @@ public class ProdutoGUI extends javax.swing.JFrame {
         lblRs1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Incluir Mercadoria");
 
         lblDescricao.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblDescricao.setText("Descrição da Peça / Mercadoria");
@@ -233,7 +232,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
         lblValorUn.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblValorUn.setText("Valor Unitário");
 
-        btnInserirProduto.setText("Inserir Produto");
+        btnInserirProduto.setText("Inserir");
         btnInserirProduto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnInserirProdutoActionPerformed(evt);
@@ -343,7 +342,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
                                         .addComponent(lblSubtotal, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(39, 39, 39))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnInserirProduto)
+                        .addComponent(btnInserirProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
