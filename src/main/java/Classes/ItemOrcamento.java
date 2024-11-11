@@ -9,7 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-
 @Entity
 @Table(name = "itens_orcamento")
 public class ItemOrcamento {
@@ -17,7 +16,7 @@ public class ItemOrcamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_item_orcamento")
-    private Long idItemOrcamento;;
+    private Long idItemOrcamento;
 
     @ManyToOne
     @JoinColumn(name = "id_orcamento")
@@ -36,6 +35,7 @@ public class ItemOrcamento {
     @Column(name = "subtotal")
     private float subtotal;
 
+    // Getters e Setters
     public Long getIdItemOrcamento() {
         return idItemOrcamento;
     }
@@ -58,6 +58,11 @@ public class ItemOrcamento {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+        // Recalcular o preço unitário se o produto for alterado
+        if (produto != null) {
+            this.precoUn = (float) produto.getPrecoProduto(); // Garantir que o preço unitário seja atualizado
+            atualizarSubtotal();  // Recalcular subtotal ao alterar o produto
+        }
     }
 
     public float getPrecoUn() {
@@ -66,6 +71,8 @@ public class ItemOrcamento {
 
     public void setPrecoUn(float precoUn) {
         this.precoUn = precoUn;
+        // Recalcular o subtotal sempre que o preço unitário for alterado
+        atualizarSubtotal();
     }
 
     public int getQuantidade() {
@@ -74,6 +81,8 @@ public class ItemOrcamento {
 
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
+        // Recalcular o subtotal sempre que a quantidade for alterada
+        atualizarSubtotal();
     }
 
     public float getSubtotal() {
@@ -83,6 +92,13 @@ public class ItemOrcamento {
     public void setSubtotal(float subtotal) {
         this.subtotal = subtotal;
     }
-    
-    
+
+    // Método privado para atualizar o subtotal
+    private void atualizarSubtotal() {
+        if (precoUn > 0 && quantidade > 0) {
+            this.subtotal = this.precoUn * this.quantidade;
+        } else {
+            this.subtotal = 0;
+        }
+    }
 }
