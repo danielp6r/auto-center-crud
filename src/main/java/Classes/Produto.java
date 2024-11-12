@@ -14,19 +14,19 @@ import jakarta.persistence.Table;
 @Table(name = "produtos")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_produto")
-public class Produto {
+public abstract class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_produto")
     private Long idProduto;
-    
+
     @Column(name = "nome_produto")
     private String nomeProduto;
-    
+
     @Column(name = "descricao")
     private String descricao;
-    
+
     @Column(name = "preco_produto")
     private double precoProduto;
 
@@ -37,7 +37,7 @@ public class Produto {
     // Construtor com parâmetros para inicializar os atributos
     public Produto(String nomeProduto, Double precoProduto) {
         this.nomeProduto = nomeProduto;
-        this.precoProduto = precoProduto != null ? precoProduto : 0.0; // Garantir que o preço não seja nulo
+        this.precoProduto = precoProduto != null ? precoProduto : 0.0;
     }
 
     // Getters e Setters
@@ -70,7 +70,7 @@ public class Produto {
     }
 
     public void setPrecoProduto(double precoProduto) {
-        if (precoProduto >= 0) {  // Garantir que o preço não seja negativo
+        if (precoProduto >= 0) {
             this.precoProduto = precoProduto;
         } else {
             throw new IllegalArgumentException("Preço do produto não pode ser negativo.");

@@ -22,6 +22,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
     
     private static ProdutoGUI instance;
     private static OrcamentoGUI orcamentoGUI;
+    private String tipoProduto; // Armazena o tipo de produto atual ("Mercadoria" ou "Serviço")
     
     /**
      * Creates new form TelaNovoProduto
