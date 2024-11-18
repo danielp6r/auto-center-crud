@@ -103,10 +103,10 @@ public class ProdutoGUI extends javax.swing.JFrame {
     }
     
     // Método para limpar os campos de texto
-    private void limparCampos() {
+    public void limparCampos() {
         txtDescricao.setText("");
         txtValorUn.setText("0,00");
-        txtQuantidade.setText("");
+        txtQuantidade.setText("1");
         lblSubtotal.setText("0,00");
     }
     

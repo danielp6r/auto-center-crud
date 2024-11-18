@@ -144,7 +144,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }
     
     // Método para obter a instância única da tela
-    public static OrcamentoGUI getInstance() {
+    public static synchronized OrcamentoGUI getInstance() {
         if (instance == null) {
             instance = new OrcamentoGUI();
         }
@@ -161,6 +161,12 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         instance.setVisible(true);
         instance.requestFocus(); // Garante que a janela receba o foco
         
+    }
+    
+    //Método para resetar campos
+    public void resetFields() {
+        // Resetar campos e estado aqui, por exemplo:
+        // lblDescricao.setText("");
     }
     
     
@@ -580,7 +586,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     // Variável global para guardar a id do Orçamento;
     public long idOrcamentoGlobal;
 
-    private void SalvarOrcamento(Boolean exibirMensagem) {
+    private long SalvarOrcamento(Boolean exibirMensagem) {
 
         // Pega as strings digitadas pelo usuário na tela
         String nome = txtCliente.getText();
@@ -590,71 +596,84 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         // Se os campos veículo, nome e placa estiverem vazios, dá um alerta ao usuário e impede de salvar
         if (nome.equals("") || veiculo.equals("") || placa.equals("")) {
             JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
-            return; // Adicionando return para impedir a execução do restante do método
+            return -1; // Retorna -1 para indicar erro na validação
         }
 
         // Salva o cliente no banco de dados
-        // starta a transaction
         Session session = SessionManager.getInstance().getSession();
         Transaction transaction = session.beginTransaction();
+
+        long idOrcamento = -1; // Inicializa com um valor padrão indicando erro
         try {
             ClienteDAO cliente = new ClienteDAO();
             long idCliente = cliente.findNextId(session);
 
-            String comandoSqlCliente = "insert into clientes(id_cliente, tipo_cliente, nome_cliente) values (" + idCliente + ", 'PessoaFisica', '" + nome + "')";
+            // Insere o cliente no banco
+            String comandoSqlCliente = "insert into clientes(id_cliente, tipo_cliente, nome_cliente) values ("
+                    + idCliente + ", 'PessoaFisica', '" + nome + "')";
             session.createNativeQuery(comandoSqlCliente).executeUpdate();
 
+            // Gera o próximo ID do orçamento e insere no banco
             OrcamentoDAO orcamento = new OrcamentoDAO();
-            long idOrcamento = orcamento.findNextId(session);
-            idOrcamentoGlobal = idOrcamento;
+            idOrcamento = orcamento.findNextId(session);
+            idOrcamentoGlobal = idOrcamento; // Atualiza a variável global
             lblHead.setText("ORÇAMENTO Nº: " + idOrcamentoGlobal);
 
-            String comandoSqlOrcamento = "insert into orcamentos(id_cliente, id_orcamento_, placa, carro, data_hora) values (" + idCliente + "," + idOrcamento + ", '" + placa + "', '" + veiculo + "', current_timestamp)";
+            String comandoSqlOrcamento = "insert into orcamentos(id_cliente, id_orcamento_, placa, carro, data_hora) values ("
+                    + idCliente + "," + idOrcamento + ", '" + placa + "', '" + veiculo + "', current_timestamp)";
             session.createNativeQuery(comandoSqlOrcamento).executeUpdate();
 
+            // Confirma a transação
             transaction.commit();
+
             if (exibirMensagem) {
                 JOptionPane.showMessageDialog(this, "Orçamento salvo com sucesso!");
             }
         } catch (Exception ex) {
-            // Se der erro, dá um rollback na transação
+            // Se der erro, faz rollback e exibe mensagem de erro
             transaction.rollback();
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro ao salvar Orçamento: " + ex.getMessage());
         }
+
+        return idOrcamento; // Retorna o ID do orçamento ou -1 se houver erro
     }
+
             
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
-        
-        // Obtém a instância única de ProdutoGUI
+        // Pega as strings digitadas pelo usuário na tela
+        String nome = txtCliente.getText();
+        String veiculo = txtVeiculo.getText();
+        String placa = txtPlaca.getText();
+
+        // Valida os campos antes de prosseguir
+        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
+            return; // Interrompe a execução em caso de erro
+        }
+
+        // Obtém a instância singleton de ProdutoGUI
         ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
 
-        // Modifica o texto do lblDescricao utilizando o método público
+        // Reseta os campos ou o estado da tela usando o método existente
+        produtoGUI.limparCampos();
         produtoGUI.setDescricaoLabel("Descrição da Peça / Mercadoria");
 
         // Torna a tela ProdutoGUI visível
         produtoGUI.setVisible(true);
-        
-        //Pega as strings digitadas pelo usuário na tela
-        String nome = txtCliente.getText();
-        String veiculo = txtVeiculo.getText();
-        String placa = txtPlaca.getText();
-        
-        //Agora vai salvar o orçamento para poder salvar o item
-        if (nome.equals("") || veiculo.equals("") || placa.equals("")) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
-        } else {
-            OrcamentoGUI instanciaOrcamento = getInstance();
-            // consulta se o orçamento já existe na base de dados, se existir, 
-            // faz o update, senão, faz o insert do orçamento antes 
-            // de inserir o item
-            if (idOrcamentoGlobal <= 0) {;
-                SalvarOrcamento(false);
-            }
-            if (idOrcamentoGlobal > 0) {
-                ProdutoGUI.abrirNovaInstancia(instanciaOrcamento);
-            }
-        }    
+
+        // Obtém ou cria a instância de OrcamentoGUI
+        OrcamentoGUI instanciaOrcamento = OrcamentoGUI.getInstance();
+
+        // Verifica se o orçamento já foi salvo, senão salva
+        if (idOrcamentoGlobal <= 0) {
+            idOrcamentoGlobal = SalvarOrcamento(false); // Atualiza idOrcamentoGlobal
+        }
+
+        // Abre a instância de ProdutoGUI vinculada ao orçamento
+        if (idOrcamentoGlobal > 0) {
+            ProdutoGUI.abrirNovaInstancia(instanciaOrcamento);
+        }
     }//GEN-LAST:event_btnProdutoActionPerformed
  
     private void UpdateValorTotalOrcamento(){
@@ -714,35 +733,38 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     
     
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
-        
-        // Obtém a instância única de ProdutoGUI
+        // Pega as strings digitadas pelo usuário na tela
+        String nome = txtCliente.getText();
+        String veiculo = txtVeiculo.getText();
+        String placa = txtPlaca.getText();
+
+        // Valida os campos antes de prosseguir
+        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
+            return; // Interrompe a execução em caso de erro
+        }
+
+        // Obtém a instância singleton de ProdutoGUI
         ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
 
-        // Modifica o texto do lblDescricao utilizando o método público
+        // Reseta os campos ou o estado da tela antes de torná-la visível
+        produtoGUI.limparCampos(); // Usa o método público para redefinir os campos
         produtoGUI.setDescricaoLabel("Descrição do Serviço");
 
         // Torna a tela ProdutoGUI visível
         produtoGUI.setVisible(true);
 
-        //Pega as strings digitadas pelo usuário na tela
-        String nome = txtCliente.getText();
-        String veiculo = txtVeiculo.getText();
-        String placa = txtPlaca.getText();
+        // Obtém ou cria a instância de OrcamentoGUI
+        OrcamentoGUI instanciaOrcamento = OrcamentoGUI.getInstance();
 
-        //Agora vai salvar o orçamento para poder salvar o item
-        if (nome.equals("") || veiculo.equals("") || placa.equals("")) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
-        } else {
-            OrcamentoGUI instanciaOrcamento = getInstance();
-            // consulta se o orçamento já existe na base de dados, se existir, 
-            // faz o update, senão, faz o insert do orçamento antes 
-            // de inserir o item
-            if (idOrcamentoGlobal <= 0) {;
-                SalvarOrcamento(false);
-            }
-            if (idOrcamentoGlobal > 0) {
-                ProdutoGUI.abrirNovaInstancia(instanciaOrcamento);
-            }
+        // Verifica se o orçamento já foi salvo, senão salva
+        if (idOrcamentoGlobal <= 0) {
+            idOrcamentoGlobal = SalvarOrcamento(false); // Atualiza idOrcamentoGlobal
+        }
+
+        // Abre a instância de ProdutoGUI vinculada ao orçamento
+        if (idOrcamentoGlobal > 0) {
+            ProdutoGUI.abrirNovaInstancia(instanciaOrcamento);
         }
     }//GEN-LAST:event_btnServicoActionPerformed
 
