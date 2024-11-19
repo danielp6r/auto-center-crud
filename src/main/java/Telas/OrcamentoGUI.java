@@ -7,7 +7,6 @@ import DAO.ClienteDAO;
 import DAO.ItemOrcamentoDAO;
 import DAO.OrcamentoDAO;
 import java.awt.event.ActionEvent;
-import java.time.LocalDateTime;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -19,6 +18,9 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 
 /**
@@ -40,6 +42,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     public OrcamentoGUI() {
         initComponents();
         atalhos();
+        atualizarDataHora();
         
         // Inicializa os campos dinâmicos
         txtPeca = new JTextField();
@@ -54,10 +57,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lblHead.setText("ORÇAMENTO");
         //ABRE O A TELA MAXIMIZADA.
         //setExtendedState(MAXIMIZED_BOTH);
-        
-        lblDataHora.setText(LocalDateTime.now().toString());
-        lblDataHora.setVisible(false);
-        
+
         // Ocultando a coluna número
         TableColumnModel columnModel = tblListagem.getColumnModel();
         TableColumn column = columnModel.getColumn(0); // 0 é o índice da coluna
@@ -70,6 +70,27 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     /*
     MÉTODOS ESPECÍFICOS PARA ESTA TELA
      */
+    
+    // Método para atualizar lblDataHora com a data e hora no formato correto
+    public void atualizarDataHora() {
+        try {
+            // Captura a data e hora atuais
+            LocalDateTime agora = LocalDateTime.now();
+
+            // Define o formato correto
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+            // Formata a data e hora
+            String dataHoraFormatada = agora.format(formatter);
+
+            // Atualiza o lblDataHora com o valor formatado
+            lblDataHora.setText(dataHoraFormatada);
+        } catch (Exception e) {
+            // Tratamento de erros (se necessário)
+            lblDataHora.setText("Erro ao carregar data/hora");
+            e.printStackTrace();
+        }
+    }
     
     // Método personalizado para configurar os atalhos de teclado
     private void atalhos() {
@@ -349,7 +370,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lblPlaca.setText("Placa");
 
         lblDataHora.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        lblDataHora.setText("Data - Hora");
+        lblDataHora.setText("     Data - Hora");
 
         javax.swing.GroupLayout paneBotLayout = new javax.swing.GroupLayout(paneBot);
         paneBot.setLayout(paneBotLayout);
@@ -467,11 +488,10 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                             .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(PaneAllLayout.createSequentialGroup()
-                                .addComponent(lblPlaca)
-                                .addGap(68, 68, 68)
-                                .addComponent(lblDataHora)))
+                            .addComponent(lblPlaca)
+                            .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(57, 57, 57)
+                        .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PaneAllLayout.createSequentialGroup()
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -495,14 +515,14 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblVeiculo)
                             .addComponent(lblPlaca)
-                            .addComponent(lblCliente)
-                            .addComponent(lblDataHora))
+                            .addComponent(lblCliente))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addComponent(paneBotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

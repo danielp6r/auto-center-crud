@@ -513,12 +513,14 @@ public class ListagemGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovoOrcamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoOrcamentoActionPerformed
-        // Cria a instância da tela ClienteGUI
-        //OrcamentoGUI orcamentoGUI = new OrcamentoGUI();
-        // Torna a tela visível
-        //orcamentoGUI.setVisible(true);
-        OrcamentoGUI.abrirNovaInstancia();
-        
+        // Obtém a instância existente da OrcamentoGUI
+        OrcamentoGUI orcamentoGUI = OrcamentoGUI.getInstance();
+
+        // Atualiza a data e hora no lblDataHora
+        orcamentoGUI.atualizarDataHora();
+
+        // Abre a instância da OrcamentoGUI
+        OrcamentoGUI.abrirNovaInstancia();   
     }//GEN-LAST:event_btnNovoOrcamentoActionPerformed
 
     private void btnCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastroActionPerformed
