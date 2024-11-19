@@ -65,8 +65,15 @@ public class ClienteGUI extends javax.swing.JFrame {
         btnPF.setSelected(true);
         lblCPFouCNPJ.setText("CPF");
 
-        btnPF.addActionListener(e -> lblCPFouCNPJ.setText("CPF"));
-        btnPJ.addActionListener(e -> lblCPFouCNPJ.setText("CNPJ"));
+        btnPF.addActionListener(e -> {
+            lblCPFouCNPJ.setText("CPF");
+            txtCPFouCNPJ.setText(""); // Limpa o campo ao selecionar Pessoa Física
+        });
+
+        btnPJ.addActionListener(e -> {
+            lblCPFouCNPJ.setText("CNPJ");
+            txtCPFouCNPJ.setText(""); // Limpa o campo ao selecionar Pessoa Jurídica
+        });
         
         // Adiciona o MouseListener à lupa
         addLupaClickListener();
@@ -115,6 +122,16 @@ public class ClienteGUI extends javax.swing.JFrame {
     /*
     MÉTODOS ESPECÍFICOS PARA ESTA TELA
     */
+    
+    // Método para validar CPF ou CNPJ
+    private boolean validarCPFouCNPJ(String cpfOuCnpj, boolean isPessoaFisica) {
+        // Valida CPF (11 dígitos) para Pessoa Física
+        if (isPessoaFisica) {
+            return cpfOuCnpj.matches("\\d{11}");
+        }
+        // Valida CNPJ (14 dígitos) para Pessoa Jurídica
+        return cpfOuCnpj.matches("\\d{14}");
+    }
     
     // Método personalizado para configurar os atalhos de teclado
     private void atalhos() {
@@ -180,6 +197,7 @@ public class ClienteGUI extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                limparCampos();
                 padrao();
             }
         });
@@ -234,7 +252,6 @@ public class ClienteGUI extends javax.swing.JFrame {
             public void windowClosing(WindowEvent e) {
                 limparCampos();
                 isEditing = false; // Resetar o estado de edição ao fechar a janela
-                
                 padrao();
             }
         });
@@ -637,12 +654,27 @@ public class ClienteGUI extends javax.swing.JFrame {
             return;
         }
 
+        // Captura CPF ou CNPJ e verifica se é Pessoa Física ou Jurídica
+        String cpfOuCnpj = txtCPFouCNPJ.getText().trim();
+        boolean isPessoaFisica = btnPF.isSelected();
+
+        // Validação opcional de CPF ou CNPJ (somente se preenchido)
+        if (!cpfOuCnpj.isEmpty()) {
+            if (isPessoaFisica && !cpfOuCnpj.matches("\\d{11}")) {
+                JOptionPane.showMessageDialog(this, "CPF inválido! Deve conter 11 dígitos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (!isPessoaFisica && !cpfOuCnpj.matches("\\d{14}")) {
+                JOptionPane.showMessageDialog(this, "CNPJ inválido! Deve conter 14 dígitos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
         // Verifica se já existe um cliente com o mesmo nome
         Session session = SessionManager.getInstance().getSession();
         ClienteDAO clienteDAO = new ClienteDAO();
         List<Cliente> clientes = clienteDAO.getAllClientes();
         for (Cliente cliente : clientes) {
-            if (cliente.getNomeCliente().equalsIgnoreCase(nome) && cliente.getIdCliente() != clienteIdEdicao) { // Alterado de idClienteEditando para clienteIdEdicao
+            if (cliente.getNomeCliente().equalsIgnoreCase(nome) && cliente.getIdCliente() != clienteIdEdicao) {
                 JOptionPane.showMessageDialog(this, "Já existe um cliente cadastrado com o mesmo nome.", "Erro", JOptionPane.ERROR_MESSAGE);
                 session.close(); // Fecha a sessão
                 return;
@@ -652,15 +684,11 @@ public class ClienteGUI extends javax.swing.JFrame {
         // Continua com o salvamento do cliente
         String telefone = txtTel.getText().trim();
         String email = txtEmail.getText().trim();
-        String cpfOuCnpj = txtCPFouCNPJ.getText().trim();
-
-        // Verifica se é Pessoa Física ou Pessoa Jurídica
-        boolean isPessoaFisica = btnPF.isSelected();
 
         try {
             if (clienteIdEdicao != null) { // Se um cliente está sendo editado
                 clienteDAO.atualizarCliente(clienteIdEdicao, nome, telefone, email, cpfOuCnpj, isPessoaFisica, session);
-                JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!"); // Mensagem de sucesso
+                JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
             } else { // Caso contrário, salve um novo cliente
                 clienteDAO.salvarCliente(nome, telefone, email, cpfOuCnpj, isPessoaFisica, session);
                 JOptionPane.showMessageDialog(this, "Cliente salvo com sucesso!");
@@ -676,7 +704,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         // Limpa os labels após a ação
         lblCliente.setText(""); // Limpa o nome do cliente
         lblCriandoOuEditando.setText(""); // Limpa o texto de criando ou editando
-        
+
         padrao();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
