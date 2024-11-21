@@ -661,38 +661,28 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
             
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
-        // Pega as strings digitadas pelo usuário na tela
         String nome = txtCliente.getText();
         String veiculo = txtVeiculo.getText();
         String placa = txtPlaca.getText();
 
-        // Valida os campos antes de prosseguir
+        // Validação dos campos obrigatórios
         if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
-            return; // Interrompe a execução em caso de erro
+            return;
         }
 
-        // Obtém a instância singleton de ProdutoGUI
         ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
-
-        // Reseta os campos ou o estado da tela usando o método existente
         produtoGUI.limparCampos();
         produtoGUI.setDescricaoLabel("Descrição da Peça / Mercadoria");
-
-        // Torna a tela ProdutoGUI visível
+        produtoGUI.setTipoProduto("Mercadoria"); // Definindo o tipo como Mercadoria
         produtoGUI.setVisible(true);
 
-        // Obtém ou cria a instância de OrcamentoGUI
-        OrcamentoGUI instanciaOrcamento = OrcamentoGUI.getInstance();
-
-        // Verifica se o orçamento já foi salvo, senão salva
         if (idOrcamentoGlobal <= 0) {
-            idOrcamentoGlobal = SalvarOrcamento(false); // Atualiza idOrcamentoGlobal
+            idOrcamentoGlobal = SalvarOrcamento(false);
         }
 
-        // Abre a instância de ProdutoGUI vinculada ao orçamento
         if (idOrcamentoGlobal > 0) {
-            ProdutoGUI.abrirNovaInstancia(instanciaOrcamento);
+            ProdutoGUI.abrirNovaInstancia(this);
         }
     }//GEN-LAST:event_btnProdutoActionPerformed
  
@@ -729,69 +719,63 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
         if (itens != null) {
             for (ItemOrcamento item : itens) {
+                String descricao = item.getProduto().getDescricao(); // Recupera a descrição do produto ou serviço
                 Object[] row = {
                     item.getIdItemOrcamento(),
-                    item.getProduto().getDescricao(),
+                    descricao, // Descrição do produto ou serviço
                     item.getPrecoUn(),
                     item.getQuantidade(),
                     item.getPrecoUn() * item.getQuantidade()
                 };
                 model.addRow(row);
 
-                // Atualizar os totais de peças e serviços
-                valorPecas += item.getPrecoUn() * item.getQuantidade();
+                // Atualizar os totais com base no tipo do produto
+                if ("Mercadoria".equals(item.getProduto().getClass().getSimpleName())) {
+                    valorPecas += item.getPrecoUn() * item.getQuantidade();
+                } else if ("Servico".equals(item.getProduto().getClass().getSimpleName())) {
+                    valorServicos += item.getPrecoUn() * item.getQuantidade();
+                }
             }
         } else {
             System.out.println("Nenhum item encontrado ou erro ao carregar dados.");
         }
 
-        // Atualizar o valor total
+        // Atualizar os valores na interface
         valorTotal = valorPecas + valorServicos;
         valorTotalGlobal = valorTotal;
 
-        // Atualizar os campos da interface
         txtValorFinal.setText(String.format("R$%.2f", valorTotal));
         txtTotalPecas.setText(String.format("R$%.2f", valorPecas));
+        txtTotalServicos.setText(String.format("R$%.2f", valorServicos));
 
-        // Salvar o valor total atualizado no banco de dados
+        // Atualizar no banco o valor total do orçamento
         UpdateValorTotalOrcamento();
     }
 
     
-    
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
-        // Pega as strings digitadas pelo usuário na tela
         String nome = txtCliente.getText();
         String veiculo = txtVeiculo.getText();
         String placa = txtPlaca.getText();
 
-        // Valida os campos antes de prosseguir
+        // Validação dos campos obrigatórios
         if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
-            return; // Interrompe a execução em caso de erro
+            return;
         }
 
-        // Obtém a instância singleton de ProdutoGUI
         ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
-
-        // Reseta os campos ou o estado da tela antes de torná-la visível
-        produtoGUI.limparCampos(); // Usa o método público para redefinir os campos
+        produtoGUI.limparCampos();
         produtoGUI.setDescricaoLabel("Descrição do Serviço");
-
-        // Torna a tela ProdutoGUI visível
+        produtoGUI.setTipoProduto("Servico"); // Definindo o tipo como Serviço
         produtoGUI.setVisible(true);
 
-        // Obtém ou cria a instância de OrcamentoGUI
-        OrcamentoGUI instanciaOrcamento = OrcamentoGUI.getInstance();
-
-        // Verifica se o orçamento já foi salvo, senão salva
         if (idOrcamentoGlobal <= 0) {
-            idOrcamentoGlobal = SalvarOrcamento(false); // Atualiza idOrcamentoGlobal
+            idOrcamentoGlobal = SalvarOrcamento(false);
         }
 
-        // Abre a instância de ProdutoGUI vinculada ao orçamento
         if (idOrcamentoGlobal > 0) {
-            ProdutoGUI.abrirNovaInstancia(instanciaOrcamento);
+            ProdutoGUI.abrirNovaInstancia(this);
         }
     }//GEN-LAST:event_btnServicoActionPerformed
 

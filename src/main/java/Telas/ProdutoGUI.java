@@ -41,28 +41,35 @@ public class ProdutoGUI extends javax.swing.JFrame {
     // MÉTODOS ESPECÍFICOS PARA ESTA TELA:
     
     private long salvarProduto() {
+        String descricaoProduto = txtDescricao.getText();
+
+        // Validação da descrição
+        if (descricaoProduto == null || descricaoProduto.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "A descrição do produto não pode ser vazia!");
+            return -1; // Interrompe o salvamento
+        }
+
         Session session = SessionManager.getInstance().getSession();
         Transaction transaction = session.beginTransaction();
+        long produtoId = -1;
+
         try {
+            produtoId = new ItemOrcamentoDAO().findNextId(session);
 
-            ItemOrcamentoDAO produto = new ItemOrcamentoDAO();
-            long produtoId = produto.findNextId(session);
-
-            String descricaoProduto = txtDescricao.getText();
-
-            String comandoSqlProduto = "insert into produtos(id_produto, descricao, tipo_produto) values (" + produtoId + ",'" + descricaoProduto + "', " + "'Mercadoria')";
+            String comandoSqlProduto = "INSERT INTO produtos (id_produto, descricao, tipo_produto) VALUES ("
+                    + produtoId + ", '" + descricaoProduto + "', '" + tipoProduto + "')";
             session.createNativeQuery(comandoSqlProduto).executeUpdate();
 
             transaction.commit();
-            return produtoId;
-        } catch (Exception ex) {
-            //se der erro, dá um rollback na transação
+        } catch (Exception e) {
             transaction.rollback();
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao salvar produto: " + ex.getMessage());
-            return 0;
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao salvar produto: " + e.getMessage());
+        } finally {
+            session.close();
         }
 
+        return produtoId;
     }
 
     private void salvarOrcamentoItem() {
@@ -200,6 +207,10 @@ public class ProdutoGUI extends javax.swing.JFrame {
     // Método para alterar o texto de lblDescricao
     public void setDescricaoLabel(String descricao) {
         lblDescricao.setText(descricao);
+    }
+    
+    public void setTipoProduto(String tipoProduto) {
+        this.tipoProduto = tipoProduto;
     }
     
     /**
