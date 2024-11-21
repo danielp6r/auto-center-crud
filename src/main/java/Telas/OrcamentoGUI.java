@@ -696,60 +696,67 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnProdutoActionPerformed
  
-    private void UpdateValorTotalOrcamento(){
+    private void UpdateValorTotalOrcamento() {
         Session session = SessionManager.getInstance().getSession();
         Transaction transaction = session.beginTransaction();
         try {
-            
-            String comandoSqlUpdateOrcamento = "update orcamentos set val_total = " + Double.toString(valorTotalGlobal) + " where id_orcamento_ = " + idOrcamentoGlobal;
+            String comandoSqlUpdateOrcamento = "UPDATE orcamentos SET val_total = " + valorTotalGlobal
+                    + " WHERE id_orcamento_ = " + idOrcamentoGlobal;
             session.createNativeQuery(comandoSqlUpdateOrcamento).executeUpdate();
-            
             transaction.commit();
-            
         } catch (Exception ex) {
-            //se der erro, dá um rollback na transação
-            transaction.rollback();
+            transaction.rollback(); // Fazer rollback em caso de erro
             ex.printStackTrace();
-            
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar o valor total: " + ex.getMessage());
+        } finally {
+            session.close(); // Garantir que a sessão seja fechada
         }
-}
+    }
+
         
         
     private double valorTotalGlobal;
-    public void atualizarGridItens(){
+    public void atualizarGridItens() {
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
         model.setRowCount(0); // Limpar tabela antes de adicionar dados
-        ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO(); 
+        ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO();
         double valorTotal = 0;
         double valorPecas = 0;
         double valorServicos = 0;
+
+        // Obter todos os itens do orçamento
         List<ItemOrcamento> itens = itemOrcamentoDAO.getAllItens(idOrcamentoGlobal);
-        
+
         if (itens != null) {
             for (ItemOrcamento item : itens) {
-                String descricao;
-                
-                valorPecas = valorPecas + (item.getPrecoUn()*item.getQuantidade());
-                
-                
                 Object[] row = {
                     item.getIdItemOrcamento(),
                     item.getProduto().getDescricao(),
                     item.getPrecoUn(),
                     item.getQuantidade(),
-                    item.getPrecoUn()*item.getQuantidade()
+                    item.getPrecoUn() * item.getQuantidade()
                 };
                 model.addRow(row);
+
+                // Atualizar os totais de peças e serviços
+                valorPecas += item.getPrecoUn() * item.getQuantidade();
             }
         } else {
             System.out.println("Nenhum item encontrado ou erro ao carregar dados.");
         }
-        UpdateValorTotalOrcamento();
+
+        // Atualizar o valor total
         valorTotal = valorPecas + valorServicos;
-        valorTotalGlobal = valorTotal; 
+        valorTotalGlobal = valorTotal;
+
+        // Atualizar os campos da interface
         txtValorFinal.setText(String.format("R$%.2f", valorTotal));
         txtTotalPecas.setText(String.format("R$%.2f", valorPecas));
+
+        // Salvar o valor total atualizado no banco de dados
+        UpdateValorTotalOrcamento();
     }
+
     
     
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
