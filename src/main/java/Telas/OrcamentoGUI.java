@@ -1,6 +1,9 @@
 package Telas;
 
+import Classes.Cliente;
 import Classes.ItemOrcamento;
+import Classes.PessoaFisica;
+import Classes.PessoaJuridica;
 import javax.swing.JOptionPane;
 import Classes.SessionManager;
 import DAO.ClienteDAO;
@@ -35,6 +38,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private JTextField txtPeca;
     private JTextField txtValorUnitario;
     private JTextField txtQuantidade;
+    private Long idClienteSelecionado;
+    private boolean clienteSelecionado = false; // Indica se o cliente foi selecionado da tabela
 
     /**
      * Creates new form ClienteGUI
@@ -190,7 +195,40 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         // lblDescricao.setText("");
     }
     
+    // Atualiza cliente no orçamento
+    public void setClienteSelecionado(Long idCliente, String nomeCliente) {
+        this.idClienteSelecionado = idCliente; // Define o ID do cliente selecionado
+        txtCliente.setText(nomeCliente); // Atualiza o campo de texto com o nome do cliente
+        clienteSelecionado = true; // Marca o cliente como selecionado
+    }
     
+    // Vincula cliente ao orçamento no banco
+    private void vincularClienteAoOrcamento(Long idCliente) { 
+        if (idOrcamentoGlobal > 0) { // Verifica se orçamento existe
+            Session session = SessionManager.getInstance().getSession();
+            Transaction transaction = session.beginTransaction();
+            try {
+                String comandoSql = "UPDATE orcamentos SET id_cliente = " + idCliente
+                        + " WHERE id_orcamento_ = " + idOrcamentoGlobal;
+                session.createNativeQuery(comandoSql).executeUpdate(); // Atualiza cliente no banco
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback(); // Reverte em caso de erro
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erro ao vincular cliente: " + e.getMessage());
+            } finally {
+                session.close(); // Fecha sessão
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Orçamento ainda não foi criado."); // Alerta para criar orçamento
+        }
+    }
+    
+    public void resetarCliente() { // Reseta o cliente selecionado e limpa os campos
+        clienteSelecionado = false; // Reseta o controle para criação de cliente
+        idClienteSelecionado = null; // Remove o ID do cliente selecionado
+        txtCliente.setText(""); // Limpa o campo de texto
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -568,11 +606,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_txtClienteActionPerformed
 
     private void btnCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastroActionPerformed
-        // Cria a instância da tela ClienteGUI
-        //ClienteGUI clienteGUI = new ClienteGUI();
-        // Torna a tela visível
-        //clienteGUI.setVisible(true);
-        ClienteGUI.abrirNovaInstancia();
+        ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
+        clienteGUI.setVisible(true); // Exibe ClienteGUI
     }//GEN-LAST:event_btnCadastroActionPerformed
 
     private void txtTotalPecasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalPecasActionPerformed
@@ -607,59 +642,87 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     public long idOrcamentoGlobal;
 
     private long SalvarOrcamento(Boolean exibirMensagem) {
+        // Obtém as informações digitadas na tela
+        String nome = txtCliente.getText().trim();
+        String veiculo = txtVeiculo.getText().trim();
+        String placa = txtPlaca.getText().trim();
 
-        // Pega as strings digitadas pelo usuário na tela
-        String nome = txtCliente.getText();
-        String veiculo = txtVeiculo.getText();
-        String placa = txtPlaca.getText();
-
-        // Se os campos veículo, nome e placa estiverem vazios, dá um alerta ao usuário e impede de salvar
-        if (nome.equals("") || veiculo.equals("") || placa.equals("")) {
+        // Validação dos campos obrigatórios
+        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
-            return -1; // Retorna -1 para indicar erro na validação
+            return -1; // Retorna -1 em caso de erro de validação
         }
 
-        // Salva o cliente no banco de dados
         Session session = SessionManager.getInstance().getSession();
         Transaction transaction = session.beginTransaction();
+        long idOrcamento = -1;
+        long idCliente = -1; // Inicializa com valor padrão
 
-        long idOrcamento = -1; // Inicializa com um valor padrão indicando erro
         try {
-            ClienteDAO cliente = new ClienteDAO();
-            long idCliente = cliente.findNextId(session);
+            ClienteDAO clienteDAO = new ClienteDAO();
 
-            // Insere o cliente no banco
-            String comandoSqlCliente = "insert into clientes(id_cliente, tipo_cliente, nome_cliente) values ("
-                    + idCliente + ", 'PessoaFisica', '" + nome + "')";
-            session.createNativeQuery(comandoSqlCliente).executeUpdate();
+            // Verifica se o cliente foi selecionado ou se o nome foi alterado
+            if (clienteSelecionado) {
+                Cliente clienteExistente = clienteDAO.getClienteById(idClienteSelecionado, session);
+                if (clienteExistente == null || !nome.equalsIgnoreCase(clienteExistente.getNomeCliente())) {
+                    clienteSelecionado = false; // Desvincula o cliente se o nome foi alterado
+                } else {
+                    idCliente = idClienteSelecionado; // Usa o cliente selecionado
+                }
+            }
+
+            if (!clienteSelecionado) { // Caso o cliente não esteja selecionado
+                // Verifica se já existe um cliente com o mesmo nome
+                List<Cliente> clientes = clienteDAO.getAllClientes();
+                Cliente clienteDuplicado = clientes.stream()
+                        .filter(c -> c.getNomeCliente().equalsIgnoreCase(nome))
+                        .findFirst()
+                        .orElse(null);
+
+                if (clienteDuplicado != null) {
+                    // Cliente já existe: associa o cliente duplicado
+                    JOptionPane.showMessageDialog(this, "O cliente já existe. Vinculando ao cliente existente.");
+                    idCliente = clienteDuplicado.getIdCliente();
+                    clienteSelecionado = true;
+                    idClienteSelecionado = idCliente;
+                } else {
+                    // Cliente não existe: cria um novo
+                    idCliente = clienteDAO.findNextId(session);
+                    clienteDAO.salvarCliente(nome, "", "", "", true, session); // Por padrão, considera Pessoa Física
+                }
+            }
 
             // Gera o próximo ID do orçamento e insere no banco
-            OrcamentoDAO orcamento = new OrcamentoDAO();
-            idOrcamento = orcamento.findNextId(session);
+            if (idCliente == -1) {
+                throw new RuntimeException("Erro ao salvar cliente. ID do cliente não foi inicializado.");
+            }
+
+            OrcamentoDAO orcamentoDAO = new OrcamentoDAO();
+            idOrcamento = orcamentoDAO.findNextId(session);
             idOrcamentoGlobal = idOrcamento; // Atualiza a variável global
             lblHead.setText("ORÇAMENTO Nº: " + idOrcamentoGlobal);
 
-            String comandoSqlOrcamento = "insert into orcamentos(id_cliente, id_orcamento_, placa, carro, data_hora) values ("
-                    + idCliente + "," + idOrcamento + ", '" + placa + "', '" + veiculo + "', current_timestamp)";
+            String comandoSqlOrcamento = "INSERT INTO orcamentos (id_cliente, id_orcamento_, placa, carro, data_hora) VALUES ("
+                    + idCliente + ", " + idOrcamento + ", '" + placa + "', '" + veiculo + "', current_timestamp)";
             session.createNativeQuery(comandoSqlOrcamento).executeUpdate();
 
-            // Confirma a transação
             transaction.commit();
 
             if (exibirMensagem) {
                 JOptionPane.showMessageDialog(this, "Orçamento salvo com sucesso!");
             }
         } catch (Exception ex) {
-            // Se der erro, faz rollback e exibe mensagem de erro
             transaction.rollback();
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao salvar Orçamento: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Erro ao salvar orçamento: " + ex.getMessage());
+        } finally {
+            session.close();
         }
 
-        return idOrcamento; // Retorna o ID do orçamento ou -1 se houver erro
+        return idOrcamento;
     }
 
-            
+       
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
         String nome = txtCliente.getText();
         String veiculo = txtVeiculo.getText();

@@ -47,6 +47,7 @@ public class ClienteGUI extends javax.swing.JFrame {
     public ClienteGUI() {
         initComponents();
         carregarClientes();
+        adicionarEventoDuploClique();
         atalhos();
         padrao();
         
@@ -365,6 +366,45 @@ public class ClienteGUI extends javax.swing.JFrame {
         }
     }
     
+    // Adiciona evento de duplo clique na tabela
+    private void adicionarEventoDuploClique() { 
+        tblListagem.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2 && tblListagem.getSelectedRow() != -1) {
+                    selecionarClienteParaOrcamento(); // Seleciona cliente no duplo clique
+                }
+            }
+        });
+    }
+    
+    // Seleciona cliente e envia para OrcamentoGUI
+    private void selecionarClienteParaOrcamento() { // Seleciona cliente e envia para OrcamentoGUI
+        int selectedRow = tblListagem.getSelectedRow();
+        if (selectedRow != -1) {
+            try {
+                // Recupera o valor da célula da coluna 4 (ID do cliente)
+                Object idClienteObj = tblListagem.getValueAt(selectedRow, 4); // Coluna do ID
+                String idClienteString = idClienteObj.toString().trim(); // Converte para String e remove espaços
+                Long idCliente = Long.parseLong(idClienteString); // Converte para Long
+
+                // Recupera o nome do cliente da coluna 0
+                String nomeCliente = (String) tblListagem.getValueAt(selectedRow, 0); // Nome do cliente
+
+                // Atualiza OrcamentoGUI com o cliente selecionado
+                OrcamentoGUI orcamentoGUI = OrcamentoGUI.getInstance();
+                orcamentoGUI.setClienteSelecionado(idCliente, nomeCliente);
+
+                dispose(); // Fecha ClienteGUI
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Erro ao converter o ID do cliente. Verifique se o ID está no formato correto.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhum cliente selecionado!");
+        }
+    }
+
+  
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

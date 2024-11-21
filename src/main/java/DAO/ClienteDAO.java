@@ -116,10 +116,20 @@ public class ClienteDAO {
         }
     }
 
-    // Retorna um cliente pelo ID
+    // Retorna um cliente pelo ID usando uma sessão fornecida
+    public Cliente getClienteById(Long idCliente, Session session) {
+        try {
+            return session.get(Cliente.class, idCliente);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+// Retorna um cliente pelo ID criando uma nova sessão automaticamente
     public Cliente getClienteById(Long idCliente) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Cliente.class, idCliente);
+            return getClienteById(idCliente, session); // Reutiliza o método com a sessão fornecida
         } catch (Exception e) {
             e.printStackTrace();
             return null;
