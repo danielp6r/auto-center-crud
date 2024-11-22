@@ -2,8 +2,6 @@ package Telas;
 
 import Classes.Cliente;
 import Classes.ItemOrcamento;
-import Classes.PessoaFisica;
-import Classes.PessoaJuridica;
 import javax.swing.JOptionPane;
 import Classes.SessionManager;
 import DAO.ClienteDAO;
@@ -661,13 +659,25 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         try {
             ClienteDAO clienteDAO = new ClienteDAO();
 
-            // Verifica se o cliente foi selecionado ou se o nome foi alterado
-            if (clienteSelecionado) {
+            if (clienteSelecionado) { // Cliente foi selecionado na tabela
                 Cliente clienteExistente = clienteDAO.getClienteById(idClienteSelecionado, session);
-                if (clienteExistente == null || !nome.equalsIgnoreCase(clienteExistente.getNomeCliente())) {
-                    clienteSelecionado = false; // Desvincula o cliente se o nome foi alterado
+
+                if (clienteExistente != null) {
+                    // Atualiza o nome do cliente se for diferente
+                    if (!nome.equalsIgnoreCase(clienteExistente.getNomeCliente())) {
+                        clienteDAO.atualizarCliente(
+                                idClienteSelecionado,
+                                nome,
+                                "", // Telefone vazio por padrão
+                                "", // Email vazio por padrão
+                                "", // CPF ou CNPJ vazio por padrão
+                                true, // Assume que é Pessoa Física
+                                session
+                        );
+                    }
+                    idCliente = idClienteSelecionado;
                 } else {
-                    idCliente = idClienteSelecionado; // Usa o cliente selecionado
+                    clienteSelecionado = false; // Desvincula o cliente se não existir
                 }
             }
 
@@ -692,7 +702,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 }
             }
 
-            // Gera o próximo ID do orçamento e insere no banco
+            // Criação do orçamento
             if (idCliente == -1) {
                 throw new RuntimeException("Erro ao salvar cliente. ID do cliente não foi inicializado.");
             }
@@ -721,8 +731,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
         return idOrcamento;
     }
-
-       
+    
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
         String nome = txtCliente.getText();
         String veiculo = txtVeiculo.getText();

@@ -15,8 +15,8 @@ public class Servico extends Produto {
         // Construtor vazio para JPA
     }
 
-    public Servico(String nomeProduto, Double precoProduto, String codServico) {
-        super(nomeProduto, precoProduto);
+    public Servico(String descricao, double precoProduto, String codServico) {
+        super(descricao, precoProduto);
         this.codServico = codServico;
     }
 

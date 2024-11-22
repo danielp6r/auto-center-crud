@@ -21,23 +21,19 @@ public abstract class Produto {
     @Column(name = "id_produto")
     private Long idProduto;
 
-    @Column(name = "nome_produto")
-    private String nomeProduto;
-
     @Column(name = "descricao")
     private String descricao;
 
-    @Column(name = "preco_produto")
+    @Column(name = "preco_produto", nullable = false)
     private double precoProduto;
 
     protected Produto() {
         // Construtor vazio para JPA
     }
 
-    // Construtor com parâmetros para inicializar os atributos
-    public Produto(String nomeProduto, Double precoProduto) {
-        this.nomeProduto = nomeProduto;
-        this.precoProduto = precoProduto != null ? precoProduto : 0.0;
+    public Produto(String descricao, double precoProduto) {
+        this.descricao = descricao;
+        this.precoProduto = precoProduto;
     }
 
     // Getters e Setters
@@ -47,14 +43,6 @@ public abstract class Produto {
 
     public void setIdProduto(Long idProduto) {
         this.idProduto = idProduto;
-    }
-
-    public String getNomeProduto() {
-        return nomeProduto;
-    }
-
-    public void setNomeProduto(String nomeProduto) {
-        this.nomeProduto = nomeProduto;
     }
 
     public String getDescricao() {
@@ -79,7 +67,6 @@ public abstract class Produto {
 
     @Override
     public String toString() {
-        return "Produto [idProduto=" + idProduto + ", nomeProduto=" + nomeProduto + ", descricao=" + descricao
-                + ", precoProduto=" + precoProduto + "]";
+        return "Produto [idProduto=" + idProduto + ", descricao=" + descricao + ", precoProduto=" + precoProduto + "]";
     }
 }
