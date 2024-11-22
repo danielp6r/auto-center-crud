@@ -13,16 +13,19 @@ public class ItemOrcamentoDAO extends GenericDAO<ItemOrcamento, Long> {
     private SessionFactory sessionFactory;
 
     public ItemOrcamentoDAO() {}
-    
-    public void inserirItemOrcamento(long produtoId, String valorUnitario, String quantidade, long idOrcamento) {
+
+    // Método para inserir itens no orçamento
+    public void inserirItemOrcamento(long produtoId, double valorUnitario, int quantidade, long idOrcamento) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
+
             long itemOrcamentoId = findNextId(session);
-            String comandoSqlOrcamentoItem = "insert into itens_orcamento(id_item_orcamento, preco_un, quantidade, id_orcamento, id_produto) values ("
-                    + itemOrcamentoId + "," + valorUnitario + " , " + quantidade + " , " + idOrcamento + " , " + produtoId + ")";
+            String comandoSqlOrcamentoItem = "INSERT INTO itens_orcamento(id_item_orcamento, preco_un, quantidade, id_orcamento, id_produto) VALUES ("
+                    + itemOrcamentoId + ", " + valorUnitario + ", " + quantidade + ", " + idOrcamento + ", " + produtoId + ")";
             session.createNativeQuery(comandoSqlOrcamentoItem).executeUpdate();
+
             transaction.commit();
         } catch (Exception ex) {
             if (transaction != null) {
@@ -34,30 +37,45 @@ public class ItemOrcamentoDAO extends GenericDAO<ItemOrcamento, Long> {
             session.close();
         }
     }
-    
-    public void setarPrecoProduto(Session session){
-            Transaction transaction = null;
+
+    // Método para atualizar preços na tabela produtos
+    public void atualizarPrecoProduto(long produtoId, double precoProduto) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            session.createNativeQuery("update produtos set preco_produto = 0").executeUpdate();
+
+            String comandoSqlAtualizarPreco = "UPDATE produtos SET preco_produto = :precoProduto WHERE id_produto = :produtoId";
+            session.createNativeQuery(comandoSqlAtualizarPreco)
+                    .setParameter("precoProduto", precoProduto)
+                    .setParameter("produtoId", produtoId)
+                    .executeUpdate();
+
             transaction.commit();
-            transaction = session.beginTransaction();
-            session.createNativeQuery("update itens_orcamento set subtotal = 0").executeUpdate();
-            transaction.commit();
-        } catch(Exception e){
-                throw new IllegalArgumentException("miau");
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
             }
-}
+            e.printStackTrace();
+            throw new IllegalArgumentException("Erro ao atualizar preço do produto: " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+
+    // Método para encontrar o próximo ID de produto
     public long findNextId(Session session) {
-        Query query = session.createQuery("select coalesce(max(idProduto), 0) from Produto", Long.class);
+        Query query = session.createQuery("SELECT COALESCE(MAX(idProduto), 0) FROM Produto", Long.class);
         Object maxId = query.getSingleResult();
         return (Long) maxId + 1;
     }
-    
+
+    // Método para excluir item por ID
     public void excluirItemPorId(long idItem, Session session) {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
+
             ItemOrcamento itemOrcamento = session.get(ItemOrcamento.class, idItem);
             if (itemOrcamento != null) {
                 session.delete(itemOrcamento);
@@ -70,23 +88,20 @@ public class ItemOrcamentoDAO extends GenericDAO<ItemOrcamento, Long> {
                 transaction.rollback();
             }
             e.printStackTrace();
-            throw e; // manda o erro de volta para quem chamou o método 
+            throw e; // Reenvia a exceção
         }
-        
     }
-    
+
+    // Método para buscar todos os itens de um orçamento
     public List<ItemOrcamento> getAllItens(long idOrcamentoGlobal) {
-        
         List<ItemOrcamento> itemOrcamentos = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {            
-            setarPrecoProduto(session);
-            return session.createQuery("from ItemOrcamento where orcamento.id = :idOrcamento", ItemOrcamento.class)
-                                                                .setParameter("idOrcamento", idOrcamentoGlobal)
-                                                                .list();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("FROM ItemOrcamento WHERE orcamento.id = :idOrcamento", ItemOrcamento.class)
+                          .setParameter("idOrcamento", idOrcamentoGlobal)
+                          .list();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }   
+        }
     }
-     
 }

@@ -1,5 +1,7 @@
 package Telas;
 
+import Classes.Mercadoria;
+import Classes.Servico;
 import Classes.SessionManager;
 import DAO.ItemOrcamentoDAO;
 import java.awt.event.ActionEvent;
@@ -42,11 +44,18 @@ public class ProdutoGUI extends javax.swing.JFrame {
     
     private long salvarProduto() {
         String descricaoProduto = txtDescricao.getText();
+        String precoTexto = txtValorUn.getText().replace(",", ".");
+        double precoProduto;
 
-        // Validação da descrição
-        if (descricaoProduto == null || descricaoProduto.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "A descrição do produto não pode ser vazia!");
-            return -1; // Interrompe o salvamento
+        // Validação do preço
+        try {
+            precoProduto = Double.parseDouble(precoTexto);
+            if (precoProduto <= 0) {
+                throw new NumberFormatException("O preço deve ser maior que zero.");
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Preço inválido. Insira um valor numérico positivo.");
+            return -1;
         }
 
         Session session = SessionManager.getInstance().getSession();
@@ -56,15 +65,24 @@ public class ProdutoGUI extends javax.swing.JFrame {
         try {
             produtoId = new ItemOrcamentoDAO().findNextId(session);
 
-            String comandoSqlProduto = "INSERT INTO produtos (id_produto, descricao, tipo_produto) VALUES ("
-                    + produtoId + ", '" + descricaoProduto + "', '" + tipoProduto + "')";
-            session.createNativeQuery(comandoSqlProduto).executeUpdate();
+            if ("Mercadoria".equals(tipoProduto)) {
+                Mercadoria mercadoria = new Mercadoria(descricaoProduto, precoProduto);
+                mercadoria.setIdProduto(produtoId);
+                session.save(mercadoria);
+            } else if ("Servico".equals(tipoProduto)) {
+                Servico servico = new Servico(descricaoProduto, precoProduto);
+                servico.setIdProduto(produtoId);
+                session.save(servico);
+            } else {
+                throw new IllegalArgumentException("Tipo de produto inválido!");
+            }
 
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro ao salvar produto: " + e.getMessage());
+            return -1;
         } finally {
             session.close();
         }
@@ -73,14 +91,36 @@ public class ProdutoGUI extends javax.swing.JFrame {
     }
 
     private void salvarOrcamentoItem() {
-        long produtoId = salvarProduto();
-        long idOrcamento = orcamentoGUI.idOrcamentoGlobal;
-        String valorUnitario = txtValorUn.getText().replace(",", ".");
-        String quantidade = txtQuantidade.getText();
+        long produtoId = salvarProduto(); // Salva o produto e obtém o ID
+        if (produtoId == -1) {
+            return; // Interrompe se o produto não foi salvo
+        }
 
+        long idOrcamento = orcamentoGUI.idOrcamentoGlobal;
+
+        // Capturar e converter valor unitário
+        double valorUnitario;
+        try {
+            valorUnitario = Double.parseDouble(txtValorUn.getText().replace(",", "."));
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Valor unitário inválido. Insira um número válido.");
+            return; // Interrompe se o valor for inválido
+        }
+
+        // Capturar e converter quantidade
+        int quantidade;
+        try {
+            quantidade = Integer.parseInt(txtQuantidade.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Quantidade inválida. Insira um número inteiro.");
+            return; // Interrompe se a quantidade for inválida
+        }
+
+        // Inserir o item no orçamento
         ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO();
         itemOrcamentoDAO.inserirItemOrcamento(produtoId, valorUnitario, quantidade, idOrcamento);
     }
+
     
     // Método para setar o padrão 
     private void padrao() {
