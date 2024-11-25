@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -100,5 +102,12 @@ public class ItemOrcamento {
         } else {
             this.subtotal = 0;
         }
+    }
+
+    // Callback JPA para garantir o cálculo do subtotal antes de persistir ou atualizar
+    @PrePersist
+    @PreUpdate
+    private void calcularSubtotal() {
+        atualizarSubtotal();
     }
 }

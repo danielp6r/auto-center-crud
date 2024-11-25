@@ -21,9 +21,15 @@ public class ItemOrcamentoDAO extends GenericDAO<ItemOrcamento, Long> {
         try {
             transaction = session.beginTransaction();
 
+            // Calcula o subtotal antes da inserção
+            double subtotal = valorUnitario * quantidade;
+
+            // Gera o próximo ID
             long itemOrcamentoId = findNextId(session);
-            String comandoSqlOrcamentoItem = "INSERT INTO itens_orcamento(id_item_orcamento, preco_un, quantidade, id_orcamento, id_produto) VALUES ("
-                    + itemOrcamentoId + ", " + valorUnitario + ", " + quantidade + ", " + idOrcamento + ", " + produtoId + ")";
+
+            // Query SQL nativa com subtotal
+            String comandoSqlOrcamentoItem = "INSERT INTO itens_orcamento(id_item_orcamento, preco_un, quantidade, subtotal, id_orcamento, id_produto) VALUES ("
+                    + itemOrcamentoId + ", " + valorUnitario + ", " + quantidade + ", " + subtotal + ", " + idOrcamento + ", " + produtoId + ")";
             session.createNativeQuery(comandoSqlOrcamentoItem).executeUpdate();
 
             transaction.commit();
