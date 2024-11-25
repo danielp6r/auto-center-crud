@@ -2,23 +2,14 @@ package DAO;
 
 import Classes.Orcamento;
 import Classes.HibernateUtil;
-import jakarta.persistence.Query;
 import org.hibernate.Session;
-
-import java.util.List;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import java.util.List;
 
 public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
 
-    private SessionFactory sessionFactory;
-
     public OrcamentoDAO() {
-       /* try {
-            this.sessionFactory = new Configuration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
-            throw new ExceptionInInitializerError(ex);
-        }*/
+        // Construtor vazio
     }
     
     /**
@@ -36,15 +27,11 @@ public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
     }
     
     public long findNextId(Session session) {
-        Query query = session.createQuery("select max(idOrcamento) from Orcamento", Long.class);
-        Long maxId = (Long) query.getSingleResult();
-
-        // Se maxId for nulo, retorna 1; caso contrário, retorna maxId + 1
+        Long maxId = session.createQuery("select max(idOrcamento) from Orcamento", Long.class).uniqueResult();
         return (maxId != null) ? maxId + 1 : 1;
     }
     
     public List<Orcamento> getAllOrcamentos() {
-        List<Orcamento> orcamentos = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {            
             return session.createQuery("from Orcamento", Orcamento.class).list();
         } catch (Exception e) {
@@ -71,5 +58,21 @@ public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
             e.printStackTrace();
             throw e; // Propaga a exceção para o método chamador
         }
-    }      
+    }
+
+    public void atualizarValoresOrcamento(long idOrcamento, double valMercadorias, double valServicos, double valTotal) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            String sql = "UPDATE orcamentos SET val_mercadorias = :valMercadorias, valor_servicos = :valServicos, val_total = :valTotal WHERE id_orcamento_ = :idOrcamento";
+            session.createNativeQuery(sql)
+                   .setParameter("valMercadorias", valMercadorias)
+                   .setParameter("valServicos", valServicos)
+                   .setParameter("valTotal", valTotal)
+                   .setParameter("idOrcamento", idOrcamento)
+                   .executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -1,13 +1,6 @@
 package Classes;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -50,11 +43,11 @@ public class Orcamento {
         this.cliente = cliente;
         this.valMercadorias = 0.0f; // Valor padrão
         this.valServicos = 0.0f;   // Valor padrão
-        this.valTotal = this.valMercadorias + this.valServicos; // Valor inicial calculado
+        this.valTotal = 0.0f;      // Valor inicial
         this.dataHora = LocalDateTime.now(); // Data e hora atual
     }
 
-    // Getters e Setters omitidos para brevidade
+    // Getters e Setters 
 
     public Long getIdOrcamento() {
         return idOrcamento;

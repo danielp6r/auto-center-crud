@@ -791,22 +791,31 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
         if (itens != null) {
             for (ItemOrcamento item : itens) {
-                String descricao = item.getProduto().getDescricao(); // Recupera a descrição do produto ou serviço
+                String descricao = null;
+                String tipoProduto = null;
+
+                // Determinar a descrição e o tipo do item baseado na hierarquia
+                if (item.getProduto() != null) {
+                    descricao = item.getProduto().getDescricao();
+                    tipoProduto = item.getProduto().getClass().getSimpleName();
+
+                    // Atualizar os totais com base no tipo do produto
+                    if ("Mercadoria".equals(tipoProduto)) {
+                        valorPecas += item.getPrecoUn() * item.getQuantidade();
+                    } else if ("Servico".equals(tipoProduto)) {
+                        valorServicos += item.getPrecoUn() * item.getQuantidade();
+                    }
+                }
+
+                // Adicionar linha à tabela
                 Object[] row = {
                     item.getIdItemOrcamento(),
-                    descricao, // Descrição do produto ou serviço
+                    descricao != null ? descricao : "N/A",
                     item.getPrecoUn(),
                     item.getQuantidade(),
                     item.getPrecoUn() * item.getQuantidade()
                 };
                 model.addRow(row);
-
-                // Atualizar os totais com base no tipo do produto
-                if ("Mercadoria".equals(item.getProduto().getClass().getSimpleName())) {
-                    valorPecas += item.getPrecoUn() * item.getQuantidade();
-                } else if ("Servico".equals(item.getProduto().getClass().getSimpleName())) {
-                    valorServicos += item.getPrecoUn() * item.getQuantidade();
-                }
             }
         } else {
             System.out.println("Nenhum item encontrado ou erro ao carregar dados.");
@@ -820,8 +829,9 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         txtTotalPecas.setText(String.format("R$%.2f", valorPecas));
         txtTotalServicos.setText(String.format("R$%.2f", valorServicos));
 
-        // Atualizar no banco o valor total do orçamento
-        UpdateValorTotalOrcamento();
+        // Atualizar no banco os valores do orçamento
+        OrcamentoDAO orcamentoDAO = new OrcamentoDAO();
+        orcamentoDAO.atualizarValoresOrcamento(idOrcamentoGlobal, valorPecas, valorServicos, valorTotal);
     }
 
     
