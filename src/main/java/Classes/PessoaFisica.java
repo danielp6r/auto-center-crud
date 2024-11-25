@@ -4,29 +4,27 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
-
 @Entity
 @DiscriminatorValue("PessoaFisica")
-public class PessoaFisica extends Cliente{
-    
+public class PessoaFisica extends Cliente {
+
     @Column(name = "cpf")
     private String cpf;
-    
+
     protected PessoaFisica() {
-        // Construtor vazio para JPA
+        // Construtor vazio necessário para JPA
     }
 
     public PessoaFisica(String nomeCliente) {
-        super(nomeCliente);
-        this.cpf = "";
+        super(nomeCliente); // Chama o construtor da classe base Cliente
+        this.cpf = ""; // Inicializa CPF como vazio
     }
 
     public String getCpf() {
-        return cpf;
+        return cpf; // Retorna o CPF da pessoa física
     }
 
     public void setCpf(String cpf) {
-        this.cpf = cpf;
+        this.cpf = cpf; // Define o CPF da pessoa física
     }
-    
 }

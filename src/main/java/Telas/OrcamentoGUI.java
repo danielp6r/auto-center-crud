@@ -1,5 +1,6 @@
 package Telas;
 
+import Classes.Cliente;
 import Classes.ItemOrcamento;
 import javax.swing.JOptionPane;
 import Classes.SessionManager;
@@ -7,7 +8,6 @@ import DAO.ClienteDAO;
 import DAO.ItemOrcamentoDAO;
 import DAO.OrcamentoDAO;
 import java.awt.event.ActionEvent;
-import java.time.LocalDateTime;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -19,6 +19,9 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 
 /**
@@ -33,6 +36,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private JTextField txtPeca;
     private JTextField txtValorUnitario;
     private JTextField txtQuantidade;
+    private Long idClienteSelecionado;
+    private boolean clienteSelecionado = false; // Indica se o cliente foi selecionado da tabela
 
     /**
      * Creates new form ClienteGUI
@@ -40,6 +45,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     public OrcamentoGUI() {
         initComponents();
         atalhos();
+        atualizarDataHora();
         
         // Inicializa os campos dinâmicos
         txtPeca = new JTextField();
@@ -54,10 +60,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lblHead.setText("ORÇAMENTO");
         //ABRE O A TELA MAXIMIZADA.
         //setExtendedState(MAXIMIZED_BOTH);
-        
-        lblDataHora.setText(LocalDateTime.now().toString());
-        lblDataHora.setVisible(false);
-        
+
         // Ocultando a coluna número
         TableColumnModel columnModel = tblListagem.getColumnModel();
         TableColumn column = columnModel.getColumn(0); // 0 é o índice da coluna
@@ -70,6 +73,27 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     /*
     MÉTODOS ESPECÍFICOS PARA ESTA TELA
      */
+    
+    // Método para atualizar lblDataHora com a data e hora no formato correto
+    public void atualizarDataHora() {
+        try {
+            // Captura a data e hora atuais
+            LocalDateTime agora = LocalDateTime.now();
+
+            // Define o formato correto
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+            // Formata a data e hora
+            String dataHoraFormatada = agora.format(formatter);
+
+            // Atualiza o lblDataHora com o valor formatado
+            lblDataHora.setText(dataHoraFormatada);
+        } catch (Exception e) {
+            // Tratamento de erros (se necessário)
+            lblDataHora.setText("Erro ao carregar data/hora");
+            e.printStackTrace();
+        }
+    }
     
     // Método personalizado para configurar os atalhos de teclado
     private void atalhos() {
@@ -144,7 +168,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }
     
     // Método para obter a instância única da tela
-    public static OrcamentoGUI getInstance() {
+    public static synchronized OrcamentoGUI getInstance() {
         if (instance == null) {
             instance = new OrcamentoGUI();
         }
@@ -163,7 +187,46 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         
     }
     
+    //Método para resetar campos
+    public void resetFields() {
+        // Resetar campos e estado aqui, por exemplo:
+        // lblDescricao.setText("");
+    }
     
+    // Atualiza cliente no orçamento
+    public void setClienteSelecionado(Long idCliente, String nomeCliente) {
+        this.idClienteSelecionado = idCliente; // Define o ID do cliente selecionado
+        txtCliente.setText(nomeCliente); // Atualiza o campo de texto com o nome do cliente
+        clienteSelecionado = true; // Marca o cliente como selecionado
+    }
+    
+    // Vincula cliente ao orçamento no banco
+    private void vincularClienteAoOrcamento(Long idCliente) { 
+        if (idOrcamentoGlobal > 0) { // Verifica se orçamento existe
+            Session session = SessionManager.getInstance().getSession();
+            Transaction transaction = session.beginTransaction();
+            try {
+                String comandoSql = "UPDATE orcamentos SET id_cliente = " + idCliente
+                        + " WHERE id_orcamento_ = " + idOrcamentoGlobal;
+                session.createNativeQuery(comandoSql).executeUpdate(); // Atualiza cliente no banco
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback(); // Reverte em caso de erro
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erro ao vincular cliente: " + e.getMessage());
+            } finally {
+                session.close(); // Fecha sessão
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Orçamento ainda não foi criado."); // Alerta para criar orçamento
+        }
+    }
+    
+    public void resetarCliente() { // Reseta o cliente selecionado e limpa os campos
+        clienteSelecionado = false; // Reseta o controle para criação de cliente
+        idClienteSelecionado = null; // Remove o ID do cliente selecionado
+        txtCliente.setText(""); // Limpa o campo de texto
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -343,7 +406,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lblPlaca.setText("Placa");
 
         lblDataHora.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        lblDataHora.setText("Data - Hora");
+        lblDataHora.setText("     Data - Hora");
 
         javax.swing.GroupLayout paneBotLayout = new javax.swing.GroupLayout(paneBot);
         paneBot.setLayout(paneBotLayout);
@@ -461,11 +524,10 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                             .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(PaneAllLayout.createSequentialGroup()
-                                .addComponent(lblPlaca)
-                                .addGap(68, 68, 68)
-                                .addComponent(lblDataHora)))
+                            .addComponent(lblPlaca)
+                            .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(57, 57, 57)
+                        .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PaneAllLayout.createSequentialGroup()
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -489,14 +551,14 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblVeiculo)
                             .addComponent(lblPlaca)
-                            .addComponent(lblCliente)
-                            .addComponent(lblDataHora))
+                            .addComponent(lblCliente))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addComponent(paneBotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -542,11 +604,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_txtClienteActionPerformed
 
     private void btnCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastroActionPerformed
-        // Cria a instância da tela ClienteGUI
-        //ClienteGUI clienteGUI = new ClienteGUI();
-        // Torna a tela visível
-        //clienteGUI.setVisible(true);
-        ClienteGUI.abrirNovaInstancia();
+        ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
+        clienteGUI.setVisible(true); // Exibe ClienteGUI
     }//GEN-LAST:event_btnCadastroActionPerformed
 
     private void txtTotalPecasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalPecasActionPerformed
@@ -580,169 +639,215 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     // Variável global para guardar a id do Orçamento;
     public long idOrcamentoGlobal;
 
-    private void SalvarOrcamento(Boolean exibirMensagem) {
+    private long SalvarOrcamento(Boolean exibirMensagem) {
+        // Obtém as informações digitadas na tela
+        String nome = txtCliente.getText().trim();
+        String veiculo = txtVeiculo.getText().trim();
+        String placa = txtPlaca.getText().trim();
 
-        // Pega as strings digitadas pelo usuário na tela
-        String nome = txtCliente.getText();
-        String veiculo = txtVeiculo.getText();
-        String placa = txtPlaca.getText();
-
-        // Se os campos veículo, nome e placa estiverem vazios, dá um alerta ao usuário e impede de salvar
-        if (nome.equals("") || veiculo.equals("") || placa.equals("")) {
+        // Validação dos campos obrigatórios
+        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
-            return; // Adicionando return para impedir a execução do restante do método
+            return -1; // Retorna -1 em caso de erro de validação
         }
 
-        // Salva o cliente no banco de dados
-        // starta a transaction
         Session session = SessionManager.getInstance().getSession();
         Transaction transaction = session.beginTransaction();
+        long idOrcamento = -1;
+        long idCliente = -1; // Inicializa com valor padrão
+
         try {
-            ClienteDAO cliente = new ClienteDAO();
-            long idCliente = cliente.findNextId(session);
+            ClienteDAO clienteDAO = new ClienteDAO();
 
-            String comandoSqlCliente = "insert into clientes(id_cliente, tipo_cliente, nome_cliente) values (" + idCliente + ", 'PessoaFisica', '" + nome + "')";
-            session.createNativeQuery(comandoSqlCliente).executeUpdate();
+            if (clienteSelecionado) { // Cliente foi selecionado na tabela
+                Cliente clienteExistente = clienteDAO.getClienteById(idClienteSelecionado, session);
 
-            OrcamentoDAO orcamento = new OrcamentoDAO();
-            long idOrcamento = orcamento.findNextId(session);
-            idOrcamentoGlobal = idOrcamento;
+                if (clienteExistente != null) {
+                    // Atualiza o nome do cliente se for diferente
+                    if (!nome.equalsIgnoreCase(clienteExistente.getNomeCliente())) {
+                        clienteDAO.atualizarCliente(
+                                idClienteSelecionado,
+                                nome,
+                                "", // Telefone vazio por padrão
+                                "", // Email vazio por padrão
+                                "", // CPF ou CNPJ vazio por padrão
+                                true, // Assume que é Pessoa Física
+                                session
+                        );
+                    }
+                    idCliente = idClienteSelecionado;
+                } else {
+                    clienteSelecionado = false; // Desvincula o cliente se não existir
+                }
+            }
+
+            if (!clienteSelecionado) { // Caso o cliente não esteja selecionado
+                // Verifica se já existe um cliente com o mesmo nome
+                List<Cliente> clientes = clienteDAO.getAllClientes();
+                Cliente clienteDuplicado = clientes.stream()
+                        .filter(c -> c.getNomeCliente().equalsIgnoreCase(nome))
+                        .findFirst()
+                        .orElse(null);
+
+                if (clienteDuplicado != null) {
+                    // Cliente já existe: associa o cliente duplicado
+                    JOptionPane.showMessageDialog(this, "O cliente já existe. Vinculando ao cliente existente.");
+                    idCliente = clienteDuplicado.getIdCliente();
+                    clienteSelecionado = true;
+                    idClienteSelecionado = idCliente;
+                } else {
+                    // Cliente não existe: cria um novo
+                    idCliente = clienteDAO.findNextId(session);
+                    clienteDAO.salvarCliente(nome, "", "", "", true, session); // Por padrão, considera Pessoa Física
+                }
+            }
+
+            // Criação do orçamento
+            if (idCliente == -1) {
+                throw new RuntimeException("Erro ao salvar cliente. ID do cliente não foi inicializado.");
+            }
+
+            OrcamentoDAO orcamentoDAO = new OrcamentoDAO();
+            idOrcamento = orcamentoDAO.findNextId(session);
+            idOrcamentoGlobal = idOrcamento; // Atualiza a variável global
             lblHead.setText("ORÇAMENTO Nº: " + idOrcamentoGlobal);
 
-            String comandoSqlOrcamento = "insert into orcamentos(id_cliente, id_orcamento_, placa, carro, data_hora) values (" + idCliente + "," + idOrcamento + ", '" + placa + "', '" + veiculo + "', current_timestamp)";
+            String comandoSqlOrcamento = "INSERT INTO orcamentos (id_cliente, id_orcamento_, placa, carro, data_hora) VALUES ("
+                    + idCliente + ", " + idOrcamento + ", '" + placa + "', '" + veiculo + "', current_timestamp)";
             session.createNativeQuery(comandoSqlOrcamento).executeUpdate();
 
             transaction.commit();
+
             if (exibirMensagem) {
                 JOptionPane.showMessageDialog(this, "Orçamento salvo com sucesso!");
             }
         } catch (Exception ex) {
-            // Se der erro, dá um rollback na transação
             transaction.rollback();
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao salvar Orçamento: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Erro ao salvar orçamento: " + ex.getMessage());
+        } finally {
+            session.close();
         }
+
+        return idOrcamento;
     }
-            
+    
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
-        
-        // Obtém a instância única de ProdutoGUI
-        ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
-
-        // Modifica o texto do lblDescricao utilizando o método público
-        produtoGUI.setDescricaoLabel("Descrição da Peça / Mercadoria");
-
-        // Torna a tela ProdutoGUI visível
-        produtoGUI.setVisible(true);
-        
-        //Pega as strings digitadas pelo usuário na tela
         String nome = txtCliente.getText();
         String veiculo = txtVeiculo.getText();
         String placa = txtPlaca.getText();
-        
-        //Agora vai salvar o orçamento para poder salvar o item
-        if (nome.equals("") || veiculo.equals("") || placa.equals("")) {
+
+        // Validação dos campos obrigatórios
+        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
-        } else {
-            OrcamentoGUI instanciaOrcamento = getInstance();
-            // consulta se o orçamento já existe na base de dados, se existir, 
-            // faz o update, senão, faz o insert do orçamento antes 
-            // de inserir o item
-            if (idOrcamentoGlobal <= 0) {;
-                SalvarOrcamento(false);
-            }
-            if (idOrcamentoGlobal > 0) {
-                ProdutoGUI.abrirNovaInstancia(instanciaOrcamento);
-            }
-        }    
+            return;
+        }
+
+        ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
+        produtoGUI.limparCampos();
+        produtoGUI.setDescricaoLabel("Descrição da Peça / Mercadoria");
+        produtoGUI.setTipoProduto("Mercadoria"); // Definindo o tipo como Mercadoria
+        produtoGUI.setVisible(true);
+
+        if (idOrcamentoGlobal <= 0) {
+            idOrcamentoGlobal = SalvarOrcamento(false);
+        }
+
+        if (idOrcamentoGlobal > 0) {
+            ProdutoGUI.abrirNovaInstancia(this);
+        }
     }//GEN-LAST:event_btnProdutoActionPerformed
  
-    private void UpdateValorTotalOrcamento(){
+    private void UpdateValorTotalOrcamento() {
         Session session = SessionManager.getInstance().getSession();
         Transaction transaction = session.beginTransaction();
         try {
-            
-            String comandoSqlUpdateOrcamento = "update orcamentos set val_total = " + Double.toString(valorTotalGlobal) + " where id_orcamento_ = " + idOrcamentoGlobal;
+            String comandoSqlUpdateOrcamento = "UPDATE orcamentos SET val_total = " + valorTotalGlobal
+                    + " WHERE id_orcamento_ = " + idOrcamentoGlobal;
             session.createNativeQuery(comandoSqlUpdateOrcamento).executeUpdate();
-            
             transaction.commit();
-            
         } catch (Exception ex) {
-            //se der erro, dá um rollback na transação
-            transaction.rollback();
+            transaction.rollback(); // Fazer rollback em caso de erro
             ex.printStackTrace();
-            
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar o valor total: " + ex.getMessage());
+        } finally {
+            session.close(); // Garantir que a sessão seja fechada
         }
-}
+    }
+
         
         
     private double valorTotalGlobal;
-    public void atualizarGridItens(){
+    public void atualizarGridItens() {
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
         model.setRowCount(0); // Limpar tabela antes de adicionar dados
-        ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO(); 
+        ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO();
         double valorTotal = 0;
         double valorPecas = 0;
         double valorServicos = 0;
+
+        // Obter todos os itens do orçamento
         List<ItemOrcamento> itens = itemOrcamentoDAO.getAllItens(idOrcamentoGlobal);
-        
+
         if (itens != null) {
             for (ItemOrcamento item : itens) {
-                String descricao;
-                
-                valorPecas = valorPecas + (item.getPrecoUn()*item.getQuantidade());
-                
-                
+                String descricao = item.getProduto().getDescricao(); // Recupera a descrição do produto ou serviço
                 Object[] row = {
                     item.getIdItemOrcamento(),
-                    item.getProduto().getDescricao(),
+                    descricao, // Descrição do produto ou serviço
                     item.getPrecoUn(),
                     item.getQuantidade(),
-                    item.getPrecoUn()*item.getQuantidade()
+                    item.getPrecoUn() * item.getQuantidade()
                 };
                 model.addRow(row);
+
+                // Atualizar os totais com base no tipo do produto
+                if ("Mercadoria".equals(item.getProduto().getClass().getSimpleName())) {
+                    valorPecas += item.getPrecoUn() * item.getQuantidade();
+                } else if ("Servico".equals(item.getProduto().getClass().getSimpleName())) {
+                    valorServicos += item.getPrecoUn() * item.getQuantidade();
+                }
             }
         } else {
             System.out.println("Nenhum item encontrado ou erro ao carregar dados.");
         }
-        UpdateValorTotalOrcamento();
+
+        // Atualizar os valores na interface
         valorTotal = valorPecas + valorServicos;
-        valorTotalGlobal = valorTotal; 
+        valorTotalGlobal = valorTotal;
+
         txtValorFinal.setText(String.format("R$%.2f", valorTotal));
         txtTotalPecas.setText(String.format("R$%.2f", valorPecas));
+        txtTotalServicos.setText(String.format("R$%.2f", valorServicos));
+
+        // Atualizar no banco o valor total do orçamento
+        UpdateValorTotalOrcamento();
     }
-    
+
     
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
-        
-        // Obtém a instância única de ProdutoGUI
-        ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
-
-        // Modifica o texto do lblDescricao utilizando o método público
-        produtoGUI.setDescricaoLabel("Descrição do Serviço");
-
-        // Torna a tela ProdutoGUI visível
-        produtoGUI.setVisible(true);
-
-        //Pega as strings digitadas pelo usuário na tela
         String nome = txtCliente.getText();
         String veiculo = txtVeiculo.getText();
         String placa = txtPlaca.getText();
 
-        //Agora vai salvar o orçamento para poder salvar o item
-        if (nome.equals("") || veiculo.equals("") || placa.equals("")) {
+        // Validação dos campos obrigatórios
+        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
-        } else {
-            OrcamentoGUI instanciaOrcamento = getInstance();
-            // consulta se o orçamento já existe na base de dados, se existir, 
-            // faz o update, senão, faz o insert do orçamento antes 
-            // de inserir o item
-            if (idOrcamentoGlobal <= 0) {;
-                SalvarOrcamento(false);
-            }
-            if (idOrcamentoGlobal > 0) {
-                ProdutoGUI.abrirNovaInstancia(instanciaOrcamento);
-            }
+            return;
+        }
+
+        ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
+        produtoGUI.limparCampos();
+        produtoGUI.setDescricaoLabel("Descrição do Serviço");
+        produtoGUI.setTipoProduto("Servico"); // Definindo o tipo como Serviço
+        produtoGUI.setVisible(true);
+
+        if (idOrcamentoGlobal <= 0) {
+            idOrcamentoGlobal = SalvarOrcamento(false);
+        }
+
+        if (idOrcamentoGlobal > 0) {
+            ProdutoGUI.abrirNovaInstancia(this);
         }
     }//GEN-LAST:event_btnServicoActionPerformed
 

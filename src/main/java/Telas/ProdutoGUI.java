@@ -1,5 +1,7 @@
 package Telas;
 
+import Classes.Mercadoria;
+import Classes.Servico;
 import Classes.SessionManager;
 import DAO.ItemOrcamentoDAO;
 import java.awt.event.ActionEvent;
@@ -22,6 +24,7 @@ public class ProdutoGUI extends javax.swing.JFrame {
     
     private static ProdutoGUI instance;
     private static OrcamentoGUI orcamentoGUI;
+    private String tipoProduto; // Armazena o tipo de produto atual ("Mercadoria" ou "Serviço")
     
     /**
      * Creates new form TelaNovoProduto
@@ -40,39 +43,84 @@ public class ProdutoGUI extends javax.swing.JFrame {
     // MÉTODOS ESPECÍFICOS PARA ESTA TELA:
     
     private long salvarProduto() {
-        Session session = SessionManager.getInstance().getSession();
-        Transaction transaction = session.beginTransaction();
+        String descricaoProduto = txtDescricao.getText();
+        String precoTexto = txtValorUn.getText().replace(",", ".");
+        double precoProduto;
+
+        // Validação do preço
         try {
-
-            ItemOrcamentoDAO produto = new ItemOrcamentoDAO();
-            long produtoId = produto.findNextId(session);
-
-            String descricaoProduto = txtDescricao.getText();
-
-            String comandoSqlProduto = "insert into produtos(id_produto, descricao, tipo_produto) values (" + produtoId + ",'" + descricaoProduto + "', " + "'Mercadoria')";
-            session.createNativeQuery(comandoSqlProduto).executeUpdate();
-
-            transaction.commit();
-            return produtoId;
-        } catch (Exception ex) {
-            //se der erro, dá um rollback na transação
-            transaction.rollback();
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao salvar produto: " + ex.getMessage());
-            return 0;
+            precoProduto = Double.parseDouble(precoTexto);
+            if (precoProduto <= 0) {
+                throw new NumberFormatException("O preço deve ser maior que zero.");
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Preço inválido. Insira um valor numérico positivo.");
+            return -1;
         }
 
+        Session session = SessionManager.getInstance().getSession();
+        Transaction transaction = session.beginTransaction();
+        long produtoId = -1;
+
+        try {
+            produtoId = new ItemOrcamentoDAO().findNextId(session);
+
+            if ("Mercadoria".equals(tipoProduto)) {
+                Mercadoria mercadoria = new Mercadoria(descricaoProduto, precoProduto);
+                mercadoria.setIdProduto(produtoId);
+                session.save(mercadoria);
+            } else if ("Servico".equals(tipoProduto)) {
+                Servico servico = new Servico(descricaoProduto, precoProduto);
+                servico.setIdProduto(produtoId);
+                session.save(servico);
+            } else {
+                throw new IllegalArgumentException("Tipo de produto inválido!");
+            }
+
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao salvar produto: " + e.getMessage());
+            return -1;
+        } finally {
+            session.close();
+        }
+
+        return produtoId;
     }
 
     private void salvarOrcamentoItem() {
-        long produtoId = salvarProduto();
-        long idOrcamento = orcamentoGUI.idOrcamentoGlobal;
-        String valorUnitario = txtValorUn.getText().replace(",", ".");
-        String quantidade = txtQuantidade.getText();
+        long produtoId = salvarProduto(); // Salva o produto e obtém o ID
+        if (produtoId == -1) {
+            return; // Interrompe se o produto não foi salvo
+        }
 
+        long idOrcamento = orcamentoGUI.idOrcamentoGlobal;
+
+        // Capturar e converter valor unitário
+        double valorUnitario;
+        try {
+            valorUnitario = Double.parseDouble(txtValorUn.getText().replace(",", "."));
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Valor unitário inválido. Insira um número válido.");
+            return; // Interrompe se o valor for inválido
+        }
+
+        // Capturar e converter quantidade
+        int quantidade;
+        try {
+            quantidade = Integer.parseInt(txtQuantidade.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Quantidade inválida. Insira um número inteiro.");
+            return; // Interrompe se a quantidade for inválida
+        }
+
+        // Inserir o item no orçamento
         ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO();
         itemOrcamentoDAO.inserirItemOrcamento(produtoId, valorUnitario, quantidade, idOrcamento);
     }
+
     
     // Método para setar o padrão 
     private void padrao() {
@@ -102,10 +150,10 @@ public class ProdutoGUI extends javax.swing.JFrame {
     }
     
     // Método para limpar os campos de texto
-    private void limparCampos() {
+    public void limparCampos() {
         txtDescricao.setText("");
         txtValorUn.setText("0,00");
-        txtQuantidade.setText("");
+        txtQuantidade.setText("1");
         lblSubtotal.setText("0,00");
     }
     
@@ -199,6 +247,10 @@ public class ProdutoGUI extends javax.swing.JFrame {
     // Método para alterar o texto de lblDescricao
     public void setDescricaoLabel(String descricao) {
         lblDescricao.setText(descricao);
+    }
+    
+    public void setTipoProduto(String tipoProduto) {
+        this.tipoProduto = tipoProduto;
     }
     
     /**

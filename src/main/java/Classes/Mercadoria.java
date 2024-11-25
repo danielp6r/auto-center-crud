@@ -1,32 +1,22 @@
 package Classes;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
-
 @Entity
 @DiscriminatorValue("Mercadoria")
-public class Mercadoria extends Produto{
-    
-    @Column(name = "cod_barras")
-    private String codBarras;
-    
+public class Mercadoria extends Produto {
+
     protected Mercadoria() {
         // Construtor vazio para JPA
     }
 
-    public Mercadoria(String nomeProduto, Double precoProduto) {
-        super(nomeProduto, precoProduto);
-        this.codBarras = "";
+    public Mercadoria(String descricao, double precoProduto) {
+        super(descricao, precoProduto);
     }
 
-    public String getCodBarras() {
-        return codBarras;
+    @Override
+    public String toString() {
+        return "Mercadoria [" + super.toString() + "]";
     }
-
-    public void setCodBarras(String codBarras) {
-        this.codBarras = codBarras;
-    }
-    
 }

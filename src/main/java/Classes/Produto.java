@@ -14,30 +14,26 @@ import jakarta.persistence.Table;
 @Table(name = "produtos")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_produto")
-public class Produto {
+public abstract class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_produto")
     private Long idProduto;
-    
-    @Column(name = "nome_produto")
-    private String nomeProduto;
-    
+
     @Column(name = "descricao")
     private String descricao;
-    
-    @Column(name = "preco_produto")
+
+    @Column(name = "preco_produto", nullable = false)
     private double precoProduto;
 
     protected Produto() {
         // Construtor vazio para JPA
     }
 
-    // Construtor com parâmetros para inicializar os atributos
-    public Produto(String nomeProduto, Double precoProduto) {
-        this.nomeProduto = nomeProduto;
-        this.precoProduto = precoProduto != null ? precoProduto : 0.0; // Garantir que o preço não seja nulo
+    public Produto(String descricao, double precoProduto) {
+        this.descricao = descricao;
+        this.precoProduto = precoProduto;
     }
 
     // Getters e Setters
@@ -47,14 +43,6 @@ public class Produto {
 
     public void setIdProduto(Long idProduto) {
         this.idProduto = idProduto;
-    }
-
-    public String getNomeProduto() {
-        return nomeProduto;
-    }
-
-    public void setNomeProduto(String nomeProduto) {
-        this.nomeProduto = nomeProduto;
     }
 
     public String getDescricao() {
@@ -70,7 +58,7 @@ public class Produto {
     }
 
     public void setPrecoProduto(double precoProduto) {
-        if (precoProduto >= 0) {  // Garantir que o preço não seja negativo
+        if (precoProduto >= 0) {
             this.precoProduto = precoProduto;
         } else {
             throw new IllegalArgumentException("Preço do produto não pode ser negativo.");
@@ -79,7 +67,6 @@ public class Produto {
 
     @Override
     public String toString() {
-        return "Produto [idProduto=" + idProduto + ", nomeProduto=" + nomeProduto + ", descricao=" + descricao
-                + ", precoProduto=" + precoProduto + "]";
+        return "Produto [idProduto=" + idProduto + ", descricao=" + descricao + ", precoProduto=" + precoProduto + "]";
     }
 }
