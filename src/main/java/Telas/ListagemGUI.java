@@ -100,16 +100,16 @@ public class ListagemGUI extends javax.swing.JFrame {
         // Listener para duplo clique na tabela
         tblListagem.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent evt) {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (evt.getClickCount() == 2 && tblListagem.getSelectedRow() != -1) {
-                    int selectedRow = tblListagem.getSelectedRow();
-                    String idFormatado = (String) tblListagem.getValueAt(selectedRow, 0); // ID formatado
-                    Long idOrcamento = Long.parseLong(idFormatado); // Converter o ID para Long
+                    int selectedRow = tblListagem.getSelectedRow(); // Linha selecionada
+                    String idFormatado = tblListagem.getValueAt(selectedRow, 0).toString(); // ID do orçamento (Coluna 0)
+                    Long idOrcamento = Long.parseLong(idFormatado); // Converter ID para Long
 
-                    // Abrir a OrcamentoGUI e carregar os dados
-                    OrcamentoGUI orcamentoGUI = OrcamentoGUI.getInstance();
-                    orcamentoGUI.carregarOrcamento(idOrcamento);
-                    orcamentoGUI.setVisible(true);
+                    // Abrir a OrcamentoGUI e carregar o orçamento selecionado
+                    OrcamentoGUI orcamentoGUI = new OrcamentoGUI();
+                    orcamentoGUI.carregarOrcamento(idOrcamento); // Carregar os dados do orçamento
+                    orcamentoGUI.setVisible(true); // Mostrar a tela
                 }
             }
         });
@@ -155,7 +155,7 @@ public class ListagemGUI extends javax.swing.JFrame {
     private void loadOrcamentosIntoTable() {
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
         model.setRowCount(0); // Limpar tabela antes de adicionar dados
-        OrcamentoDAO orcamentoDAO = new OrcamentoDAO();
+        OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
 
         List<Orcamento> orcamentos = orcamentoDAO.getAllOrcamentos();
 
@@ -603,7 +603,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este Orçamento?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
             Session session = SessionManager.getInstance().getSession();
-            OrcamentoDAO orcamentoDAO = new OrcamentoDAO();
+            OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
             try {
                 orcamentoDAO.excluirOrcamentoPorId(idOrcamento, session);
                 JOptionPane.showMessageDialog(this, "Orçamento excluído com sucesso!");

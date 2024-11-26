@@ -75,36 +75,29 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     MÉTODOS ESPECÍFICOS PARA ESTA TELA
      */
     
+    //Método para carregar orçamento existente
     public void carregarOrcamento(Long idOrcamento) {
         try {
-            // Recuperar orçamento do banco de dados
-            OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
+            OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance(); // Obter instância Singleton do DAO
             Orcamento orcamento = orcamentoDAO.findById(idOrcamento);
 
             if (orcamento != null) {
                 // Preencher os campos principais
-                lblDataHora.setText(orcamento.getDataHora() != null ? orcamento.getDataHora().toString() : ""); // Data e hora do orçamento
                 txtCliente.setText(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : ""); // Nome do cliente
-                txtVeiculo.setText(orcamento.getCarro()); // Veículo
-                txtPlaca.setText(orcamento.getPlaca()); // Placa do veículo
-                txtTotalPecas.setText(orcamento.getValMercadorias() != null ? String.format("%.2f", orcamento.getValMercadorias()) : "0.00"); // Total de peças
-                txtTotalServicos.setText(orcamento.getValServicos() != null ? String.format("%.2f", orcamento.getValServicos()) : "0.00"); // Total de serviços
-                txtValorFinal.setText(orcamento.getValTotal() != null ? String.format("%.2f", orcamento.getValTotal()) : "0.00"); // Valor final do orçamento
+                txtVeiculo.setText(orcamento.getCarro() != null ? orcamento.getCarro() : ""); // Veículo
+                txtPlaca.setText(orcamento.getPlaca() != null ? orcamento.getPlaca() : ""); // Placa do veículo
 
-                // Preencher a tabela com os itens do orçamento
-                DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
-                model.setRowCount(0); // Limpar a tabela antes de adicionar os itens
-
-                if (orcamento.getItensOrcamento() != null && !orcamento.getItensOrcamento().isEmpty()) {
-                    for (ItemOrcamento item : orcamento.getItensOrcamento()) {
-                        model.addRow(new Object[]{
-                            item.getProduto().getDescricao(), // Descrição do produto
-                            item.getQuantidade(), // Quantidade
-                            String.format("%.2f", item.getPrecoUn()), // Preço unitário
-                            String.format("%.2f", item.getSubtotal()) // Subtotal
-                        });
-                    }
+                // Atualiza lblDataHora usando o método existente
+                if (orcamento.getDataHora() != null) {
+                    LocalDateTime dataHora = orcamento.getDataHora();
+                    lblDataHora.setText(dataHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+                } else {
+                    atualizarDataHora(); // Se o orçamento não tiver data/hora, usa a data/hora atual
                 }
+
+                // Deixar a tabela vazia (não carrega dados ainda)
+                DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
+                model.setRowCount(0); // Limpar a tabela
             } else {
                 JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
             }
@@ -114,7 +107,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         }
     }
 
-    
+
     // Método para atualizar lblDataHora com a data e hora no formato correto
     public void atualizarDataHora() {
         try {
@@ -748,7 +741,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 throw new RuntimeException("Erro ao salvar cliente. ID do cliente não foi inicializado.");
             }
 
-            OrcamentoDAO orcamentoDAO = new OrcamentoDAO();
+            OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
             idOrcamento = orcamentoDAO.findNextId(session);
             idOrcamentoGlobal = idOrcamento; // Atualiza a variável global
             lblHead.setText("ORÇAMENTO Nº: " + idOrcamentoGlobal);
@@ -871,7 +864,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         txtTotalServicos.setText(String.format("R$%.2f", valorServicos));
 
         // Atualizar no banco os valores do orçamento
-        OrcamentoDAO orcamentoDAO = new OrcamentoDAO();
+        OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
         orcamentoDAO.atualizarValoresOrcamento(idOrcamentoGlobal, valorPecas, valorServicos, valorTotal);
     }
 

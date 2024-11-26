@@ -11,7 +11,7 @@ public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
     private static OrcamentoDAO instance;
 
     // Construtor privado para Singleton
-    public OrcamentoDAO() {
+    private OrcamentoDAO() {
         // Construtor vazio
     }
 
@@ -75,13 +75,19 @@ public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
     @Override
     public Orcamento findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Query ajustada para carregar itens e produtos relacionados
             return session.createQuery(
-                    "SELECT o FROM Orcamento o LEFT JOIN FETCH o.itensOrcamento WHERE o.idOrcamento = :id",
+                    "SELECT o FROM Orcamento o "
+                    + "LEFT JOIN FETCH o.itensOrcamento io "
+                    + "LEFT JOIN FETCH io.produto p "
+                    + "WHERE o.idOrcamento = :id",
                     Orcamento.class)
                     .setParameter("id", id)
                     .uniqueResult();
         }
     }
+
+
 
     /**
      * Encontra os itens associados a um orçamento específico.
