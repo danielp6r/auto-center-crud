@@ -87,17 +87,44 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 txtVeiculo.setText(orcamento.getCarro() != null ? orcamento.getCarro() : ""); // Veículo
                 txtPlaca.setText(orcamento.getPlaca() != null ? orcamento.getPlaca() : ""); // Placa do veículo
 
-                // Atualiza lblDataHora usando o método existente
+                // Atualizar lblDataHora usando o método existente
                 if (orcamento.getDataHora() != null) {
-                    LocalDateTime dataHora = orcamento.getDataHora();
-                    lblDataHora.setText(dataHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                    lblDataHora.setText(orcamento.getDataHora().format(formatter));
                 } else {
                     atualizarDataHora(); // Se o orçamento não tiver data/hora, usa a data/hora atual
                 }
 
-                // Deixar a tabela vazia (não carrega dados ainda)
+                // Preencher a tabela `tblListagem` com os dados completos
                 DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
-                model.setRowCount(0); // Limpar a tabela
+                model.setRowCount(0); // Limpar a tabela antes de adicionar itens
+
+                if (orcamento.getItensOrcamento() != null && !orcamento.getItensOrcamento().isEmpty()) {
+                    for (ItemOrcamento item : orcamento.getItensOrcamento()) {
+                        if (item.getProduto() != null) {
+                            model.addRow(new Object[]{
+                                item.getIdItemOrcamento(), // Coluna 0 (oculta): Número do Item
+                                item.getProduto().getDescricao(), // Coluna 1: Descrição do Produto
+                                String.format("%.2f", item.getPrecoUn()), // Coluna 2: Preço Unitário
+                                item.getQuantidade(), // Coluna 3: Quantidade
+                                String.format("%.2f", item.getSubtotal()) // Coluna 4: Subtotal
+                            });
+                        } else {
+                            model.addRow(new Object[]{
+                                item.getIdItemOrcamento(), // Coluna 0 (oculta): Número do Item
+                                "(Produto não encontrado)", // Coluna 1: Descrição
+                                "0.00", // Coluna 2: Preço Unitário
+                                "0", // Coluna 3: Quantidade
+                                "0.00" // Coluna 4: Subtotal
+                            });
+                        }
+                    }
+                }
+
+                // Ocultar a coluna 0 (Número do Item)
+                tblListagem.getColumnModel().getColumn(0).setMinWidth(0);
+                tblListagem.getColumnModel().getColumn(0).setMaxWidth(0);
+                tblListagem.getColumnModel().getColumn(0).setWidth(0);
             } else {
                 JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
             }
@@ -106,7 +133,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar orçamento: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 
     // Método para atualizar lblDataHora com a data e hora no formato correto
     public void atualizarDataHora() {

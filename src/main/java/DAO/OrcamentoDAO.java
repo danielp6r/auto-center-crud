@@ -75,7 +75,7 @@ public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
     @Override
     public Orcamento findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // Query ajustada para carregar itens e produtos relacionados
+            // Query ajustada para carregar itens do orçamento e produtos relacionados
             return session.createQuery(
                     "SELECT o FROM Orcamento o "
                     + "LEFT JOIN FETCH o.itensOrcamento io "
@@ -86,7 +86,6 @@ public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
                     .uniqueResult();
         }
     }
-
 
 
     /**
