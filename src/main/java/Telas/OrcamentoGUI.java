@@ -2,6 +2,7 @@ package Telas;
 
 import Classes.Cliente;
 import Classes.ItemOrcamento;
+import Classes.Orcamento;
 import javax.swing.JOptionPane;
 import Classes.SessionManager;
 import DAO.ClienteDAO;
@@ -73,6 +74,46 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     /*
     MÉTODOS ESPECÍFICOS PARA ESTA TELA
      */
+    
+    public void carregarOrcamento(Long idOrcamento) {
+        try {
+            // Recuperar orçamento do banco de dados
+            OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
+            Orcamento orcamento = orcamentoDAO.findById(idOrcamento);
+
+            if (orcamento != null) {
+                // Preencher os campos principais
+                lblDataHora.setText(orcamento.getDataHora() != null ? orcamento.getDataHora().toString() : ""); // Data e hora do orçamento
+                txtCliente.setText(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : ""); // Nome do cliente
+                txtVeiculo.setText(orcamento.getCarro()); // Veículo
+                txtPlaca.setText(orcamento.getPlaca()); // Placa do veículo
+                txtTotalPecas.setText(orcamento.getValMercadorias() != null ? String.format("%.2f", orcamento.getValMercadorias()) : "0.00"); // Total de peças
+                txtTotalServicos.setText(orcamento.getValServicos() != null ? String.format("%.2f", orcamento.getValServicos()) : "0.00"); // Total de serviços
+                txtValorFinal.setText(orcamento.getValTotal() != null ? String.format("%.2f", orcamento.getValTotal()) : "0.00"); // Valor final do orçamento
+
+                // Preencher a tabela com os itens do orçamento
+                DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
+                model.setRowCount(0); // Limpar a tabela antes de adicionar os itens
+
+                if (orcamento.getItensOrcamento() != null && !orcamento.getItensOrcamento().isEmpty()) {
+                    for (ItemOrcamento item : orcamento.getItensOrcamento()) {
+                        model.addRow(new Object[]{
+                            item.getProduto().getDescricao(), // Descrição do produto
+                            item.getQuantidade(), // Quantidade
+                            String.format("%.2f", item.getPrecoUn()), // Preço unitário
+                            String.format("%.2f", item.getSubtotal()) // Subtotal
+                        });
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao carregar orçamento: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     
     // Método para atualizar lblDataHora com a data e hora no formato correto
     public void atualizarDataHora() {

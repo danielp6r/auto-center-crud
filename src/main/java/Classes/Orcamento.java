@@ -2,6 +2,7 @@ package Classes;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "orcamentos")
@@ -33,6 +34,9 @@ public class Orcamento {
 
     @Column(name = "placa")
     private String placa;
+
+    @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ItemOrcamento> itensOrcamento;
 
     // Construtor vazio para JPA
     protected Orcamento() {
@@ -111,5 +115,13 @@ public class Orcamento {
 
     public void setPlaca(String placa) {
         this.placa = placa;
+    }
+
+    public List<ItemOrcamento> getItensOrcamento() {
+        return itensOrcamento;
+    }
+
+    public void setItensOrcamento(List<ItemOrcamento> itensOrcamento) {
+        this.itensOrcamento = itensOrcamento;
     }
 }

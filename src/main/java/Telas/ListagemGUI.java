@@ -1,5 +1,6 @@
 package Telas;
 
+import Classes.ItemOrcamento;
 import Classes.Orcamento;
 import Classes.SessionManager;
 import DAO.OrcamentoDAO;
@@ -95,9 +96,60 @@ public class ListagemGUI extends javax.swing.JFrame {
                 }               
             }
         });
+        
+        // Listener para duplo clique na tabela
+        tblListagem.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if (evt.getClickCount() == 2 && tblListagem.getSelectedRow() != -1) {
+                    int selectedRow = tblListagem.getSelectedRow();
+                    String idFormatado = (String) tblListagem.getValueAt(selectedRow, 0); // ID formatado
+                    Long idOrcamento = Long.parseLong(idFormatado); // Converter o ID para Long
+
+                    // Abrir a OrcamentoGUI e carregar os dados
+                    OrcamentoGUI orcamentoGUI = OrcamentoGUI.getInstance();
+                    orcamentoGUI.carregarOrcamento(idOrcamento);
+                    orcamentoGUI.setVisible(true);
+                }
+            }
+        });
+        
     }
     
     //MÉTODOS ESPECÍFICOS PARA ESTA TELA:
+    
+    //Método para 
+    private void carregarOrcamento(Long idOrcamento) {
+        try {
+            OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
+            Orcamento orcamento = orcamentoDAO.findById(idOrcamento);
+
+            if (orcamento != null) {
+                List<ItemOrcamento> itens = orcamentoDAO.findItensByOrcamentoId(idOrcamento);
+
+                StringBuilder detalhes = new StringBuilder("Orçamento ID: " + orcamento.getIdOrcamento() + "\n");
+                detalhes.append("Cliente: ").append(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : "Não informado").append("\n");
+                detalhes.append("Itens:\n");
+
+                if (itens != null && !itens.isEmpty()) {
+                    for (ItemOrcamento item : itens) {
+                        detalhes.append("- Produto: ").append(item.getProduto().getDescricao())
+                                .append(" | Quantidade: ").append(item.getQuantidade())
+                                .append(" | Subtotal: ").append(item.getSubtotal()).append("\n");
+                    }
+                } else {
+                    detalhes.append("Nenhum item associado.\n");
+                }
+
+                JOptionPane.showMessageDialog(this, detalhes.toString(), "Detalhes do Orçamento", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao carregar orçamento: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
        
     // Método para listar os Orçamentos na tabela
     private void loadOrcamentosIntoTable() {
