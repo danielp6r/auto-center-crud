@@ -2,7 +2,10 @@ package Telas;
 
 import Classes.Cliente;
 import Classes.ItemOrcamento;
+import Classes.Mercadoria;
 import Classes.Orcamento;
+import Classes.Produto;
+import Classes.Servico;
 import javax.swing.JOptionPane;
 import Classes.SessionManager;
 import DAO.ClienteDAO;
@@ -83,48 +86,40 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
             if (orcamento != null) {
                 // Preencher os campos principais
-                txtCliente.setText(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : ""); // Nome do cliente
-                txtVeiculo.setText(orcamento.getCarro() != null ? orcamento.getCarro() : ""); // Veículo
-                txtPlaca.setText(orcamento.getPlaca() != null ? orcamento.getPlaca() : ""); // Placa do veículo
+                txtCliente.setText(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : "");
+                txtVeiculo.setText(orcamento.getCarro() != null ? orcamento.getCarro() : "");
+                txtPlaca.setText(orcamento.getPlaca() != null ? orcamento.getPlaca() : "");
 
-                // Atualizar lblDataHora usando o método existente
+                // Atualizar lblDataHora
                 if (orcamento.getDataHora() != null) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                     lblDataHora.setText(orcamento.getDataHora().format(formatter));
                 } else {
-                    atualizarDataHora(); // Se o orçamento não tiver data/hora, usa a data/hora atual
+                    atualizarDataHora();
                 }
 
-                // Preencher a tabela `tblListagem` com os dados completos
+                // Preencher a tabela
                 DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
-                model.setRowCount(0); // Limpar a tabela antes de adicionar itens
+                model.setRowCount(0);
 
                 if (orcamento.getItensOrcamento() != null && !orcamento.getItensOrcamento().isEmpty()) {
                     for (ItemOrcamento item : orcamento.getItensOrcamento()) {
-                        if (item.getProduto() != null) {
-                            model.addRow(new Object[]{
-                                item.getIdItemOrcamento(), // Coluna 0 (oculta): Número do Item
-                                item.getProduto().getDescricao(), // Coluna 1: Descrição do Produto
-                                String.format("%.2f", item.getPrecoUn()), // Coluna 2: Preço Unitário
-                                item.getQuantidade(), // Coluna 3: Quantidade
-                                String.format("%.2f", item.getSubtotal()) // Coluna 4: Subtotal
-                            });
-                        } else {
-                            model.addRow(new Object[]{
-                                item.getIdItemOrcamento(), // Coluna 0 (oculta): Número do Item
-                                "(Produto não encontrado)", // Coluna 1: Descrição
-                                "0.00", // Coluna 2: Preço Unitário
-                                "0", // Coluna 3: Quantidade
-                                "0.00" // Coluna 4: Subtotal
-                            });
-                        }
+                        model.addRow(new Object[]{
+                            item.getIdItemOrcamento(),
+                            item.getProduto().getDescricao(),
+                            String.format("%.2f", item.getPrecoUn()),
+                            item.getQuantidade(),
+                            String.format("%.2f", item.getSubtotal())
+                        });
                     }
-                }
 
-                // Ocultar a coluna 0 (Número do Item)
-                tblListagem.getColumnModel().getColumn(0).setMinWidth(0);
-                tblListagem.getColumnModel().getColumn(0).setMaxWidth(0);
-                tblListagem.getColumnModel().getColumn(0).setWidth(0);
+                    // Calcular e atualizar os totais
+                    calcularTotais(orcamento.getItensOrcamento());
+                } else {
+                    txtTotalPecas.setText("R$0.00");
+                    txtTotalServicos.setText("R$0.00");
+                    txtValorFinal.setText("R$0.00");
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
             }
@@ -133,6 +128,28 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar orçamento: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    
+    //Método para calcular os totais ao abrir um orçamento já existente 
+    private void calcularTotais(List<ItemOrcamento> itens) {
+        double totalPecas = 0.0;
+        double totalServicos = 0.0;
+
+        for (ItemOrcamento item : itens) {
+            Produto produto = item.getProduto();
+            if (produto instanceof Mercadoria) {
+                totalPecas += item.getSubtotal();
+            } else if (produto instanceof Servico) {
+                totalServicos += item.getSubtotal();
+            }
+        }
+
+        // Atualizar os campos de totais
+        txtTotalPecas.setText(String.format("R$%.2f", totalPecas));
+        txtTotalServicos.setText(String.format("R$%.2f", totalServicos));
+        txtValorFinal.setText(String.format("R$%.2f", totalPecas + totalServicos));
+    }
+
 
     // Método para atualizar lblDataHora com a data e hora no formato correto
     public void atualizarDataHora() {
@@ -393,11 +410,11 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 .addGroup(paneBotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnServico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnExcluir)
                 .addGap(18, 18, 18)
-                .addComponent(lbl1, javax.swing.GroupLayout.PREFERRED_SIZE, 709, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(124, 124, 124)
+                .addComponent(btnExcluir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbl1, javax.swing.GroupLayout.PREFERRED_SIZE, 672, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(140, 140, 140)
                 .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnCancelar)
@@ -576,17 +593,17 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblCliente))
+                            .addComponent(lblCliente)
+                            .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblVeiculo)
-                            .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblPlaca)
                             .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(57, 57, 57)
+                        .addGap(17, 17, 17)
                         .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PaneAllLayout.createSequentialGroup()
@@ -610,15 +627,17 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                     .addGroup(PaneAllLayout.createSequentialGroup()
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblVeiculo)
-                            .addComponent(lblPlaca)
                             .addComponent(lblCliente))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(PaneAllLayout.createSequentialGroup()
+                        .addComponent(lblPlaca)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(10, 10, 10)
                 .addComponent(paneBotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
