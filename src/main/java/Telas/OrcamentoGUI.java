@@ -81,45 +81,22 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     //Método para carregar orçamento existente
     public void carregarOrcamento(Long idOrcamento) {
         try {
-            OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance(); // Obter instância Singleton do DAO
+            OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
             Orcamento orcamento = orcamentoDAO.findById(idOrcamento);
 
             if (orcamento != null) {
-                // Preencher os campos principais
+                this.idOrcamentoGlobal = idOrcamento; // Mantém o estado do orçamento carregado
+
+                // Preencher os campos
                 txtCliente.setText(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : "");
                 txtVeiculo.setText(orcamento.getCarro() != null ? orcamento.getCarro() : "");
                 txtPlaca.setText(orcamento.getPlaca() != null ? orcamento.getPlaca() : "");
 
-                // Atualizar lblDataHora
-                if (orcamento.getDataHora() != null) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                    lblDataHora.setText(orcamento.getDataHora().format(formatter));
-                } else {
-                    atualizarDataHora();
-                }
+                // Carregar itens do orçamento
+                atualizarGridItens();
 
-                // Preencher a tabela
-                DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
-                model.setRowCount(0);
-
-                if (orcamento.getItensOrcamento() != null && !orcamento.getItensOrcamento().isEmpty()) {
-                    for (ItemOrcamento item : orcamento.getItensOrcamento()) {
-                        model.addRow(new Object[]{
-                            item.getIdItemOrcamento(),
-                            item.getProduto().getDescricao(),
-                            String.format("%.2f", item.getPrecoUn()),
-                            item.getQuantidade(),
-                            String.format("%.2f", item.getSubtotal())
-                        });
-                    }
-
-                    // Calcular e atualizar os totais
-                    calcularTotais(orcamento.getItensOrcamento());
-                } else {
-                    txtTotalPecas.setText("R$0.00");
-                    txtTotalServicos.setText("R$0.00");
-                    txtValorFinal.setText("R$0.00");
-                }
+                // Atualizar os totais
+                calcularTotais(orcamento.getItensOrcamento());
             } else {
                 JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
             }
