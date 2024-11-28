@@ -64,7 +64,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         
         // Ajusta para fechar apenas a janela atual
         setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
-        lblHead.setText("ORÇAMENTO");
+        lblHead.setText("NOVO ORÇAMENTO");
         //ABRE O A TELA MAXIMIZADA.
         //setExtendedState(MAXIMIZED_BOTH);
 
@@ -253,25 +253,40 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         if (instance == null) {
             instance = new OrcamentoGUI();
         }
+        instance.resetCampos(); // Garante que a instância está limpa ao abrir
         return instance;
     }
     
     // Método para abrir a tela de novo orçamento
     public static void abrirNovaInstancia() {
-        if (instance == null) {
-            instance = new OrcamentoGUI();
-            // Define a janela como sempre no topo
-            //instance.setAlwaysOnTop(true);
-        }
-        instance.setVisible(true);
-        instance.requestFocus(); // Garante que a janela receba o foco
-        
+        OrcamentoGUI instancia = getInstance(); // Obtém a instância Singleton
+        instancia.resetCampos(); // Garante que os campos estão limpos
+        instancia.setVisible(true); // Exibe a janela
+    }
+
+    
+    @Override
+    public void dispose() {
+        super.dispose(); // Fecha a janela atual
+        instance = null; // Invalida a instância Singleton
     }
     
     //Método para resetar campos
-    public void resetFields() {
-        // Resetar campos e estado aqui, por exemplo:
-        // lblDescricao.setText("");
+    private void resetCampos() {
+        // Limpa os campos de texto
+        txtCliente.setText("");
+        txtVeiculo.setText("");
+        txtPlaca.setText("");
+        txtTotalPecas.setText("R$0,00");
+        txtTotalServicos.setText("R$0,00");
+        txtValorFinal.setText("R$0,00");
+
+        // Limpa a tabela de itens
+        DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
+        model.setRowCount(0); // Remove todas as linhas
+
+        // Atualiza o cabeçalho para "NOVO ORÇAMENTO"
+        lblHead.setText("NOVO ORÇAMENTO");
     }
     
     // Atualiza cliente no orçamento
@@ -700,7 +715,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_txtVeiculoActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        dispose(); // Fecha a janela
+        resetCampos(); // Limpa os campos antes de fechar
+        dispose(); // Fecha a instância atual
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
