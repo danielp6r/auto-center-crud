@@ -217,10 +217,24 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         rootPane.getActionMap().put("reset", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Recupera o ID do orçamento atualmente carregado
+                Long idAtual = getIdOrcamento();
+
+                // Fecha a instância atual
                 dispose();
-                OrcamentoGUI.abrirNovaInstancia();
+
+                if (idAtual != null) {
+                    // Reabre a mesma instância com o mesmo ID
+                    OrcamentoGUI orcamentoGUI = new OrcamentoGUI();
+                    orcamentoGUI.carregarOrcamento(idAtual);
+                    orcamentoGUI.setVisible(true);
+                } else {
+                    // Caso não tenha ID (é uma nova instância), cria uma nova tela em branco
+                    OrcamentoGUI.abrirNovaInstancia();
+                }
             }
         });
+
 
         // Mapeamento global da tecla esc para fechar a tela
         rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "dispose");
