@@ -27,8 +27,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
@@ -50,6 +52,7 @@ public class ListagemGUI extends javax.swing.JFrame {
     public ListagemGUI() {
         
         initComponents();
+        ajustarAlinhamentoTabela();
         atalhos();
         
         // Remove foco de todos os componentes
@@ -382,6 +385,21 @@ public class ListagemGUI extends javax.swing.JFrame {
 
             }
         });
+    }
+    
+    private void ajustarAlinhamentoTabela() {
+        // Configurar o alinhamento à esquerda para todas as células
+        DefaultTableCellRenderer renderizadorCélula = new DefaultTableCellRenderer();
+        renderizadorCélula.setHorizontalAlignment(SwingConstants.LEFT);
+
+        // Aplica o renderizador para todas as colunas
+        for (int i = 0; i < tblListagem.getColumnCount(); i++) {
+            tblListagem.getColumnModel().getColumn(i).setCellRenderer(renderizadorCélula);
+        }
+
+        // Apenas ajusta o alinhamento do título, sem alterar o fundo ou o estilo visual
+        DefaultTableCellRenderer renderizadorTitulo = (DefaultTableCellRenderer) tblListagem.getTableHeader().getDefaultRenderer();
+        renderizadorTitulo.setHorizontalAlignment(SwingConstants.LEFT);
     }
     
     /**

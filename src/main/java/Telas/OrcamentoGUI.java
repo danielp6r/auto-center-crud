@@ -25,6 +25,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 
 
 
@@ -48,6 +50,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
      */
     public OrcamentoGUI() {
         initComponents();
+        ajustarAlinhamentoTabela();
         atalhos();
         atualizarDataHora();
         
@@ -116,7 +119,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar orçamento: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-
     
     //Método para calcular os totais ao abrir um orçamento já existente 
     private void calcularTotais(List<ItemOrcamento> itens) {
@@ -311,6 +313,22 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     public Long getIdOrcamento() {
         return idOrcamentoGlobal; // Retorna o ID do orçamento carregado em OrcamentoGUI
     }
+    
+    private void ajustarAlinhamentoTabela() {
+        // Configurar o alinhamento à esquerda para todas as células
+        DefaultTableCellRenderer renderizadorCélula = new DefaultTableCellRenderer();
+        renderizadorCélula.setHorizontalAlignment(SwingConstants.LEFT);
+
+        // Aplica o renderizador para todas as colunas
+        for (int i = 0; i < tblListagem.getColumnCount(); i++) {
+            tblListagem.getColumnModel().getColumn(i).setCellRenderer(renderizadorCélula);
+        }
+
+        // Apenas ajusta o alinhamento do título, sem alterar o fundo ou o estilo visual
+        DefaultTableCellRenderer renderizadorTitulo = (DefaultTableCellRenderer) tblListagem.getTableHeader().getDefaultRenderer();
+        renderizadorTitulo.setHorizontalAlignment(SwingConstants.LEFT);
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -456,7 +474,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Número Item", "Descrição", "Preço Un.", "Quantidade", "Subtotal"
+                "Número Item", "Descrição", "Valor Un.", "Qtd.", "Subtotal"
             }
         ) {
             boolean[] canEdit = new boolean [] {
