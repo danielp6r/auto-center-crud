@@ -94,7 +94,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 txtCliente.setText(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : "");
                 txtVeiculo.setText(orcamento.getCarro() != null ? orcamento.getCarro() : "");
                 txtPlaca.setText(orcamento.getPlaca() != null ? orcamento.getPlaca() : "");
-
+                
+                // Carregar e formatar data e hora do orçamento
+                if (orcamento.getDataHora() != null) {
+                    String dataHoraFormatada = orcamento.getDataHora().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+                    lblDataHora.setText(dataHoraFormatada);
+                } else {
+                    lblDataHora.setText(""); // Limpa o campo caso não haja data
+                }
+                
                 // Carregar itens do orçamento
                 atualizarGridItens();
 
