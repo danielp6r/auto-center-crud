@@ -86,7 +86,10 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
             if (orcamento != null) {
                 this.idOrcamentoGlobal = idOrcamento; // Mantém o estado do orçamento carregado
-
+                
+                // Atualiza o número do orçamento no lblHead
+                lblHead.setText("ORÇAMENTO Nº: " + idOrcamento);
+                
                 // Preencher os campos
                 txtCliente.setText(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : "");
                 txtVeiculo.setText(orcamento.getCarro() != null ? orcamento.getCarro() : "");
