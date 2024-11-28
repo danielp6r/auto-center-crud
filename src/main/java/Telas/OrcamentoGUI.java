@@ -75,6 +75,14 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         column.setMaxWidth(0);
         column.setPreferredWidth(0);
         column.setWidth(0);
+        
+        //WindowListener para redefinir a instância ao fechar:
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                instance = null; // Reseta a instância ao fechar
+            }
+        });        
     }
     
     /*
@@ -253,22 +261,23 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         if (instance == null) {
             instance = new OrcamentoGUI();
         }
-        instance.resetCampos(); // Garante que a instância está limpa ao abrir
         return instance;
     }
+
     
     // Método para abrir a tela de novo orçamento
     public static void abrirNovaInstancia() {
-        OrcamentoGUI instancia = getInstance(); // Obtém a instância Singleton
-        instancia.resetCampos(); // Garante que os campos estão limpos
-        instancia.setVisible(true); // Exibe a janela
+        if (instance == null) {
+            instance = new OrcamentoGUI(); // Cria uma nova instância se não houver nenhuma aberta
+        }
+        instance.setVisible(true); // Traz a janela para frente
+        instance.requestFocus(); // Garante que a janela recebe o foco
     }
-
     
     @Override
     public void dispose() {
         super.dispose(); // Fecha a janela atual
-        instance = null; // Invalida a instância Singleton
+        instance = null; // Reseta a instância
     }
     
     //Método para resetar campos
@@ -287,7 +296,13 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
         // Atualiza o cabeçalho para "NOVO ORÇAMENTO"
         lblHead.setText("NOVO ORÇAMENTO");
+
+        // Reseta os identificadores globais
+        idOrcamentoGlobal = 0;
+        idClienteSelecionado = null;
+        clienteSelecionado = false;
     }
+
     
     // Atualiza cliente no orçamento
     public void setClienteSelecionado(Long idCliente, String nomeCliente) {
@@ -716,7 +731,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         resetCampos(); // Limpa os campos antes de fechar
-        dispose(); // Fecha a instância atual
+        dispose(); // Fecha a janela atual
+        instance = null; // Reseta a instância
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
