@@ -296,8 +296,8 @@
                   <Table columnCount="5" rowCount="0">
                     <Column editable="false" title="N&#xfa;mero Item" type="java.lang.Object"/>
                     <Column editable="false" title="Descri&#xe7;&#xe3;o" type="java.lang.Object"/>
-                    <Column editable="false" title="Pre&#xe7;o Un." type="java.lang.Object"/>
-                    <Column editable="false" title="Quantidade" type="java.lang.Object"/>
+                    <Column editable="false" title="Valor Un." type="java.lang.Object"/>
+                    <Column editable="false" title="Qtd." type="java.lang.Object"/>
                     <Column editable="false" title="Subtotal" type="java.lang.Object"/>
                   </Table>
                 </Property>

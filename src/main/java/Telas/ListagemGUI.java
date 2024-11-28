@@ -16,8 +16,10 @@ import javax.swing.table.DefaultTableModel;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -25,8 +27,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
@@ -37,6 +41,9 @@ import org.hibernate.Session;
  * @author danielp6r
  */
 public class ListagemGUI extends javax.swing.JFrame {
+    
+    // Lista para gerenciar múltiplas instâncias de OrcamentoGUI abertas
+    private final Map<Long, OrcamentoGUI> instanciasOrcamentos = new HashMap<>();
 
     /**
      * Creates new form ClienteGUI
@@ -45,6 +52,7 @@ public class ListagemGUI extends javax.swing.JFrame {
     public ListagemGUI() {
         
         initComponents();
+        ajustarAlinhamentoTabela();
         atalhos();
         
         // Remove foco de todos os componentes
@@ -102,17 +110,48 @@ public class ListagemGUI extends javax.swing.JFrame {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (evt.getClickCount() == 2 && tblListagem.getSelectedRow() != -1) {
-                    int selectedRow = tblListagem.getSelectedRow(); // Linha selecionada
-                    String idFormatado = tblListagem.getValueAt(selectedRow, 0).toString(); // ID do orçamento (Coluna 0)
-                    Long idOrcamento = Long.parseLong(idFormatado); // Converter ID para Long
+                    int selectedRow = tblListagem.getSelectedRow();
+                    String idFormatado = tblListagem.getValueAt(selectedRow, 0).toString();
+                    Long idOrcamento = Long.parseLong(idFormatado);
 
-                    // Abrir a OrcamentoGUI e carregar o orçamento selecionado
-                    OrcamentoGUI orcamentoGUI = new OrcamentoGUI();
-                    orcamentoGUI.carregarOrcamento(idOrcamento); // Carregar os dados do orçamento
-                    orcamentoGUI.setVisible(true); // Mostrar a tela
+                    // Verifica se já existe uma instância para este ID
+                    OrcamentoGUI orcamentoGUI = instanciasOrcamentos.get(idOrcamento);
+
+                    // Se já estiver aberto na listagem, foca na janela
+                    if (orcamentoGUI != null) {
+                        orcamentoGUI.setVisible(true);
+                        orcamentoGUI.toFront();
+                        return;
+                    }
+
+                    // Se o orçamento estiver sendo editado como "Novo Orçamento"
+                    if (OrcamentoGUI.getInstance().getIdOrcamento() != null
+                            && OrcamentoGUI.getInstance().getIdOrcamento().equals(idOrcamento)) {
+                        OrcamentoGUI.getInstance().setVisible(true);
+                        OrcamentoGUI.getInstance().toFront();
+                        return;
+                    }
+
+                    // Cria nova instância e adiciona ao mapa
+                    orcamentoGUI = new OrcamentoGUI();
+                    orcamentoGUI.carregarOrcamento(idOrcamento);
+                    instanciasOrcamentos.put(idOrcamento, orcamentoGUI);
+
+                    // Adiciona listener para remover do mapa ao fechar
+                    orcamentoGUI.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosed(java.awt.event.WindowEvent e) {
+                            instanciasOrcamentos.remove(idOrcamento);
+                        }
+                    });
+
+                    // Mostra e foca na instância
+                    orcamentoGUI.setVisible(true);
+                    orcamentoGUI.toFront();
                 }
             }
         });
+
         
     }
     
@@ -346,6 +385,21 @@ public class ListagemGUI extends javax.swing.JFrame {
 
             }
         });
+    }
+    
+    private void ajustarAlinhamentoTabela() {
+        // Configurar o alinhamento à esquerda para todas as células
+        DefaultTableCellRenderer renderizadorCélula = new DefaultTableCellRenderer();
+        renderizadorCélula.setHorizontalAlignment(SwingConstants.LEFT);
+
+        // Aplica o renderizador para todas as colunas
+        for (int i = 0; i < tblListagem.getColumnCount(); i++) {
+            tblListagem.getColumnModel().getColumn(i).setCellRenderer(renderizadorCélula);
+        }
+
+        // Apenas ajusta o alinhamento do título, sem alterar o fundo ou o estilo visual
+        DefaultTableCellRenderer renderizadorTitulo = (DefaultTableCellRenderer) tblListagem.getTableHeader().getDefaultRenderer();
+        renderizadorTitulo.setHorizontalAlignment(SwingConstants.LEFT);
     }
     
     /**
