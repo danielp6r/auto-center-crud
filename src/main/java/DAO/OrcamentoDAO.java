@@ -2,25 +2,31 @@ package DAO;
 
 import Classes.Orcamento;
 import Classes.HibernateUtil;
-import jakarta.persistence.Query;
+import Classes.ItemOrcamento;
 import org.hibernate.Session;
-
-import java.util.List;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import java.util.List;
 
 public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
+    private static OrcamentoDAO instance;
 
-    private SessionFactory sessionFactory;
-
-    public OrcamentoDAO() {
-       /* try {
-            this.sessionFactory = new Configuration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
-            throw new ExceptionInInitializerError(ex);
-        }*/
+    // Construtor privado para Singleton
+    private OrcamentoDAO() {
+        // Construtor vazio
     }
-    
+
+    // Singleton para garantir uma única instância
+    public static OrcamentoDAO getInstance() {
+        if (instance == null) {
+            synchronized (OrcamentoDAO.class) {
+                if (instance == null) {
+                    instance = new OrcamentoDAO();
+                }
+            }
+        }
+        return instance;
+    }
+
     /**
      * Encontra todos os orçamentos associados a um cliente específico.
      *
@@ -34,17 +40,24 @@ public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
                           .getResultList();
         }
     }
-    
-    public long findNextId(Session session) {
-        Query query = session.createQuery("select max(idOrcamento) from Orcamento", Long.class);
-        Long maxId = (Long) query.getSingleResult();
 
-        // Se maxId for nulo, retorna 1; caso contrário, retorna maxId + 1
+    /**
+     * Encontra o próximo ID disponível para um novo orçamento.
+     *
+     * @param session Sessão atual do Hibernate
+     * @return Próximo ID disponível
+     */
+    public long findNextId(Session session) {
+        Long maxId = session.createQuery("select max(idOrcamento) from Orcamento", Long.class).uniqueResult();
         return (maxId != null) ? maxId + 1 : 1;
     }
-    
+
+    /**
+     * Retorna todos os orçamentos cadastrados.
+     *
+     * @return Lista de todos os orçamentos
+     */
     public List<Orcamento> getAllOrcamentos() {
-        List<Orcamento> orcamentos = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {            
             return session.createQuery("from Orcamento", Orcamento.class).list();
         } catch (Exception e) {
@@ -52,7 +65,51 @@ public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
             return null;
         }   
     }
-    
+
+    /**
+     * Encontra um orçamento por ID, carregando seus itens associados.
+     *
+     * @param id ID do orçamento
+     * @return Instância do orçamento com itens associados
+     */
+    @Override
+    public Orcamento findById(Long id) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Query ajustada para carregar itens do orçamento e produtos relacionados
+            return session.createQuery(
+                    "SELECT o FROM Orcamento o "
+                    + "LEFT JOIN FETCH o.itensOrcamento io "
+                    + "LEFT JOIN FETCH io.produto p "
+                    + "WHERE o.idOrcamento = :id",
+                    Orcamento.class)
+                    .setParameter("id", id)
+                    .uniqueResult();
+        }
+    }
+
+
+    /**
+     * Encontra os itens associados a um orçamento específico.
+     *
+     * @param idOrcamento ID do orçamento
+     * @return Lista de itens associados ao orçamento
+     */
+    public List<ItemOrcamento> findItensByOrcamentoId(Long idOrcamento) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                    "FROM ItemOrcamento io WHERE io.orcamento.idOrcamento = :idOrcamento",
+                    ItemOrcamento.class)
+                    .setParameter("idOrcamento", idOrcamento)
+                    .list();
+        }
+    }
+
+    /**
+     * Exclui um orçamento pelo ID.
+     *
+     * @param idOrcamento ID do orçamento a ser excluído
+     * @param session Sessão atual do Hibernate
+     */
     public void excluirOrcamentoPorId(long idOrcamento, Session session) {
         Transaction transaction = null;
         try {
@@ -71,5 +128,29 @@ public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
             e.printStackTrace();
             throw e; // Propaga a exceção para o método chamador
         }
-    }      
+    }
+
+    /**
+     * Atualiza os valores de mercadorias, serviços e total de um orçamento.
+     *
+     * @param idOrcamento ID do orçamento a ser atualizado
+     * @param valMercadorias Valor das mercadorias
+     * @param valServicos Valor dos serviços
+     * @param valTotal Valor total do orçamento
+     */
+    public void atualizarValoresOrcamento(long idOrcamento, double valMercadorias, double valServicos, double valTotal) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            String sql = "UPDATE orcamentos SET val_mercadorias = :valMercadorias, valor_servicos = :valServicos, val_total = :valTotal WHERE id_orcamento_ = :idOrcamento";
+            session.createNativeQuery(sql)
+                   .setParameter("valMercadorias", valMercadorias)
+                   .setParameter("valServicos", valServicos)
+                   .setParameter("valTotal", valTotal)
+                   .setParameter("idOrcamento", idOrcamento)
+                   .executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
