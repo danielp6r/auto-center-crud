@@ -284,6 +284,11 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         idClienteSelecionado = null; // Remove o ID do cliente selecionado
         txtCliente.setText(""); // Limpa o campo de texto
     }
+    
+    // Getter para o ID do orçamento atual
+    public Long getIdOrcamento() {
+        return idOrcamentoGlobal; // Retorna o ID do orçamento carregado em OrcamentoGUI
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
