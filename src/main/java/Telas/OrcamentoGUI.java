@@ -399,6 +399,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         paneObs = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         lblObs = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Orçamentos");
@@ -421,7 +422,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lbl1.setText("LISTAGEM DE PEÇAS E SERVIÇOS");
         lbl1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        btnCancelar.setText("Cancelar");
+        btnCancelar.setText("Fechar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelarActionPerformed(evt);
@@ -635,6 +636,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lblObs.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblObs.setText("Observações:");
 
+        jButton1.setText("Imprimir F12");
+
         javax.swing.GroupLayout PaneAllLayout = new javax.swing.GroupLayout(PaneAll);
         PaneAll.setLayout(PaneAllLayout);
         PaneAllLayout.setHorizontalGroup(
@@ -660,7 +663,9 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                             .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(17, 17, 17)
                         .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addGap(12, 12, 12))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PaneAllLayout.createSequentialGroup()
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(paneValores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -688,15 +693,17 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                             .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(PaneAllLayout.createSequentialGroup()
                         .addComponent(lblPlaca)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jButton1)
+                        .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(10, 10, 10)
                 .addComponent(paneBotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+                .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(PaneAllLayout.createSequentialGroup()
@@ -728,12 +735,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private void txtVeiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVeiculoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtVeiculoActionPerformed
-
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        resetCampos(); // Limpa os campos antes de fechar
-        dispose(); // Fecha a janela atual
-        instance = null; // Reseta a instância
-    }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
         // TODO add your handling code here:
@@ -1025,6 +1026,12 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnExcluirActionPerformed
 
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        resetCampos(); // Limpa os campos antes de fechar
+        dispose(); // Fecha a janela atual
+        instance = null; // Reseta a instância
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1072,6 +1079,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnProduto;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnServico;
+    private javax.swing.JButton jButton1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JLabel lbl1;
     private javax.swing.JLabel lblCliente;
