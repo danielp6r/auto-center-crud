@@ -48,6 +48,7 @@ Telas/ProdutoGUI$5.class
 Telas/ClienteGUI$2.class
 Telas/ListagemGUI$12.class
 Telas/ClienteGUI$13.class
+Telas/TelaImpressao.class
 Telas/OrcamentoGUI$7.class
 Telas/ClienteGUI$5.class
 Telas/OrcamentoGUI$12.class
@@ -61,6 +62,7 @@ Telas/ListagemGUI.class
 Telas/ClienteGUI$14.class
 Classes/Orcamento.class
 Telas/ListagemGUI$13.class
+Telas/TelaImpressao$1.class
 Telas/OrcamentoGUI$1.class
 Telas/ListagemGUI$2$1.class
 DAO/OrcamentoDAO.class
@@ -79,6 +81,7 @@ Telas/ClienteGUI$22.class
 Telas/ProdutoGUI$8.class
 Telas/ListagemGUI$14.class
 DAO/ItemOrcamentoDAO.class
+Telas/OrcamentoGUI$20.class
 Classes/Servico.class
 Classes/HibernateUtil.class
 Telas/ProdutoGUI$1.class
@@ -101,4 +104,5 @@ Telas/ClienteGUI$16.class
 Telas/ClienteGUI$10.class
 Telas/OrcamentoGUI$3.class
 DAO/PessoaFisicaDAO.class
+Telas/TelaImpressao$2.class
 Telas/OrcamentoGUI$15.class
