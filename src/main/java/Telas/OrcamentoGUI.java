@@ -25,6 +25,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -82,12 +83,76 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 instance = null; // Reseta a instância ao fechar
             }
-        });        
+        });   
     }
     
     /*
     MÉTODOS ESPECÍFICOS PARA ESTA TELA
      */
+    
+    // Coleta os dados da tabela
+    public List<Object[]> obterDadosTabelaListagem() {
+        List<Object[]> dados = new ArrayList<>();
+        DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            Object[] row = new Object[model.getColumnCount()];
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                row[j] = model.getValueAt(i, j);
+            }
+            dados.add(row);
+        }
+        return dados;
+    }
+    
+    // Validação para garantir que os campos obrigatórios estão preenchidos
+    private boolean validarCamposObrigatorios() {
+        StringBuilder mensagemErro = new StringBuilder();
+
+        if (txtCliente.getText().trim().isEmpty()) {
+            mensagemErro.append("Nome, ");
+        }
+        if (txtVeiculo.getText().trim().isEmpty()) {
+            mensagemErro.append("Veículo, ");
+        }
+        if (txtPlaca.getText().trim().isEmpty()) {
+            mensagemErro.append("Placa, ");
+        }
+
+        if (mensagemErro.length() > 0) {
+            // Remove a última vírgula e espaço
+            mensagemErro.setLength(mensagemErro.length() - 2);
+            JOptionPane.showMessageDialog(this,
+                    "O(s) campo(s) " + mensagemErro.toString() + " precisam ser preenchidos!",
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    
+    // Método para abrir a tela de impressão com os dados do orçamento
+    private void abrirTelaImpressao() {
+        TelaImpressao telaImpressao = new TelaImpressao();
+
+        // Preencher os campos principais
+        telaImpressao.setLblNumeroOrcamento(lblHead.getText().replace("ORÇAMENTO Nº: ", "").trim());
+        telaImpressao.setLblNomeCliente(txtCliente.getText().trim());
+        telaImpressao.setLblNomeVeiculo(txtVeiculo.getText().trim());
+        telaImpressao.setLblPlacaVeiculo(txtPlaca.getText().trim());
+        telaImpressao.setLblDataHoraOrcamento(lblDataHora.getText().trim());
+        telaImpressao.setLblValorTotal(txtValorFinal.getText().trim());
+
+        // Transferir os dados da tabela
+        List<Object[]> dadosTabela = obterDadosTabelaListagem();
+        telaImpressao.carregarDadosTabela(dadosTabela);
+
+        // Exibir a tela de impressão
+        telaImpressao.setVisible(true);
+    }
+
     
     //Método para carregar orçamento existente
     public void carregarOrcamento(Long idOrcamento) {
@@ -399,7 +464,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         paneObs = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         lblObs = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnImprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Orçamentos");
@@ -636,7 +701,12 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lblObs.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblObs.setText("Observações:");
 
-        jButton1.setText("Imprimir F12");
+        btnImprimir.setText("Imprimir F12");
+        btnImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImprimirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout PaneAllLayout = new javax.swing.GroupLayout(PaneAll);
         PaneAll.setLayout(PaneAllLayout);
@@ -664,7 +734,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addGap(17, 17, 17)
                         .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
+                        .addComponent(btnImprimir)
                         .addGap(12, 12, 12))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PaneAllLayout.createSequentialGroup()
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -698,7 +768,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jButton1)
+                        .addComponent(btnImprimir)
                         .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(10, 10, 10)
                 .addComponent(paneBotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1032,6 +1102,12 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         instance = null; // Reseta a instância
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
+        if (validarCamposObrigatorios()) {
+            abrirTelaImpressao();
+        }
+    }//GEN-LAST:event_btnImprimirActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1076,10 +1152,10 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnCadastro;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnExcluir;
+    private javax.swing.JButton btnImprimir;
     private javax.swing.JButton btnProduto;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnServico;
-    private javax.swing.JButton jButton1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JLabel lbl1;
     private javax.swing.JLabel lblCliente;

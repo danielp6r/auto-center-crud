@@ -81,6 +81,7 @@ Telas/ClienteGUI$22.class
 Telas/ProdutoGUI$8.class
 Telas/ListagemGUI$14.class
 DAO/ItemOrcamentoDAO.class
+Telas/OrcamentoGUI$20.class
 Classes/Servico.class
 Classes/HibernateUtil.class
 Telas/ProdutoGUI$1.class

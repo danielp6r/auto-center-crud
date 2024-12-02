@@ -1,5 +1,7 @@
 package Telas;
 
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -15,6 +17,10 @@ public class TelaImpressao extends javax.swing.JFrame {
     public TelaImpressao() {
         initComponents();
         
+        paneListagem.setBorder(null);
+        setAlwaysOnTop(true);
+        setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+
         // Ocultando a coluna número
         TableColumnModel columnModel = tblListagem.getColumnModel();
         TableColumn column = columnModel.getColumn(0); // 0 é o índice da coluna
@@ -22,6 +28,73 @@ public class TelaImpressao extends javax.swing.JFrame {
         column.setMaxWidth(0);
         column.setPreferredWidth(0);
         column.setWidth(0);
+
+    }
+    
+    // Métodos públicos para preencher os campos na tela de impressão
+    public void setLblNumeroOrcamento(String numeroOrcamento) {
+        lblNumeroOrcamento.setText(numeroOrcamento);
+    }
+
+    public void setLblNomeCliente(String nomeCliente) {
+        lblNomeCliente.setText(nomeCliente);
+    }
+
+    public void setLblNomeVeiculo(String nomeVeiculo) {
+        lblNomeVeiculo.setText(nomeVeiculo);
+    }
+
+    public void setLblPlacaVeiculo(String placaVeiculo) {
+        lblPlacaVeiculo.setText(placaVeiculo);
+    }
+
+    public void setLblDataHoraOrcamento(String dataHoraOrcamento) {
+        lblDataHoraOrcamento.setText(dataHoraOrcamento);
+    }
+    
+    public void setLblValorTotal(String valorTotal) {
+        lblValorTotal.setText(valorTotal);
+    }
+    
+    // Método para carregar os dados da tabela
+    public void carregarDadosTabela(List<Object[]> dados) {
+        DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
+        model.setRowCount(0); // Limpa a tabela antes de adicionar os dados
+
+        for (Object[] row : dados) {
+            model.addRow(row);
+        }
+
+        // Ajustar a altura da tabela e do painel
+        ajustarAlturaTabela();
+    }
+
+    public void ajustarAlturaTabela() {
+        int rowHeight = tblListagem.getRowHeight(); // Altura de uma linha
+        int rowCount = tblListagem.getRowCount();  // Quantidade de linhas
+        int headerHeight = tblListagem.getTableHeader().getHeight(); // Altura do cabeçalho
+        int marginHeight = 10; // Margem adicional (pode variar conforme o layout)
+
+        // Calcular altura total necessária (linhas + cabeçalho + margens)
+        int tableHeight = (rowHeight * rowCount) + headerHeight + marginHeight;
+
+        // Multiplicar por 2.1 como ajuste temporário
+        int adjustedHeight = (int) (tableHeight * 2);
+
+        // Ajustar tamanho preferido da tabela e do painel
+        tblListagem.setPreferredScrollableViewportSize(
+                new java.awt.Dimension(tblListagem.getPreferredScrollableViewportSize().width, adjustedHeight)
+        );
+
+        paneListagem.setPreferredSize(
+                new java.awt.Dimension(paneListagem.getWidth(), adjustedHeight)
+        );
+
+        // Revalidar e repintar componentes
+        paneListagem.revalidate();
+        paneListagem.repaint();
+        this.revalidate();
+        this.repaint();
     }
 
     /**
@@ -41,12 +114,17 @@ public class TelaImpressao extends javax.swing.JFrame {
         lblDataHoraOrcamento = new javax.swing.JLabel();
         lblNomeVeiculo = new javax.swing.JLabel();
         lblPlacaVeiculo = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         lblValorTotal = new javax.swing.JLabel();
         paneListagem = new javax.swing.JScrollPane();
         tblListagem = new javax.swing.JTable();
+        jLabel0 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         lblNomeEmpresa.setFont(new java.awt.Font("Ubuntu", 1, 24)); // NOI18N
         lblNomeEmpresa.setForeground(new java.awt.Color(0, 0, 0));
@@ -64,23 +142,21 @@ public class TelaImpressao extends javax.swing.JFrame {
         lblFone.setText("Fone, Whats: (47) 3394-3977");
 
         lblNumeroOrcamento.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        lblNumeroOrcamento.setText("ORÇAMENTO Nº:");
+        lblNumeroOrcamento.setText(" ");
 
-        lblNomeCliente.setText("Cliente:");
+        lblNomeCliente.setText(" ");
 
-        lblDataHoraOrcamento.setText("Data/Hora");
+        lblNomeVeiculo.setText(" ");
 
-        lblNomeVeiculo.setText("Carro:");
-
-        lblPlacaVeiculo.setText("Placa:");
-
-        jLabel1.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        jLabel1.setText("VALOR TOTAL A PAGAR: R$");
+        lblPlacaVeiculo.setText(" ");
 
         lblValorTotal.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
-        lblValorTotal.setText("valor total");
+        lblValorTotal.setText("R$ ");
 
         paneListagem.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        paneListagem.setMaximumSize(new java.awt.Dimension(0, 0));
+        paneListagem.setMinimumSize(new java.awt.Dimension(0, 0));
+        paneListagem.setPreferredSize(new java.awt.Dimension(0, 0));
 
         tblListagem.setFont(new java.awt.Font("Liberation Sans", 0, 15)); // NOI18N
         tblListagem.setModel(new javax.swing.table.DefaultTableModel(
@@ -99,7 +175,23 @@ public class TelaImpressao extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblListagem.setShowGrid(false);
         paneListagem.setViewportView(tblListagem);
+
+        jLabel0.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
+        jLabel0.setText("ORÇAMENTO Nº:");
+
+        jLabel1.setFont(new java.awt.Font("Liberation Sans", 1, 14)); // NOI18N
+        jLabel1.setText("VALOR TOTAL:");
+
+        jLabel2.setFont(new java.awt.Font("Liberation Sans", 1, 13)); // NOI18N
+        jLabel2.setText("Cliente:");
+
+        jLabel3.setFont(new java.awt.Font("Liberation Sans", 1, 13)); // NOI18N
+        jLabel3.setText("Carro:");
+
+        jLabel4.setFont(new java.awt.Font("Liberation Sans", 1, 13)); // NOI18N
+        jLabel4.setText("Placa:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -112,22 +204,31 @@ public class TelaImpressao extends javax.swing.JFrame {
                     .addComponent(lblFone, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblEndereco, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(paneListagem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1048, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblNumeroOrcamento)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(lblNomeVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(lblPlacaVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblDataHoraOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblValorTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(lblValorTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel0)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblNumeroOrcamento))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblNomeVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblPlacaVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblDataHoraOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -140,20 +241,26 @@ public class TelaImpressao extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblFone)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblNumeroOrcamento)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNomeCliente)
-                    .addComponent(lblNomeVeiculo)
-                    .addComponent(lblPlacaVeiculo)
-                    .addComponent(lblDataHoraOrcamento))
+                    .addComponent(jLabel0)
+                    .addComponent(lblNumeroOrcamento))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(paneListagem)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2)
+                        .addComponent(jLabel3)
+                        .addComponent(lblNomeVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4)
+                        .addComponent(lblPlacaVeiculo))
+                    .addComponent(lblDataHoraOrcamento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(lblValorTotal))
-                .addGap(156, 156, 156))
+                .addContainerGap(557, Short.MAX_VALUE))
         );
 
         pack();
@@ -195,7 +302,11 @@ public class TelaImpressao extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel0;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel lblDataHoraOrcamento;
     private javax.swing.JLabel lblEndereco;
     private javax.swing.JLabel lblFone;
