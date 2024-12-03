@@ -25,7 +25,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -86,74 +85,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         });   
     }
     
-    /*
-    MÉTODOS ESPECÍFICOS PARA ESTA TELA
-     */
-    
-    // Coleta os dados da tabela
-    public List<Object[]> obterDadosTabelaListagem() {
-        List<Object[]> dados = new ArrayList<>();
-        DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
+    //MÉTODOS ESPECÍFICOS PARA ESTA TELA
 
-        for (int i = 0; i < model.getRowCount(); i++) {
-            Object[] row = new Object[model.getColumnCount()];
-            for (int j = 0; j < model.getColumnCount(); j++) {
-                row[j] = model.getValueAt(i, j);
-            }
-            dados.add(row);
-        }
-        return dados;
-    }
-    
-    // Validação para garantir que os campos obrigatórios estão preenchidos
-    private boolean validarCamposObrigatorios() {
-        StringBuilder mensagemErro = new StringBuilder();
-
-        if (txtCliente.getText().trim().isEmpty()) {
-            mensagemErro.append("Nome, ");
-        }
-        if (txtVeiculo.getText().trim().isEmpty()) {
-            mensagemErro.append("Veículo, ");
-        }
-        if (txtPlaca.getText().trim().isEmpty()) {
-            mensagemErro.append("Placa, ");
-        }
-
-        if (mensagemErro.length() > 0) {
-            // Remove a última vírgula e espaço
-            mensagemErro.setLength(mensagemErro.length() - 2);
-            JOptionPane.showMessageDialog(this,
-                    "O(s) campo(s) " + mensagemErro.toString() + " precisam ser preenchidos!",
-                    "Erro",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        return true;
-    }
-
-    
-    // Método para abrir a tela de impressão com os dados do orçamento
-    private void abrirTelaImpressao() {
-        TelaImpressao telaImpressao = new TelaImpressao();
-
-        // Preencher os campos principais
-        telaImpressao.setLblNumeroOrcamento(lblHead.getText().replace("ORÇAMENTO Nº: ", "").trim());
-        telaImpressao.setLblNomeCliente(txtCliente.getText().trim());
-        telaImpressao.setLblNomeVeiculo(txtVeiculo.getText().trim());
-        telaImpressao.setLblPlacaVeiculo(txtPlaca.getText().trim());
-        telaImpressao.setLblDataHoraOrcamento(lblDataHora.getText().trim());
-        telaImpressao.setLblValorTotal(txtValorFinal.getText().trim());
-
-        // Transferir os dados da tabela
-        List<Object[]> dadosTabela = obterDadosTabelaListagem();
-        telaImpressao.carregarDadosTabela(dadosTabela);
-
-        // Exibir a tela de impressão
-        telaImpressao.setVisible(true);
-    }
-
-    
     //Método para carregar orçamento existente
     public void carregarOrcamento(Long idOrcamento) {
         try {
@@ -1103,9 +1036,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        if (validarCamposObrigatorios()) {
-            abrirTelaImpressao();
-        }
+        
     }//GEN-LAST:event_btnImprimirActionPerformed
 
     /**
