@@ -40,6 +40,9 @@ public class ClienteGUI extends javax.swing.JFrame {
     
     // Campo estático para armazenar a instância única
     private static ClienteGUI instance;
+    
+    // Variável para controlar o contexto de abertura
+    private boolean modoVinculacao = false;
 
     /**
      * Creates new form ClienteGUI
@@ -380,6 +383,9 @@ public class ClienteGUI extends javax.swing.JFrame {
     
     // Seleciona cliente e envia para OrcamentoGUI
     private void selecionarClienteParaOrcamento() { // Seleciona cliente e envia para OrcamentoGUI
+        if (!modoVinculacao)
+            return; // Não faz nada se não estiver em modo de vinculação
+        
         int selectedRow = tblListagem.getSelectedRow();
         if (selectedRow != -1) {
             try {
@@ -403,6 +409,11 @@ public class ClienteGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Nenhum cliente selecionado!");
         }
     }
+    
+    // Método para controlar o contexto de abertura
+    public void setModoVinculacao(boolean modoVinculacao) {
+        this.modoVinculacao = modoVinculacao;
+    }    
 
   
     /**

@@ -630,13 +630,9 @@ public class ListagemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNovoOrcamentoActionPerformed
 
     private void btnCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastroActionPerformed
-        // Cria a instância da tela ClienteGUI
-        //ClienteGUI clienteGUI = new ClienteGUI();
-        // Torna a tela visível
-        //clienteGUI.setVisible(true);
-        ClienteGUI.abrirNovaInstancia();
-
         
+        ClienteGUI.abrirNovaInstancia(); 
+        ClienteGUI.getInstance().setModoVinculacao(false);
     }//GEN-LAST:event_btnCadastroActionPerformed
 
     private void txtBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscaActionPerformed

@@ -550,6 +550,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             .addGap(0, 44, Short.MAX_VALUE)
         );
 
+        txtCliente.setEditable(false);
         txtCliente.setName("txtCliente"); // NOI18N
         txtCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -745,6 +746,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
     private void btnCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastroActionPerformed
         ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
+        clienteGUI.setModoVinculacao(true);
         clienteGUI.setVisible(true); // Exibe ClienteGUI
     }//GEN-LAST:event_btnCadastroActionPerformed
 
