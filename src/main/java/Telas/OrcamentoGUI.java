@@ -29,7 +29,6 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 
-
 /**
  *
  * @author daniel
@@ -37,6 +36,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class OrcamentoGUI extends javax.swing.JFrame {
     // Adiciona um campo estático para armazenar a instância única
     private static OrcamentoGUI instance;
+    
+    // Declaração da variável na classe OrcamentoGUI
+    public Orcamento orcamentoAtual;
     
     // Campos para os componentes dinâmicos
     private JTextField txtPeca;
@@ -87,36 +89,34 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     
     //MÉTODOS ESPECÍFICOS PARA ESTA TELA
 
-    //Método para carregar orçamento existente
+    // Método para carregar orçamento existente
     public void carregarOrcamento(Long idOrcamento) {
         try {
             OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
             Orcamento orcamento = orcamentoDAO.findById(idOrcamento);
 
             if (orcamento != null) {
-                this.idOrcamentoGlobal = idOrcamento; // Mantém o estado do orçamento carregado
-                
-                // Atualiza o número do orçamento no lblHead
+                this.orcamentoAtual = orcamento; // Atualiza o orçamento atual
+                this.idOrcamentoGlobal = idOrcamento; // Define o ID global do orçamento
+
+                // Atualiza os campos da interface
                 lblHead.setText("ORÇAMENTO Nº: " + idOrcamento);
-                
-                // Preencher os campos
                 txtCliente.setText(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : "");
+                idClienteSelecionado = orcamento.getCliente() != null ? orcamento.getCliente().getIdCliente() : null;
+                clienteSelecionado = orcamento.getCliente() != null;
+
                 txtVeiculo.setText(orcamento.getCarro() != null ? orcamento.getCarro() : "");
                 txtPlaca.setText(orcamento.getPlaca() != null ? orcamento.getPlaca() : "");
-                
-                // Carregar e formatar data e hora do orçamento
+
                 if (orcamento.getDataHora() != null) {
                     String dataHoraFormatada = orcamento.getDataHora().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
                     lblDataHora.setText(dataHoraFormatada);
                 } else {
-                    lblDataHora.setText(""); // Limpa o campo caso não haja data
+                    lblDataHora.setText("");
                 }
-                
-                // Carregar itens do orçamento
-                atualizarGridItens();
 
-                // Atualizar os totais
-                calcularTotais(orcamento.getItensOrcamento());
+                atualizarGridItens(); // Atualiza a lista de itens
+                calcularTotais(orcamento.getItensOrcamento()); // Atualiza os totais
             } else {
                 JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
             }
@@ -125,7 +125,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao carregar orçamento: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
+ 
     //Método para calcular os totais ao abrir um orçamento já existente 
     private void calcularTotais(List<ItemOrcamento> itens) {
         double totalPecas = 0.0;
@@ -279,7 +280,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }
     
     //Método para resetar campos
-    private void resetCampos() {
+    public void resetCampos() {
         // Limpa os campos de texto
         txtCliente.setText("");
         txtVeiculo.setText("");
@@ -301,40 +302,122 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         clienteSelecionado = false;
     }
 
-    
-    // Atualiza cliente no orçamento
+    // Atualiza cliente no orçamento e na interface gráfica
     public void setClienteSelecionado(Long idCliente, String nomeCliente) {
+        if (idCliente == null || idCliente <= 0) {
+            JOptionPane.showMessageDialog(this, "ID do cliente inválido. Não foi possível vincular o cliente.");
+            return;
+        }
+
         this.idClienteSelecionado = idCliente; // Define o ID do cliente selecionado
-        txtCliente.setText(nomeCliente); // Atualiza o campo de texto com o nome do cliente
+        txtCliente.setText(nomeCliente); // Atualiza a interface
         clienteSelecionado = true; // Marca o cliente como selecionado
-    }
-    
-    // Vincula cliente ao orçamento no banco
-    private void vincularClienteAoOrcamento(Long idCliente) { 
-        if (idOrcamentoGlobal > 0) { // Verifica se orçamento existe
+
+        if (orcamentoAtual != null) {
             Session session = SessionManager.getInstance().getSession();
-            Transaction transaction = session.beginTransaction();
+            Transaction transaction = null;
             try {
-                String comandoSql = "UPDATE orcamentos SET id_cliente = " + idCliente
-                        + " WHERE id_orcamento_ = " + idOrcamentoGlobal;
-                session.createNativeQuery(comandoSql).executeUpdate(); // Atualiza cliente no banco
+                transaction = session.beginTransaction();
+
+                // Busca o cliente no banco
+                Cliente cliente = session.find(Cliente.class, idCliente);
+                if (cliente != null) {
+                    // Atualiza o cliente no objeto em memória
+                    orcamentoAtual.setCliente(cliente);
+
+                    // Atualiza o orçamento no banco
+                    session.update(orcamentoAtual);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cliente não encontrado no banco de dados.");
+                }
+
+                transaction.commit(); // Confirma as alterações
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback(); // Reverte a transação em caso de erro
+                }
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erro ao atualizar cliente no banco: " + e.getMessage());
+            } finally {
+                session.close(); // Fecha a sessão
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhum orçamento carregado para associar cliente.");
+        }
+    }
+
+    // Vincula cliente ao orçamento no banco
+    private void vincularClienteAoOrcamento(Long idCliente) {
+        if (idCliente == null || idCliente <= 0) {
+            JOptionPane.showMessageDialog(this, "ID do cliente inválido. Não foi possível vincular ao orçamento.");
+            return;
+        }
+
+        if (idOrcamentoGlobal > 0) { // Verifica se o orçamento existe
+            Session session = SessionManager.getInstance().getSession();
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
+
+                // Busca o orçamento no banco e atualiza o cliente
+                Orcamento orcamento = session.find(Orcamento.class, idOrcamentoGlobal);
+                if (orcamento != null) {
+                    Cliente cliente = session.find(Cliente.class, idCliente);
+                    if (cliente != null) {
+                        orcamento.setCliente(cliente); // Atualiza o cliente
+                        session.update(orcamento); // Salva a alteração no banco
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Cliente não encontrado!");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Orçamento não encontrado!");
+                    return;
+                }
+
                 transaction.commit();
             } catch (Exception e) {
-                transaction.rollback(); // Reverte em caso de erro
+                if (transaction != null) {
+                    transaction.rollback();
+                }
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Erro ao vincular cliente: " + e.getMessage());
             } finally {
-                session.close(); // Fecha sessão
+                session.close();
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Orçamento ainda não foi criado."); // Alerta para criar orçamento
+            JOptionPane.showMessageDialog(this, "Orçamento ainda não foi criado.");
         }
     }
-    
-    public void resetarCliente() { // Reseta o cliente selecionado e limpa os campos
+
+    // Reseta o cliente selecionado e limpa os campos
+    public void resetarCliente() {
         clienteSelecionado = false; // Reseta o controle para criação de cliente
         idClienteSelecionado = null; // Remove o ID do cliente selecionado
         txtCliente.setText(""); // Limpa o campo de texto
+
+        // Verifica se o orçamento atual está definido e remove o cliente associado
+        if (orcamentoAtual != null) {
+            orcamentoAtual.setCliente(null); // Remove o cliente do orçamento em memória
+
+            // Opcional: Salvar mudança no banco de dados
+            Session session = SessionManager.getInstance().getSession();
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
+                session.update(orcamentoAtual); // Atualiza o estado no banco de dados
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erro ao resetar cliente no orçamento: " + e.getMessage());
+            } finally {
+                session.close();
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhum orçamento carregado para resetar cliente.");
+        }
     }
     
     // Getter para o ID do orçamento atual
@@ -761,20 +844,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         String veiculo = txtVeiculo.getText();
         String placa = txtPlaca.getText();
 
-        //Agora vai salvar o orçamento para poder salvar o item
         if (nome.equals("") || veiculo.equals("") || placa.equals("")) {
             JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
         } else {
-            OrcamentoGUI instanciaOrcamento = getInstance();
-            // consulta se o orçamento já existe na base de dados, se existir, 
-            // faz o update, senão, faz o insert do orçamento antes 
-            // de inserir o item
-            if (idOrcamentoGlobal <= 0) {;
-                SalvarOrcamento(false);
+            if (idOrcamentoGlobal <= 0) {
+                SalvarOrcamento(false); // Cria o orçamento se ele não existir
+            } else {
+                vincularClienteAoOrcamento(idClienteSelecionado); // Atualiza o cliente no orçamento existente
             }
-            if (idOrcamentoGlobal > 0) {
-                //
-            }
+            JOptionPane.showMessageDialog(this, "Orçamento salvo com sucesso!");
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 

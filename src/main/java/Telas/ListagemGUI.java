@@ -114,6 +114,28 @@ public class ListagemGUI extends javax.swing.JFrame {
                     String idFormatado = tblListagem.getValueAt(selectedRow, 0).toString();
                     Long idOrcamento = Long.parseLong(idFormatado);
 
+                    // Obtém a instância existente da OrcamentoGUI
+                    OrcamentoGUI orcamentoGUI = OrcamentoGUI.getInstance();
+
+                    // Carrega os dados do orçamento
+                    orcamentoGUI.carregarOrcamento(idOrcamento);
+
+                    // Mostra a janela e traz para frente
+                    orcamentoGUI.setVisible(true);
+                    orcamentoGUI.toFront();
+                }
+            }
+        });
+        
+        // Listener para duplo clique na tabela com várias instancias (Não funciona)
+        /*tblListagem.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2 && tblListagem.getSelectedRow() != -1) {
+                    int selectedRow = tblListagem.getSelectedRow();
+                    String idFormatado = tblListagem.getValueAt(selectedRow, 0).toString();
+                    Long idOrcamento = Long.parseLong(idFormatado);
+
                     // Verifica se já existe uma instância para este ID
                     OrcamentoGUI orcamentoGUI = instanciasOrcamentos.get(idOrcamento);
 
@@ -150,45 +172,11 @@ public class ListagemGUI extends javax.swing.JFrame {
                     orcamentoGUI.toFront();
                 }
             }
-        });
-
+        });*/
         
     }
     
     //MÉTODOS ESPECÍFICOS PARA ESTA TELA:
-    
-    //Método para 
-    private void carregarOrcamento(Long idOrcamento) {
-        try {
-            OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
-            Orcamento orcamento = orcamentoDAO.findById(idOrcamento);
-
-            if (orcamento != null) {
-                List<ItemOrcamento> itens = orcamentoDAO.findItensByOrcamentoId(idOrcamento);
-
-                StringBuilder detalhes = new StringBuilder("Orçamento ID: " + orcamento.getIdOrcamento() + "\n");
-                detalhes.append("Cliente: ").append(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : "Não informado").append("\n");
-                detalhes.append("Itens:\n");
-
-                if (itens != null && !itens.isEmpty()) {
-                    for (ItemOrcamento item : itens) {
-                        detalhes.append("- Produto: ").append(item.getProduto().getDescricao())
-                                .append(" | Quantidade: ").append(item.getQuantidade())
-                                .append(" | Subtotal: ").append(item.getSubtotal()).append("\n");
-                    }
-                } else {
-                    detalhes.append("Nenhum item associado.\n");
-                }
-
-                JOptionPane.showMessageDialog(this, detalhes.toString(), "Detalhes do Orçamento", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao carregar orçamento: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }
-    }
        
     // Método para listar os Orçamentos na tabela
     private void loadOrcamentosIntoTable() {
@@ -624,6 +612,8 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         // Atualiza a data e hora no lblDataHora
         orcamentoGUI.atualizarDataHora();
+        
+        orcamentoGUI.resetCampos();
 
         // Abre a instância da OrcamentoGUI
         OrcamentoGUI.abrirNovaInstancia();   
