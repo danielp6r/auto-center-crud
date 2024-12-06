@@ -830,7 +830,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         // Verifica se os campos Nome e Veículo foram preenchidos
-        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("")) {
+        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
             JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
         } else {
             // Exibe um aviso se a placa não for preenchida
@@ -860,7 +860,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         String placa = txtPlaca.getText().trim();
 
         // Validação dos campos obrigatórios
-        if (nome.isEmpty() || veiculo.isEmpty()) {
+        if (nome.isEmpty() || veiculo.isEmpty() /*|| placa.isEmpty()*/) {
             JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
             return -1; // Retorna -1 em caso de erro de validação
         }
@@ -947,12 +947,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }
     
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
-        String nome = txtCliente.getText();
-        String veiculo = txtVeiculo.getText();
-        String placa = txtPlaca.getText();
-
         // Validação dos campos obrigatórios
-        if (nome.isEmpty() || veiculo.isEmpty() /*|| placa.isEmpty()*/) {
+        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty() /*|| txtPlaca.getText().isEmpty()*/) {
             JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
             return;
         }
@@ -1021,13 +1017,18 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                     }
                 }
 
+                // Formatar os valores para moeda brasileira (somente na exibição)
+                //Espaço pode ser removido se preferir
+                String precoUnFormatado = String.format("R$ %.2f", item.getPrecoUn());
+                String subtotalFormatado = String.format("R$ %.2f", item.getPrecoUn() * item.getQuantidade());
+
                 // Adicionar linha à tabela
                 Object[] row = {
                     item.getIdItemOrcamento(),
                     descricao != null ? descricao : "N/A",
-                    item.getPrecoUn(),
+                    precoUnFormatado, // Valor unitário formatado
                     item.getQuantidade(),
-                    item.getPrecoUn() * item.getQuantidade()
+                    subtotalFormatado // Subtotal formatado
                 };
                 model.addRow(row);
             }
@@ -1048,14 +1049,11 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         orcamentoDAO.atualizarValoresOrcamento(idOrcamentoGlobal, valorPecas, valorServicos, valorTotal);
     }
 
+
     
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
-        String nome = txtCliente.getText();
-        String veiculo = txtVeiculo.getText();
-        String placa = txtPlaca.getText();
-
         // Validação dos campos obrigatórios
-        if (nome.isEmpty() || veiculo.isEmpty() /*|| placa.isEmpty()*/) {
+        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty() /*|| txtPlaca.getText().isEmpty()*/) {
             JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
             return;
         }
@@ -1111,7 +1109,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
         // Verifica se os campos Nome e Veículo foram preenchidos
-        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("")) {
+        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
             JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
         } else {
             // Exibe um aviso se a placa não for preenchida

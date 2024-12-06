@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -188,7 +190,12 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         if (orcamentos != null) {
             Collections.reverse(orcamentos); // Inverte a lista para mostrar os mais novos no topo
-            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR")); // Formato de moeda brasileira
+
+            // Configura um formato de moeda brasileira sem espaço
+            DecimalFormatSymbols dfs = new DecimalFormatSymbols(new Locale("pt", "BR"));
+            dfs.setCurrencySymbol("R$ "); //Espaço pode ser removido se preferir
+
+            DecimalFormat currencyFormat = new DecimalFormat("¤#,##0.00", dfs);
 
             for (Orcamento orcamento : orcamentos) {
                 String nome;
@@ -212,7 +219,7 @@ public class ListagemGUI extends javax.swing.JFrame {
                 // Verifica se o valor total não é nulo antes de formatar
                 String valorFormatado = orcamento.getValTotal() != null
                         ? currencyFormat.format(orcamento.getValTotal())
-                        : "R$ 0,00"; // Ou algum valor padrão
+                        : "R$0,00"; // Ou algum valor padrão
 
                 Object[] row = {
                     idFormatado, // ID formatado
@@ -228,6 +235,7 @@ public class ListagemGUI extends javax.swing.JFrame {
             System.out.println("Nenhum orçamento encontrado ou erro ao carregar dados.");
         }
     }
+
 
     // Método para adicionar um DocumentListener ao campo de busca
     private void addSearchListener() {
