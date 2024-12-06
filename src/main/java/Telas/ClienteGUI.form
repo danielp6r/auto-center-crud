@@ -93,7 +93,7 @@
                               <Component id="lblTel" min="-2" max="-2" attributes="0"/>
                               <Component id="txtTel" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="11" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -237,12 +237,12 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                      <Component id="btnSalvar" min="-2" pref="95" max="-2" attributes="0"/>
+                      <Component id="btnSalvar" min="-2" pref="99" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnEditar" min="-2" pref="95" max="-2" attributes="0"/>
+                      <Component id="btnEditar" min="-2" pref="106" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnExcluir" min="-2" pref="110" max="-2" attributes="0"/>
-                      <EmptySpace pref="63" max="32767" attributes="0"/>
+                      <Component id="btnExcluir" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="lblImgLupa" min="-2" pref="16" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="txtBusca" min="-2" pref="223" max="-2" attributes="0"/>
@@ -256,13 +256,13 @@
                       <EmptySpace pref="8" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="103" alignment="1" groupAlignment="3" attributes="0">
+                              <Component id="txtBusca" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblImgLupa" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="103" alignment="1" groupAlignment="3" attributes="0">
                               <Component id="btnSalvar" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnEditar" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnExcluir" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="103" alignment="1" groupAlignment="3" attributes="0">
-                              <Component id="txtBusca" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="lblImgLupa" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -276,7 +276,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="50" green="af" red="4c" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Salvar (F1)"/>
+                <Property name="text" type="java.lang.String" value="Salvar"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalvarActionPerformed"/>

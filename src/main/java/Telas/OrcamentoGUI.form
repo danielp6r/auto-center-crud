@@ -51,8 +51,6 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="paneBotoes" alignment="1" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Component id="btnCadastro" min="-2" pref="150" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="lblCliente" min="-2" max="-2" attributes="0"/>
                               <Component id="txtCliente" min="-2" pref="155" max="-2" attributes="0"/>
@@ -67,7 +65,7 @@
                               <Component id="lblPlaca" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="txtPlaca" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="185" max="-2" attributes="0"/>
                           <Component id="lblDataHora" min="-2" pref="125" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btnImprimir" min="-2" max="-2" attributes="0"/>
@@ -108,7 +106,6 @@
                               <Component id="txtCliente" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <Component id="btnCadastro" alignment="0" min="-2" pref="50" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
                           <Component id="lblPlaca" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -119,7 +116,7 @@
                           <Component id="lblDataHora" min="-2" pref="47" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
                   <Component id="paneBotoes" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="paneListagem" pref="437" max="32767" attributes="0"/>
@@ -337,17 +334,6 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="btnCadastro">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="DejaVu Sans" size="14" style="1"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Cadastro"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCadastroActionPerformed"/>
-          </Events>
-        </Component>
         <Component class="javax.swing.JTextField" name="txtVeiculo">
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtVeiculoActionPerformed"/>
@@ -400,7 +386,9 @@
             <Property name="name" type="java.lang.String" value="txtCliente" noResource="true"/>
           </Properties>
           <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="txtClienteMouseClicked"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtClienteActionPerformed"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtClienteKeyPressed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lblCliente">

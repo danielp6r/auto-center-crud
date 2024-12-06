@@ -118,7 +118,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 atualizarGridItens(); // Atualiza a lista de itens
                 calcularTotais(orcamento.getItensOrcamento()); // Atualiza os totais
             } else {
-                JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+                //JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -341,9 +341,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             } finally {
                 session.close(); // Fecha a sessão
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Nenhum orçamento carregado para associar cliente.");
-        }
+        } 
     }
 
     // Vincula cliente ao orçamento no banco
@@ -461,7 +459,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         btnExcluir = new javax.swing.JButton();
         paneListagem = new javax.swing.JScrollPane();
         tblListagem = new javax.swing.JTable();
-        btnCadastro = new javax.swing.JButton();
         txtVeiculo = new javax.swing.JTextField();
         txtPlaca = new javax.swing.JTextField();
         lblVeiculo = new javax.swing.JLabel();
@@ -599,14 +596,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         });
         paneListagem.setViewportView(tblListagem);
 
-        btnCadastro.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
-        btnCadastro.setText("Cadastro");
-        btnCadastro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadastroActionPerformed(evt);
-            }
-        });
-
         txtVeiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtVeiculoActionPerformed(evt);
@@ -635,9 +624,19 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
         txtCliente.setEditable(false);
         txtCliente.setName("txtCliente"); // NOI18N
+        txtCliente.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtClienteMouseClicked(evt);
+            }
+        });
         txtCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtClienteActionPerformed(evt);
+            }
+        });
+        txtCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtClienteKeyPressed(evt);
             }
         });
 
@@ -735,8 +734,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(paneBotoes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(PaneAllLayout.createSequentialGroup()
-                        .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblCliente)
                             .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -748,7 +745,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblPlaca)
                             .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(17, 17, 17)
+                        .addGap(185, 185, 185)
                         .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnImprimir)
@@ -779,7 +776,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(PaneAllLayout.createSequentialGroup()
                         .addComponent(lblPlaca)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -787,7 +783,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                     .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(btnImprimir)
                         .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(10, 10, 10)
+                .addGap(13, 13, 13)
                 .addComponent(paneBotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
@@ -826,12 +822,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtClienteActionPerformed
-
-    private void btnCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastroActionPerformed
-        ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
-        clienteGUI.setModoVinculacao(true);
-        clienteGUI.setVisible(true); // Exibe ClienteGUI
-    }//GEN-LAST:event_btnCadastroActionPerformed
 
     private void txtTotalPecasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalPecasActionPerformed
         // TODO add your handling code here:
@@ -1119,6 +1109,16 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         //
     }//GEN-LAST:event_btnImprimirActionPerformed
 
+    private void txtClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtClienteMouseClicked
+        ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
+        clienteGUI.setModoVinculacao(true);
+        clienteGUI.setVisible(true); // Exibe ClienteGUI
+    }//GEN-LAST:event_txtClienteMouseClicked
+
+    private void txtClienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtClienteKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -1160,7 +1160,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PaneAll;
-    private javax.swing.JButton btnCadastro;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnImprimir;

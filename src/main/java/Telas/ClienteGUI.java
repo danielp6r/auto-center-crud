@@ -49,10 +49,11 @@ public class ClienteGUI extends javax.swing.JFrame {
      */
     public ClienteGUI() {
         initComponents();
+        padrao();
         carregarClientes();
         adicionarEventoDuploClique();
         atalhos();
-        padrao();
+        
         
         // Ajusta para fechar apenas a janela atual
         setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
@@ -113,6 +114,14 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         });
         
+        // Adiciona um listener para quando a janela é ativada
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowActivated(java.awt.event.WindowEvent e) {
+                txtNome.requestFocusInWindow(); // Garante o foco no campo txtNome
+            }
+        });
+        
         // Atualiza ao ativar a janela
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -141,8 +150,8 @@ public class ClienteGUI extends javax.swing.JFrame {
     private void atalhos() {
         JRootPane rootPane = this.getRootPane();
 
-        // Mapeamento global da tecla F1 para Salvar
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F1"), "salvarAction");
+        // Mapeamento global da tecla ENTER para Salvar
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ENTER"), "salvarAction");
         rootPane.getActionMap().put("salvarAction", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -497,7 +506,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         paneOpcoes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         btnSalvar.setForeground(new java.awt.Color(76, 175, 80));
-        btnSalvar.setText("Salvar (F1)");
+        btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalvarActionPerformed(evt);
@@ -535,12 +544,12 @@ public class ClienteGUI extends javax.swing.JFrame {
             paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneOpcoesLayout.createSequentialGroup()
                 .addGap(8, 8, 8)
-                .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                .addComponent(btnExcluir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblImgLupa, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -552,12 +561,12 @@ public class ClienteGUI extends javax.swing.JFrame {
                 .addContainerGap(8, Short.MAX_VALUE)
                 .addGroup(paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblImgLupa))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnSalvar)
                         .addComponent(btnEditar)
-                        .addComponent(btnExcluir))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblImgLupa)))
+                        .addComponent(btnExcluir)))
                 .addContainerGap())
         );
 
@@ -640,7 +649,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                             .addComponent(lblEmail)
                             .addComponent(lblTel)
                             .addComponent(txtTel))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 11, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         paneTelaLayout.setVerticalGroup(
@@ -839,6 +848,8 @@ public class ClienteGUI extends javax.swing.JFrame {
     
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
        
+        txtNome.requestFocusInWindow();
+        
         int selectedRow = tblListagem.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Selecione um cliente para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
