@@ -459,14 +459,14 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         btnExcluir = new javax.swing.JButton();
         paneListagem = new javax.swing.JScrollPane();
         tblListagem = new javax.swing.JTable();
-        txtVeiculo = new javax.swing.JTextField();
-        txtPlaca = new javax.swing.JTextField();
+        lblCliente = new javax.swing.JLabel();
         lblVeiculo = new javax.swing.JLabel();
         lblPlaca = new javax.swing.JLabel();
         lblDataHora = new javax.swing.JLabel();
-        paneBot = new javax.swing.JPanel();
         txtCliente = new javax.swing.JTextField();
-        lblCliente = new javax.swing.JLabel();
+        txtVeiculo = new javax.swing.JTextField();
+        txtPlaca = new javax.swing.JTextField();
+        paneBot = new javax.swing.JPanel();
         paneValores = new javax.swing.JPanel();
         lblTotalPecas = new javax.swing.JLabel();
         lblTotalServicos = new javax.swing.JLabel();
@@ -596,11 +596,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         });
         paneListagem.setViewportView(tblListagem);
 
-        txtVeiculo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtVeiculoActionPerformed(evt);
-            }
-        });
+        lblCliente.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
+        lblCliente.setText("Cliente");
 
         lblVeiculo.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblVeiculo.setText("Veículo");
@@ -610,17 +607,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
         lblDataHora.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblDataHora.setText("     Data - Hora");
-
-        javax.swing.GroupLayout paneBotLayout = new javax.swing.GroupLayout(paneBot);
-        paneBot.setLayout(paneBotLayout);
-        paneBotLayout.setHorizontalGroup(
-            paneBotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        paneBotLayout.setVerticalGroup(
-            paneBotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 44, Short.MAX_VALUE)
-        );
 
         txtCliente.setEditable(false);
         txtCliente.setName("txtCliente"); // NOI18N
@@ -640,8 +626,22 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             }
         });
 
-        lblCliente.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        lblCliente.setText("Cliente");
+        txtVeiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtVeiculoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout paneBotLayout = new javax.swing.GroupLayout(paneBot);
+        paneBot.setLayout(paneBotLayout);
+        paneBotLayout.setHorizontalGroup(
+            paneBotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        paneBotLayout.setVerticalGroup(
+            paneBotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 44, Short.MAX_VALUE)
+        );
 
         lblTotalPecas.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblTotalPecas.setText("Total de Peças");
@@ -829,14 +829,18 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
     
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        //Pega as strings digitadas pelo usuário na tela
-        String nome = txtCliente.getText();
-        String veiculo = txtVeiculo.getText();
-        String placa = txtPlaca.getText();
-
-        if (nome.equals("") || veiculo.equals("") || placa.equals("")) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
+        // Verifica se os campos Nome e Veículo foram preenchidos
+        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
         } else {
+            // Exibe um aviso se a placa não for preenchida
+            if (txtPlaca.getText().equals("")) {
+                JOptionPane.showMessageDialog(this,
+                        "Atenção: O campo 'Placa' está vazio!",
+                        "Aviso",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+
             if (idOrcamentoGlobal <= 0) {
                 SalvarOrcamento(false); // Cria o orçamento se ele não existir
             } else {
@@ -856,8 +860,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         String placa = txtPlaca.getText().trim();
 
         // Validação dos campos obrigatórios
-        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
+        if (nome.isEmpty() || veiculo.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
             return -1; // Retorna -1 em caso de erro de validação
         }
 
@@ -948,8 +952,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         String placa = txtPlaca.getText();
 
         // Validação dos campos obrigatórios
-        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
+        if (nome.isEmpty() || veiculo.isEmpty() /*|| placa.isEmpty()*/) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
             return;
         }
 
@@ -1051,8 +1055,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         String placa = txtPlaca.getText();
 
         // Validação dos campos obrigatórios
-        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
+        if (nome.isEmpty() || veiculo.isEmpty() /*|| placa.isEmpty()*/) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
             return;
         }
 
@@ -1106,7 +1110,18 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        //
+        // Verifica se os campos Nome e Veículo foram preenchidos
+        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+        } else {
+            // Exibe um aviso se a placa não for preenchida
+            if (txtPlaca.getText().equals("")) {
+                JOptionPane.showMessageDialog(this,
+                        "Atenção: O campo 'Placa' está vazio!",
+                        "Aviso",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnImprimirActionPerformed
 
     private void txtClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtClienteMouseClicked
