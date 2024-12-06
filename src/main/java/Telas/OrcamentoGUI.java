@@ -467,6 +467,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         txtVeiculo = new javax.swing.JTextField();
         txtPlaca = new javax.swing.JTextField();
         paneBot = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         paneValores = new javax.swing.JPanel();
         lblTotalPecas = new javax.swing.JLabel();
         lblTotalServicos = new javax.swing.JLabel();
@@ -476,7 +477,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         txtValorFinal = new javax.swing.JTextField();
         paneObs = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
-        lblObs = new javax.swing.JLabel();
         btnImprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -632,15 +632,22 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("Obs.:");
+
         javax.swing.GroupLayout paneBotLayout = new javax.swing.GroupLayout(paneBot);
         paneBot.setLayout(paneBotLayout);
         paneBotLayout.setHorizontalGroup(
             paneBotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneBotLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel1))
         );
         paneBotLayout.setVerticalGroup(
             paneBotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 44, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneBotLayout.createSequentialGroup()
+                .addContainerGap(21, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addContainerGap())
         );
 
         lblTotalPecas.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
@@ -714,9 +721,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         jTextArea2.setRows(5);
         paneObs.setViewportView(jTextArea2);
 
-        lblObs.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        lblObs.setText("Observações:");
-
         btnImprimir.setText("Imprimir F12");
         btnImprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -755,9 +759,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                             .addComponent(paneValores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(paneBot, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(paneObs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblObs)))
+                        .addComponent(paneObs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblHead, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -793,11 +795,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addComponent(paneValores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(paneBot, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(PaneAllLayout.createSequentialGroup()
-                        .addComponent(lblObs)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(paneObs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16)))
+                    .addComponent(paneObs, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(14, 14, 14))
         );
 
@@ -1179,12 +1177,12 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnProduto;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnServico;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JLabel lbl1;
     private javax.swing.JLabel lblCliente;
     private javax.swing.JLabel lblDataHora;
     private javax.swing.JLabel lblHead;
-    private javax.swing.JLabel lblObs;
     private javax.swing.JLabel lblPlaca;
     private javax.swing.JLabel lblTotalPecas;
     private javax.swing.JLabel lblTotalServicos;
