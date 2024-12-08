@@ -422,6 +422,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         btnNovoOrcamento = new javax.swing.JButton();
         btnCadastro = new javax.swing.JButton();
         btnRelatorios = new javax.swing.JButton();
+        btnServicos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Listagem de Orçamentos");
@@ -490,7 +491,7 @@ public class ListagemGUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnExcluir))
                     .addComponent(lblPeriodo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 630, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 636, Short.MAX_VALUE)
                 .addComponent(lblImgLupa, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -559,6 +560,9 @@ public class ListagemGUI extends javax.swing.JFrame {
         btnRelatorios.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
         btnRelatorios.setText("Relatórios (F3)");
 
+        btnServicos.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        btnServicos.setText("Serviços (F3)");
+
         javax.swing.GroupLayout paneAllLayout = new javax.swing.GroupLayout(paneAll);
         paneAll.setLayout(paneAllLayout);
         paneAllLayout.setHorizontalGroup(
@@ -572,15 +576,17 @@ public class ListagemGUI extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(paneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(panebotoes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 1354, Short.MAX_VALUE)))
+                            .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 1369, Short.MAX_VALUE)))
                     .addGroup(paneAllLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(btnNovoOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(70, 70, 70)
                         .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(70, 70, 70)
+                        .addComponent(btnServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(70, 70, 70)
                         .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         paneAllLayout.setVerticalGroup(
@@ -592,7 +598,8 @@ public class ListagemGUI extends javax.swing.JFrame {
                 .addGroup(paneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNovoOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(59, 59, 59)
                 .addComponent(panebotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -742,6 +749,7 @@ public class ListagemGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnNovoOrcamento;
     private javax.swing.JButton btnRelatorios;
+    private javax.swing.JButton btnServicos;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel lblHead;

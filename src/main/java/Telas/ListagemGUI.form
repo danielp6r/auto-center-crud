@@ -60,7 +60,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="panebotoes" alignment="1" max="32767" attributes="0"/>
-                              <Component id="paneListagem" pref="1354" max="32767" attributes="0"/>
+                              <Component id="paneListagem" pref="1369" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -69,8 +69,10 @@
                           <EmptySpace min="-2" pref="70" max="-2" attributes="0"/>
                           <Component id="btnCadastro" min="-2" pref="200" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="70" max="-2" attributes="0"/>
+                          <Component id="btnServicos" min="-2" pref="200" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="70" max="-2" attributes="0"/>
                           <Component id="btnRelatorios" min="-2" pref="200" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -87,6 +89,7 @@
                       <Component id="btnNovoOrcamento" alignment="3" min="-2" pref="79" max="-2" attributes="0"/>
                       <Component id="btnCadastro" alignment="3" min="-2" pref="79" max="-2" attributes="0"/>
                       <Component id="btnRelatorios" alignment="3" min="-2" pref="79" max="-2" attributes="0"/>
+                      <Component id="btnServicos" alignment="3" min="-2" pref="79" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
                   <Component id="panebotoes" min="-2" max="-2" attributes="0"/>
@@ -142,7 +145,7 @@
                           </Group>
                           <Component id="lblPeriodo" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="630" max="32767" attributes="0"/>
+                      <EmptySpace pref="636" max="32767" attributes="0"/>
                       <Component id="lblImgLupa" min="-2" pref="16" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="txtBusca" min="-2" pref="223" max="-2" attributes="0"/>
@@ -310,6 +313,14 @@
               <Font name="DejaVu Sans" size="12" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Relat&#xf3;rios (F3)"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnServicos">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="DejaVu Sans" size="12" style="1"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Servi&#xe7;os (F3)"/>
           </Properties>
         </Component>
       </SubComponents>
