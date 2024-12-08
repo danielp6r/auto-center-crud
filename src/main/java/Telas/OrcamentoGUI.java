@@ -2,6 +2,7 @@ package Telas;
 
 import Classes.Cliente;
 import Classes.ItemOrcamento;
+import Classes.Main;
 import Classes.Mercadoria;
 import Classes.Orcamento;
 import Classes.Produto;
@@ -12,6 +13,11 @@ import DAO.ClienteDAO;
 import DAO.ItemOrcamentoDAO;
 import DAO.OrcamentoDAO;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -25,9 +31,18 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 /**
  *
@@ -1116,10 +1131,39 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         "Atenção: O campo 'Placa' está vazio!",
                         "Aviso",
                         JOptionPane.WARNING_MESSAGE);
-            }
+            } 
+            imprimirRelatorioJasper();
         }
     }//GEN-LAST:event_btnImprimirActionPerformed
 
+    private void imprimirRelatorioJasper() {
+        
+        //URL reportPath = Main.class.getResource("/reports/orcamento.jasper");
+                String relativePath = "/home/daniel/JaspersoftWorkspace/MyReports/orcamento.jasper";
+                try {
+                    JasperReport reporte = (JasperReport) JRLoader.loadObject(new File(relativePath));                    
+                    Map<String, Object> parametros = new HashMap<String, Object>();
+                    Integer idOrcamentoInteger = (int) idOrcamentoGlobal;
+                    parametros.put("idOrcamento", idOrcamentoInteger);
+                            //idOrcamentoGlobal.intValue();
+                    
+                    //parametros.put("idOrcamento", idOrcamentoGlobal);
+                    String url = "jdbc:mysql://localhost:3306/test"; 
+                    String usuario = "root";
+                    String senha = "12345";
+                    Connection conexao = DriverManager.getConnection(url, usuario, senha);
+
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, parametros, conexao);
+
+                    JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/daniel/JaspersoftWorkspace/MyReports/orcamento.pdf");
+                
+                } catch (JRException ex) {
+                    Logger.getLogger(OrcamentoGUI.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(OrcamentoGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+    }
     private void txtClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtClienteMouseClicked
         ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
         clienteGUI.setModoVinculacao(true);
