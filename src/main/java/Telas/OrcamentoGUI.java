@@ -25,10 +25,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-
 
 
 /**
@@ -38,6 +36,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class OrcamentoGUI extends javax.swing.JFrame {
     // Adiciona um campo estático para armazenar a instância única
     private static OrcamentoGUI instance;
+    
+    // Declaração da variável na classe OrcamentoGUI
+    public Orcamento orcamentoAtual;
     
     // Campos para os componentes dinâmicos
     private JTextField txtPeca;
@@ -86,113 +87,46 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         });   
     }
     
-    /*
-    MÉTODOS ESPECÍFICOS PARA ESTA TELA
-     */
-    
-    // Coleta os dados da tabela
-    public List<Object[]> obterDadosTabelaListagem() {
-        List<Object[]> dados = new ArrayList<>();
-        DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
+    //MÉTODOS ESPECÍFICOS PARA ESTA TELA
 
-        for (int i = 0; i < model.getRowCount(); i++) {
-            Object[] row = new Object[model.getColumnCount()];
-            for (int j = 0; j < model.getColumnCount(); j++) {
-                row[j] = model.getValueAt(i, j);
-            }
-            dados.add(row);
-        }
-        return dados;
-    }
-    
-    // Validação para garantir que os campos obrigatórios estão preenchidos
-    private boolean validarCamposObrigatorios() {
-        StringBuilder mensagemErro = new StringBuilder();
-
-        if (txtCliente.getText().trim().isEmpty()) {
-            mensagemErro.append("Nome, ");
-        }
-        if (txtVeiculo.getText().trim().isEmpty()) {
-            mensagemErro.append("Veículo, ");
-        }
-        if (txtPlaca.getText().trim().isEmpty()) {
-            mensagemErro.append("Placa, ");
-        }
-
-        if (mensagemErro.length() > 0) {
-            // Remove a última vírgula e espaço
-            mensagemErro.setLength(mensagemErro.length() - 2);
-            JOptionPane.showMessageDialog(this,
-                    "O(s) campo(s) " + mensagemErro.toString() + " precisam ser preenchidos!",
-                    "Erro",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        return true;
-    }
-
-    
-    // Método para abrir a tela de impressão com os dados do orçamento
-    private void abrirTelaImpressao() {
-        TelaImpressao telaImpressao = new TelaImpressao();
-
-        // Preencher os campos principais
-        telaImpressao.setLblNumeroOrcamento(lblHead.getText().replace("ORÇAMENTO Nº: ", "").trim());
-        telaImpressao.setLblNomeCliente(txtCliente.getText().trim());
-        telaImpressao.setLblNomeVeiculo(txtVeiculo.getText().trim());
-        telaImpressao.setLblPlacaVeiculo(txtPlaca.getText().trim());
-        telaImpressao.setLblDataHoraOrcamento(lblDataHora.getText().trim());
-        telaImpressao.setLblValorTotal(txtValorFinal.getText().trim());
-
-        // Transferir os dados da tabela
-        List<Object[]> dadosTabela = obterDadosTabelaListagem();
-        telaImpressao.carregarDadosTabela(dadosTabela);
-
-        // Exibir a tela de impressão
-        telaImpressao.setVisible(true);
-    }
-
-    
-    //Método para carregar orçamento existente
+    // Método para carregar orçamento existente
     public void carregarOrcamento(Long idOrcamento) {
         try {
             OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
             Orcamento orcamento = orcamentoDAO.findById(idOrcamento);
 
             if (orcamento != null) {
-                this.idOrcamentoGlobal = idOrcamento; // Mantém o estado do orçamento carregado
-                
-                // Atualiza o número do orçamento no lblHead
+                this.orcamentoAtual = orcamento; // Atualiza o orçamento atual
+                this.idOrcamentoGlobal = idOrcamento; // Define o ID global do orçamento
+
+                // Atualiza os campos da interface
                 lblHead.setText("ORÇAMENTO Nº: " + idOrcamento);
-                
-                // Preencher os campos
                 txtCliente.setText(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : "");
+                idClienteSelecionado = orcamento.getCliente() != null ? orcamento.getCliente().getIdCliente() : null;
+                clienteSelecionado = orcamento.getCliente() != null;
+
                 txtVeiculo.setText(orcamento.getCarro() != null ? orcamento.getCarro() : "");
                 txtPlaca.setText(orcamento.getPlaca() != null ? orcamento.getPlaca() : "");
-                
-                // Carregar e formatar data e hora do orçamento
+
                 if (orcamento.getDataHora() != null) {
                     String dataHoraFormatada = orcamento.getDataHora().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
                     lblDataHora.setText(dataHoraFormatada);
                 } else {
-                    lblDataHora.setText(""); // Limpa o campo caso não haja data
+                    lblDataHora.setText("");
                 }
-                
-                // Carregar itens do orçamento
-                atualizarGridItens();
 
-                // Atualizar os totais
-                calcularTotais(orcamento.getItensOrcamento());
+                atualizarGridItens(); // Atualiza a lista de itens
+                calcularTotais(orcamento.getItensOrcamento()); // Atualiza os totais
             } else {
-                JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+                //JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro ao carregar orçamento: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
+ 
     //Método para calcular os totais ao abrir um orçamento já existente 
     private void calcularTotais(List<ItemOrcamento> itens) {
         double totalPecas = 0.0;
@@ -346,7 +280,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }
     
     //Método para resetar campos
-    private void resetCampos() {
+    public void resetCampos() {
         // Limpa os campos de texto
         txtCliente.setText("");
         txtVeiculo.setText("");
@@ -368,40 +302,120 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         clienteSelecionado = false;
     }
 
-    
-    // Atualiza cliente no orçamento
+    // Atualiza cliente no orçamento e na interface gráfica
     public void setClienteSelecionado(Long idCliente, String nomeCliente) {
+        if (idCliente == null || idCliente <= 0) {
+            JOptionPane.showMessageDialog(this, "ID do cliente inválido. Não foi possível vincular o cliente.");
+            return;
+        }
+
         this.idClienteSelecionado = idCliente; // Define o ID do cliente selecionado
-        txtCliente.setText(nomeCliente); // Atualiza o campo de texto com o nome do cliente
+        txtCliente.setText(nomeCliente); // Atualiza a interface
         clienteSelecionado = true; // Marca o cliente como selecionado
-    }
-    
-    // Vincula cliente ao orçamento no banco
-    private void vincularClienteAoOrcamento(Long idCliente) { 
-        if (idOrcamentoGlobal > 0) { // Verifica se orçamento existe
+
+        if (orcamentoAtual != null) {
             Session session = SessionManager.getInstance().getSession();
-            Transaction transaction = session.beginTransaction();
+            Transaction transaction = null;
             try {
-                String comandoSql = "UPDATE orcamentos SET id_cliente = " + idCliente
-                        + " WHERE id_orcamento_ = " + idOrcamentoGlobal;
-                session.createNativeQuery(comandoSql).executeUpdate(); // Atualiza cliente no banco
+                transaction = session.beginTransaction();
+
+                // Busca o cliente no banco
+                Cliente cliente = session.find(Cliente.class, idCliente);
+                if (cliente != null) {
+                    // Atualiza o cliente no objeto em memória
+                    orcamentoAtual.setCliente(cliente);
+
+                    // Atualiza o orçamento no banco
+                    session.update(orcamentoAtual);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cliente não encontrado no banco de dados.");
+                }
+
+                transaction.commit(); // Confirma as alterações
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback(); // Reverte a transação em caso de erro
+                }
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erro ao atualizar cliente no banco: " + e.getMessage());
+            } finally {
+                session.close(); // Fecha a sessão
+            }
+        } 
+    }
+
+    // Vincula cliente ao orçamento no banco
+    private void vincularClienteAoOrcamento(Long idCliente) {
+        if (idCliente == null || idCliente <= 0) {
+            JOptionPane.showMessageDialog(this, "ID do cliente inválido. Não foi possível vincular ao orçamento.");
+            return;
+        }
+
+        if (idOrcamentoGlobal > 0) { // Verifica se o orçamento existe
+            Session session = SessionManager.getInstance().getSession();
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
+
+                // Busca o orçamento no banco e atualiza o cliente
+                Orcamento orcamento = session.find(Orcamento.class, idOrcamentoGlobal);
+                if (orcamento != null) {
+                    Cliente cliente = session.find(Cliente.class, idCliente);
+                    if (cliente != null) {
+                        orcamento.setCliente(cliente); // Atualiza o cliente
+                        session.update(orcamento); // Salva a alteração no banco
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Cliente não encontrado!");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Orçamento não encontrado!");
+                    return;
+                }
+
                 transaction.commit();
             } catch (Exception e) {
-                transaction.rollback(); // Reverte em caso de erro
+                if (transaction != null) {
+                    transaction.rollback();
+                }
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Erro ao vincular cliente: " + e.getMessage());
             } finally {
-                session.close(); // Fecha sessão
+                session.close();
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Orçamento ainda não foi criado."); // Alerta para criar orçamento
+            JOptionPane.showMessageDialog(this, "Orçamento ainda não foi criado.");
         }
     }
-    
-    public void resetarCliente() { // Reseta o cliente selecionado e limpa os campos
+
+    // Reseta o cliente selecionado e limpa os campos
+    public void resetarCliente() {
         clienteSelecionado = false; // Reseta o controle para criação de cliente
         idClienteSelecionado = null; // Remove o ID do cliente selecionado
         txtCliente.setText(""); // Limpa o campo de texto
+
+        // Verifica se o orçamento atual está definido e remove o cliente associado
+        if (orcamentoAtual != null) {
+            orcamentoAtual.setCliente(null); // Remove o cliente do orçamento em memória
+
+            // Opcional: Salvar mudança no banco de dados
+            Session session = SessionManager.getInstance().getSession();
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
+                session.update(orcamentoAtual); // Atualiza o estado no banco de dados
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erro ao resetar cliente no orçamento: " + e.getMessage());
+            } finally {
+                session.close();
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhum orçamento carregado para resetar cliente.");
+        }
     }
     
     // Getter para o ID do orçamento atual
@@ -445,15 +459,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         btnExcluir = new javax.swing.JButton();
         paneListagem = new javax.swing.JScrollPane();
         tblListagem = new javax.swing.JTable();
-        btnCadastro = new javax.swing.JButton();
-        txtVeiculo = new javax.swing.JTextField();
-        txtPlaca = new javax.swing.JTextField();
+        lblCliente = new javax.swing.JLabel();
         lblVeiculo = new javax.swing.JLabel();
         lblPlaca = new javax.swing.JLabel();
         lblDataHora = new javax.swing.JLabel();
-        paneBot = new javax.swing.JPanel();
         txtCliente = new javax.swing.JTextField();
-        lblCliente = new javax.swing.JLabel();
+        txtVeiculo = new javax.swing.JTextField();
+        txtPlaca = new javax.swing.JTextField();
+        paneBot = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         paneValores = new javax.swing.JPanel();
         lblTotalPecas = new javax.swing.JLabel();
         lblTotalServicos = new javax.swing.JLabel();
@@ -463,7 +477,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         txtValorFinal = new javax.swing.JTextField();
         paneObs = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
-        lblObs = new javax.swing.JLabel();
         btnImprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -583,19 +596,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         });
         paneListagem.setViewportView(tblListagem);
 
-        btnCadastro.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
-        btnCadastro.setText("Cadastro");
-        btnCadastro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadastroActionPerformed(evt);
-            }
-        });
-
-        txtVeiculo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtVeiculoActionPerformed(evt);
-            }
-        });
+        lblCliente.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
+        lblCliente.setText("Cliente");
 
         lblVeiculo.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblVeiculo.setText("Veículo");
@@ -606,26 +608,47 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lblDataHora.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblDataHora.setText("     Data - Hora");
 
-        javax.swing.GroupLayout paneBotLayout = new javax.swing.GroupLayout(paneBot);
-        paneBot.setLayout(paneBotLayout);
-        paneBotLayout.setHorizontalGroup(
-            paneBotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        paneBotLayout.setVerticalGroup(
-            paneBotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 44, Short.MAX_VALUE)
-        );
-
+        txtCliente.setEditable(false);
         txtCliente.setName("txtCliente"); // NOI18N
+        txtCliente.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtClienteMouseClicked(evt);
+            }
+        });
         txtCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtClienteActionPerformed(evt);
             }
         });
+        txtCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtClienteKeyPressed(evt);
+            }
+        });
 
-        lblCliente.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        lblCliente.setText("Cliente");
+        txtVeiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtVeiculoActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Obs.:");
+
+        javax.swing.GroupLayout paneBotLayout = new javax.swing.GroupLayout(paneBot);
+        paneBot.setLayout(paneBotLayout);
+        paneBotLayout.setHorizontalGroup(
+            paneBotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneBotLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel1))
+        );
+        paneBotLayout.setVerticalGroup(
+            paneBotLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneBotLayout.createSequentialGroup()
+                .addContainerGap(21, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addContainerGap())
+        );
 
         lblTotalPecas.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblTotalPecas.setText("Total de Peças");
@@ -698,9 +721,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         jTextArea2.setRows(5);
         paneObs.setViewportView(jTextArea2);
 
-        lblObs.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        lblObs.setText("Observações:");
-
         btnImprimir.setText("Imprimir F12");
         btnImprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -718,8 +738,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(paneBotoes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(PaneAllLayout.createSequentialGroup()
-                        .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblCliente)
                             .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -731,7 +749,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblPlaca)
                             .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(17, 17, 17)
+                        .addGap(185, 185, 185)
                         .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnImprimir)
@@ -741,9 +759,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                             .addComponent(paneValores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(paneBot, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(paneObs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblObs)))
+                        .addComponent(paneObs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblHead, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -762,7 +778,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(PaneAllLayout.createSequentialGroup()
                         .addComponent(lblPlaca)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -770,7 +785,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                     .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(btnImprimir)
                         .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(10, 10, 10)
+                .addGap(13, 13, 13)
                 .addComponent(paneBotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
@@ -780,11 +795,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addComponent(paneValores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(paneBot, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(PaneAllLayout.createSequentialGroup()
-                        .addComponent(lblObs)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(paneObs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(16, 16, 16)))
+                    .addComponent(paneObs, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(14, 14, 14))
         );
 
@@ -810,36 +821,30 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtClienteActionPerformed
 
-    private void btnCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastroActionPerformed
-        ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
-        clienteGUI.setVisible(true); // Exibe ClienteGUI
-    }//GEN-LAST:event_btnCadastroActionPerformed
-
     private void txtTotalPecasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalPecasActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTotalPecasActionPerformed
 
     
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        //Pega as strings digitadas pelo usuário na tela
-        String nome = txtCliente.getText();
-        String veiculo = txtVeiculo.getText();
-        String placa = txtPlaca.getText();
-
-        //Agora vai salvar o orçamento para poder salvar o item
-        if (nome.equals("") || veiculo.equals("") || placa.equals("")) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
+        // Verifica se os campos Nome e Veículo foram preenchidos
+        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
         } else {
-            OrcamentoGUI instanciaOrcamento = getInstance();
-            // consulta se o orçamento já existe na base de dados, se existir, 
-            // faz o update, senão, faz o insert do orçamento antes 
-            // de inserir o item
-            if (idOrcamentoGlobal <= 0) {;
-                SalvarOrcamento(false);
+            // Exibe um aviso se a placa não for preenchida
+            if (txtPlaca.getText().equals("")) {
+                JOptionPane.showMessageDialog(this,
+                        "Atenção: O campo 'Placa' está vazio!",
+                        "Aviso",
+                        JOptionPane.WARNING_MESSAGE);
             }
-            if (idOrcamentoGlobal > 0) {
-                //
+
+            if (idOrcamentoGlobal <= 0) {
+                SalvarOrcamento(false); // Cria o orçamento se ele não existir
+            } else {
+                vincularClienteAoOrcamento(idClienteSelecionado); // Atualiza o cliente no orçamento existente
             }
+            JOptionPane.showMessageDialog(this, "Orçamento salvo com sucesso!");
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
@@ -853,8 +858,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         String placa = txtPlaca.getText().trim();
 
         // Validação dos campos obrigatórios
-        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
+        if (nome.isEmpty() || veiculo.isEmpty() /*|| placa.isEmpty()*/) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
             return -1; // Retorna -1 em caso de erro de validação
         }
 
@@ -940,13 +945,9 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }
     
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
-        String nome = txtCliente.getText();
-        String veiculo = txtVeiculo.getText();
-        String placa = txtPlaca.getText();
-
         // Validação dos campos obrigatórios
-        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
+        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty() /*|| txtPlaca.getText().isEmpty()*/) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
             return;
         }
 
@@ -1014,13 +1015,18 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                     }
                 }
 
+                // Formatar os valores para moeda brasileira (somente na exibição)
+                //Espaço pode ser removido se preferir
+                String precoUnFormatado = String.format("R$ %.2f", item.getPrecoUn());
+                String subtotalFormatado = String.format("R$ %.2f", item.getPrecoUn() * item.getQuantidade());
+
                 // Adicionar linha à tabela
                 Object[] row = {
                     item.getIdItemOrcamento(),
                     descricao != null ? descricao : "N/A",
-                    item.getPrecoUn(),
+                    precoUnFormatado, // Valor unitário formatado
                     item.getQuantidade(),
-                    item.getPrecoUn() * item.getQuantidade()
+                    subtotalFormatado // Subtotal formatado
                 };
                 model.addRow(row);
             }
@@ -1041,15 +1047,12 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         orcamentoDAO.atualizarValoresOrcamento(idOrcamentoGlobal, valorPecas, valorServicos, valorTotal);
     }
 
+
     
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
-        String nome = txtCliente.getText();
-        String veiculo = txtVeiculo.getText();
-        String placa = txtPlaca.getText();
-
         // Validação dos campos obrigatórios
-        if (nome.isEmpty() || veiculo.isEmpty() || placa.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome, Veículo e Placa precisam ser preenchidos!");
+        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty() /*|| txtPlaca.getText().isEmpty()*/) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
             return;
         }
 
@@ -1103,10 +1106,29 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        if (validarCamposObrigatorios()) {
-            abrirTelaImpressao();
+        // Verifica se os campos Nome e Veículo foram preenchidos
+        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
+            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+        } else {
+            // Exibe um aviso se a placa não for preenchida
+            if (txtPlaca.getText().equals("")) {
+                JOptionPane.showMessageDialog(this,
+                        "Atenção: O campo 'Placa' está vazio!",
+                        "Aviso",
+                        JOptionPane.WARNING_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnImprimirActionPerformed
+
+    private void txtClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtClienteMouseClicked
+        ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
+        clienteGUI.setModoVinculacao(true);
+        clienteGUI.setVisible(true); // Exibe ClienteGUI
+    }//GEN-LAST:event_txtClienteMouseClicked
+
+    private void txtClienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtClienteKeyPressed
 
     /**
      * @param args the command line arguments
@@ -1149,19 +1171,18 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PaneAll;
-    private javax.swing.JButton btnCadastro;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnImprimir;
     private javax.swing.JButton btnProduto;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnServico;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JLabel lbl1;
     private javax.swing.JLabel lblCliente;
     private javax.swing.JLabel lblDataHora;
     private javax.swing.JLabel lblHead;
-    private javax.swing.JLabel lblObs;
     private javax.swing.JLabel lblPlaca;
     private javax.swing.JLabel lblTotalPecas;
     private javax.swing.JLabel lblTotalServicos;

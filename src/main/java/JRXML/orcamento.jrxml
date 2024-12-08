@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="orcamento" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4eedbb89-b4f6-4469-9ab6-f642a1688cf7">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MYSQL"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true"/>
+	<style name="Detail" mode="Transparent" fontName="Times New Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#EEEFF0"/>
+		</conditionalStyle>
+	</style>
+	<style name="Table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+			<topPen lineWidth="1.0" lineColor="#000000"/>
+			<leftPen lineWidth="1.0" lineColor="#000000"/>
+			<bottomPen lineWidth="1.0" lineColor="#000000"/>
+			<rightPen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#CACED0">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#D8D8D8"/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="tableDataset" uuid="f13e6d36-5148-4ecc-bbe3-3035def80980">
+		<queryString>
+			<![CDATA[SELECT 
+    o.id_orcamento_,
+    c.nome_cliente,
+    o.placa,
+    o.carro,
+    o.data_hora,
+    i.descricao,
+    i.quantidade,
+    i.valor_unitario,
+    (i.quantidade * i.valor_unitario) subtotal
+FROM 
+    orcamentos o
+INNER JOIN 
+    clientes c ON o.id_cliente = c.id_cliente
+INNER JOIN 
+    itens_orcamento i ON o.id_orcamento_ = i.id_orcamento_
+WHERE 
+    o.id_orcamento_ = 1]]>
+		</queryString>
+	</subDataset>
+	<subDataset name="Dataset1" uuid="963f390d-3f5c-42bc-8e36-2d96f2a22c43">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MYSQL"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<parameter name="idOrcamentoPrm" class="java.lang.Integer"/>
+		<queryString>
+			<![CDATA[select
+  p.descricao,
+  i.quantidade,
+  i.subtotal,
+  i.preco_un
+from
+   itens_orcamento i 
+   left join produtos p on p.id_produto = i.id_produto
+ where
+   i.id_orcamento =  $P{idOrcamentoPrm} ]]>
+		</queryString>
+		<field name="descricao" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="descricao"/>
+			<property name="com.jaspersoft.studio.field.label" value="descricao"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="produtos"/>
+		</field>
+		<field name="quantidade" class="java.lang.Integer">
+			<property name="com.jaspersoft.studio.field.name" value="quantidade"/>
+			<property name="com.jaspersoft.studio.field.label" value="quantidade"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="itens_orcamento"/>
+		</field>
+		<field name="subtotal" class="java.lang.Float">
+			<property name="com.jaspersoft.studio.field.name" value="subtotal"/>
+			<property name="com.jaspersoft.studio.field.label" value="subtotal"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="itens_orcamento"/>
+		</field>
+		<field name="preco_un" class="java.lang.Float">
+			<property name="com.jaspersoft.studio.field.name" value="preco_un"/>
+			<property name="com.jaspersoft.studio.field.label" value="preco_un"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="itens_orcamento"/>
+		</field>
+	</subDataset>
+	<parameter name="idOrcamento" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[SELECT 
+    o.id_orcamento_,
+    o.placa,
+    o.carro,
+    o.data_hora,
+    c.nome_cliente,
+    o.val_total
+ FROM 
+    orcamentos o
+    left join clientes c on c.id_cliente = o.id_cliente 
+WHERE 
+    o.id_orcamento_ = $P{idOrcamento}]]>
+	</queryString>
+	<field name="id_orcamento_" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="id_orcamento_"/>
+		<property name="com.jaspersoft.studio.field.label" value="id_orcamento_"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="orcamentos"/>
+	</field>
+	<field name="placa" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="placa"/>
+		<property name="com.jaspersoft.studio.field.label" value="placa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="orcamentos"/>
+	</field>
+	<field name="carro" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="carro"/>
+		<property name="com.jaspersoft.studio.field.label" value="carro"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="orcamentos"/>
+	</field>
+	<field name="data_hora" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="data_hora"/>
+		<property name="com.jaspersoft.studio.field.label" value="data_hora"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="orcamentos"/>
+	</field>
+	<field name="nome_cliente" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nome_cliente"/>
+		<property name="com.jaspersoft.studio.field.label" value="nome_cliente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="clientes"/>
+	</field>
+	<field name="val_total" class="java.lang.Float"/>
+	<title>
+		<band height="134" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="80" width="556" height="1" uuid="806ce5df-1219-4876-ae0c-ca7405b1f246">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="440" y="10" width="32" height="20" uuid="0f86baff-6386-4f3f-b3fe-2388707babe8">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box rightPadding="4"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Data:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement key="" x="472" y="10" width="84" height="20" uuid="bb10dbe1-0a4f-4722-9953-c163b63cf979"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{data_hora}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Center">
+				<reportElement x="0" y="0" width="65" height="60" uuid="94883631-a913-43e2-b182-ab8d77d0181e"/>
+				<imageExpression><![CDATA["invoice_logo.png"]]></imageExpression>
+			</image>
+			<textField pattern="#0000.###;(#0000.###-)">
+				<reportElement x="503" y="30" width="51" height="20" uuid="3836ce65-eca3-4cad-a6de-b1818def0a2b"/>
+				<textFieldExpression><![CDATA[$F{id_orcamento_}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="438" y="30" width="65" height="20" uuid="0b3f9342-da78-4cfa-9fc5-2301c4749678"/>
+				<box rightPadding="4"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Orçamento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="95" y="0" width="210" height="25" uuid="e622555d-198b-4ccd-a4a1-c59c53304058">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="19" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VR Auto Center]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="95" y="55" width="205" height="15" uuid="b8cc42fd-b569-497d-834d-7e854040ad18"/>
+				<text><![CDATA[Fone/Whats: 47 3394-3977]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="95" y="25" width="205" height="15" uuid="c226e44d-3bb5-4145-b0b3-903bf1d79fde"/>
+				<text><![CDATA[Rua Canadá, 131 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="95" y="40" width="205" height="15" uuid="b96f7183-44f8-43ad-ba60-43d8fbf50b6e"/>
+				<text><![CDATA[Nações, Indaial - SC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="85" width="40" height="17" uuid="9922e781-13dd-4566-8638-c864ce79bf80">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<text><![CDATA[Cliente:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="228" y="85" width="40" height="17" uuid="63be3a72-40b8-42ca-ab08-cc5b9eb4b054">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<text><![CDATA[Veículo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="449" y="85" width="35" height="17" uuid="0b30d8d0-c7bd-4e54-bd99-309259ddda3e">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<text><![CDATA[Placa:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="40" y="85" width="168" height="16" uuid="773e11b7-676b-43f7-be2b-319784dc87da">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nome_cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="269" y="85" width="130" height="16" uuid="fdbc9846-fed4-408e-82ac-12871592e3fb"/>
+				<textFieldExpression><![CDATA[$F{carro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="482" y="85" width="63" height="16" uuid="07b2c44e-4c12-447c-95cb-265555f6e04f"/>
+				<textFieldExpression><![CDATA[$F{placa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="115" width="100" height="19" uuid="a3bccf18-6368-41f4-8f6d-c2f9b12f01ff"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Item]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="228" y="115" width="100" height="19" uuid="07287e40-ec02-4b99-9af1-40551735263d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor unitário]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="340" y="115" width="100" height="19" uuid="97861779-de54-4b0d-a844-f2cf85a03fe2"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="449" y="115" width="100" height="19" uuid="99b5f7c3-0b53-4987-9cb2-66283cc9d0bd"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Subtotal]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="15">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<componentElement>
+				<reportElement x="0" y="0" width="556" height="15" uuid="3047b638-992a-4441-98a7-86a0c4c93da0">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Dataset1" uuid="ef70750a-fb6e-4e6e-bc54-a6d030891cdc">
+						<datasetParameter name="idOrcamentoPrm">
+							<datasetParameterExpression><![CDATA[$F{id_orcamento_}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="15" width="556">
+						<textField>
+							<reportElement x="0" y="0" width="230" height="15" uuid="3f353337-243c-4e89-9396-fe7ade8dfc30"/>
+							<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+						</textField>
+						<textField pattern="¤ #,##0.00;¤-#,##0.00">
+							<reportElement x="230" y="0" width="100" height="15" uuid="77d9cd30-3dcb-4515-8d84-a0de8695fa66"/>
+							<textFieldExpression><![CDATA[$F{preco_un}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="340" y="0" width="100" height="15" uuid="27359843-b2bb-4ddd-bd46-d6622cd96ff4"/>
+							<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
+						</textField>
+						<textField pattern="¤ #,##0.00;¤-#,##0.00">
+							<reportElement x="450" y="0" width="100" height="15" uuid="adc557b5-28a6-4f41-81c5-3a7f01dca03b"/>
+							<textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+		<band height="31">
+			<staticText>
+				<reportElement x="340" y="5" width="79" height="18" uuid="4a656808-52ac-4e0e-93d6-dda8fdaca985"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor total:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00;¤-#,##0.00">
+				<reportElement x="449" y="5" width="100" height="19" uuid="b322ccc2-72bd-41dd-846e-0e78f4124d4a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{val_total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-1" y="1" width="306" height="30" uuid="15021dde-f876-444a-8047-b193c9496fb6"/>
+				<textFieldExpression><![CDATA[" "]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

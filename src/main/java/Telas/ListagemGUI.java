@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -114,6 +116,28 @@ public class ListagemGUI extends javax.swing.JFrame {
                     String idFormatado = tblListagem.getValueAt(selectedRow, 0).toString();
                     Long idOrcamento = Long.parseLong(idFormatado);
 
+                    // Obtém a instância existente da OrcamentoGUI
+                    OrcamentoGUI orcamentoGUI = OrcamentoGUI.getInstance();
+
+                    // Carrega os dados do orçamento
+                    orcamentoGUI.carregarOrcamento(idOrcamento);
+
+                    // Mostra a janela e traz para frente
+                    orcamentoGUI.setVisible(true);
+                    orcamentoGUI.toFront();
+                }
+            }
+        });
+        
+        // Listener para duplo clique na tabela com várias instancias (Não funciona)
+        /*tblListagem.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2 && tblListagem.getSelectedRow() != -1) {
+                    int selectedRow = tblListagem.getSelectedRow();
+                    String idFormatado = tblListagem.getValueAt(selectedRow, 0).toString();
+                    Long idOrcamento = Long.parseLong(idFormatado);
+
                     // Verifica se já existe uma instância para este ID
                     OrcamentoGUI orcamentoGUI = instanciasOrcamentos.get(idOrcamento);
 
@@ -150,45 +174,11 @@ public class ListagemGUI extends javax.swing.JFrame {
                     orcamentoGUI.toFront();
                 }
             }
-        });
-
+        });*/
         
     }
     
     //MÉTODOS ESPECÍFICOS PARA ESTA TELA:
-    
-    //Método para 
-    private void carregarOrcamento(Long idOrcamento) {
-        try {
-            OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
-            Orcamento orcamento = orcamentoDAO.findById(idOrcamento);
-
-            if (orcamento != null) {
-                List<ItemOrcamento> itens = orcamentoDAO.findItensByOrcamentoId(idOrcamento);
-
-                StringBuilder detalhes = new StringBuilder("Orçamento ID: " + orcamento.getIdOrcamento() + "\n");
-                detalhes.append("Cliente: ").append(orcamento.getCliente() != null ? orcamento.getCliente().getNomeCliente() : "Não informado").append("\n");
-                detalhes.append("Itens:\n");
-
-                if (itens != null && !itens.isEmpty()) {
-                    for (ItemOrcamento item : itens) {
-                        detalhes.append("- Produto: ").append(item.getProduto().getDescricao())
-                                .append(" | Quantidade: ").append(item.getQuantidade())
-                                .append(" | Subtotal: ").append(item.getSubtotal()).append("\n");
-                    }
-                } else {
-                    detalhes.append("Nenhum item associado.\n");
-                }
-
-                JOptionPane.showMessageDialog(this, detalhes.toString(), "Detalhes do Orçamento", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao carregar orçamento: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }
-    }
        
     // Método para listar os Orçamentos na tabela
     private void loadOrcamentosIntoTable() {
@@ -200,7 +190,12 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         if (orcamentos != null) {
             Collections.reverse(orcamentos); // Inverte a lista para mostrar os mais novos no topo
-            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR")); // Formato de moeda brasileira
+
+            // Configura um formato de moeda brasileira sem espaço
+            DecimalFormatSymbols dfs = new DecimalFormatSymbols(new Locale("pt", "BR"));
+            dfs.setCurrencySymbol("R$ "); //Espaço pode ser removido se preferir
+
+            DecimalFormat currencyFormat = new DecimalFormat("¤#,##0.00", dfs);
 
             for (Orcamento orcamento : orcamentos) {
                 String nome;
@@ -224,7 +219,7 @@ public class ListagemGUI extends javax.swing.JFrame {
                 // Verifica se o valor total não é nulo antes de formatar
                 String valorFormatado = orcamento.getValTotal() != null
                         ? currencyFormat.format(orcamento.getValTotal())
-                        : "R$ 0,00"; // Ou algum valor padrão
+                        : "R$0,00"; // Ou algum valor padrão
 
                 Object[] row = {
                     idFormatado, // ID formatado
@@ -240,6 +235,7 @@ public class ListagemGUI extends javax.swing.JFrame {
             System.out.println("Nenhum orçamento encontrado ou erro ao carregar dados.");
         }
     }
+
 
     // Método para adicionar um DocumentListener ao campo de busca
     private void addSearchListener() {
@@ -426,6 +422,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         btnNovoOrcamento = new javax.swing.JButton();
         btnCadastro = new javax.swing.JButton();
         btnRelatorios = new javax.swing.JButton();
+        btnServicos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Listagem de Orçamentos");
@@ -494,7 +491,7 @@ public class ListagemGUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnExcluir))
                     .addComponent(lblPeriodo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 630, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 636, Short.MAX_VALUE)
                 .addComponent(lblImgLupa, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -563,6 +560,9 @@ public class ListagemGUI extends javax.swing.JFrame {
         btnRelatorios.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
         btnRelatorios.setText("Relatórios (F3)");
 
+        btnServicos.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        btnServicos.setText("Serviços (F3)");
+
         javax.swing.GroupLayout paneAllLayout = new javax.swing.GroupLayout(paneAll);
         paneAll.setLayout(paneAllLayout);
         paneAllLayout.setHorizontalGroup(
@@ -576,15 +576,17 @@ public class ListagemGUI extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(paneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(panebotoes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 1354, Short.MAX_VALUE)))
+                            .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 1369, Short.MAX_VALUE)))
                     .addGroup(paneAllLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(btnNovoOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(70, 70, 70)
                         .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(70, 70, 70)
+                        .addComponent(btnServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(70, 70, 70)
                         .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         paneAllLayout.setVerticalGroup(
@@ -596,7 +598,8 @@ public class ListagemGUI extends javax.swing.JFrame {
                 .addGroup(paneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNovoOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(59, 59, 59)
                 .addComponent(panebotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -624,19 +627,17 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         // Atualiza a data e hora no lblDataHora
         orcamentoGUI.atualizarDataHora();
+        
+        orcamentoGUI.resetCampos();
 
         // Abre a instância da OrcamentoGUI
         OrcamentoGUI.abrirNovaInstancia();   
     }//GEN-LAST:event_btnNovoOrcamentoActionPerformed
 
     private void btnCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastroActionPerformed
-        // Cria a instância da tela ClienteGUI
-        //ClienteGUI clienteGUI = new ClienteGUI();
-        // Torna a tela visível
-        //clienteGUI.setVisible(true);
-        ClienteGUI.abrirNovaInstancia();
-
         
+        ClienteGUI.abrirNovaInstancia(); 
+        ClienteGUI.getInstance().setModoVinculacao(false);
     }//GEN-LAST:event_btnCadastroActionPerformed
 
     private void txtBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscaActionPerformed
@@ -748,6 +749,7 @@ public class ListagemGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnNovoOrcamento;
     private javax.swing.JButton btnRelatorios;
+    private javax.swing.JButton btnServicos;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel lblHead;
