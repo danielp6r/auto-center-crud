@@ -98,7 +98,7 @@ from
    itens_orcamento i 
    left join produtos p on p.id_produto = i.id_produto
  where
-   i.id_orcamento =  $P{idOrcamentoPrm} ]]>
+   i.id_orcamento =  $P{idOrcamentoPrm}]]>
 		</queryString>
 		<field name="descricao" class="java.lang.String">
 			<property name="com.jaspersoft.studio.field.name" value="descricao"/>
@@ -191,8 +191,8 @@ WHERE
 				<textFieldExpression><![CDATA[$F{data_hora}]]></textFieldExpression>
 			</textField>
 			<image hAlign="Center">
-				<reportElement x="0" y="0" width="65" height="60" uuid="94883631-a913-43e2-b182-ab8d77d0181e"/>
-				<imageExpression><![CDATA["invoice_logo.png"]]></imageExpression>
+				<reportElement x="0" y="0" width="79" height="70" uuid="94883631-a913-43e2-b182-ab8d77d0181e"/>
+				<imageExpression><![CDATA["vr.png"]]></imageExpression>
 			</image>
 			<textField pattern="#0000.###;(#0000.###-)">
 				<reportElement x="503" y="30" width="51" height="20" uuid="3836ce65-eca3-4cad-a6de-b1818def0a2b"/>
@@ -295,7 +295,7 @@ WHERE
 				<reportElement x="0" y="0" width="556" height="15" uuid="3047b638-992a-4441-98a7-86a0c4c93da0">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 					<datasetRun subDataset="Dataset1" uuid="ef70750a-fb6e-4e6e-bc54-a6d030891cdc">
 						<datasetParameter name="idOrcamentoPrm">
 							<datasetParameterExpression><![CDATA[$F{id_orcamento_}]]></datasetParameterExpression>
