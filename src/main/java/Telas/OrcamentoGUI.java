@@ -2,7 +2,6 @@ package Telas;
 
 import Classes.Cliente;
 import Classes.ItemOrcamento;
-import Classes.Main;
 import Classes.Mercadoria;
 import Classes.Orcamento;
 import Classes.Produto;
@@ -12,12 +11,10 @@ import Classes.SessionManager;
 import DAO.ClienteDAO;
 import DAO.ItemOrcamentoDAO;
 import DAO.OrcamentoDAO;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -38,8 +35,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import net.sf.jasperreports.engine.JRException;
@@ -48,8 +43,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.util.JRLoader;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.printing.PDFPageable;
 
 /**
  *
@@ -1144,12 +1137,17 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnImprimirActionPerformed
     //URL reportPath = Main.class.getResource("/reports/orcamento.jasper");
     private void imprimirRelatorioJasper() {
-        String relativePath = "/home/daniel/JaspersoftWorkspace/MyReports/orcamento.jasper";
+        String reportPath = getClass().getResource("/reports/orcamento.jasper").getPath();
+        String imagePath = getClass().getResource("/images/vr.png").getPath();
+
         try {
-            JasperReport reporte = (JasperReport) JRLoader.loadObject(new File(relativePath));
+            JasperReport reporte = (JasperReport) JRLoader.loadObject(new File(reportPath));
             Map<String, Object> parametros = new HashMap<>();
             Integer idOrcamentoInteger = (int) idOrcamentoGlobal;
             parametros.put("idOrcamento", idOrcamentoInteger);
+
+            // Passe o caminho da imagem como parâmetro
+            parametros.put("IMAGE_PATH", imagePath);
 
             String url = "jdbc:mysql://localhost:3306/test";
             String usuario = "root";
@@ -1159,44 +1157,34 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             // Preenche o relatório
             JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, parametros, conexao);
 
-            // Exporta o PDF para um arquivo temporário
-            String pdfFilePath = "/home/daniel/JaspersoftWorkspace/MyReports/orcamento_temp.pdf";
+            // Gera o PDF no diretório de saída padrão do Maven
+            String pdfFilePath = "target/orcamento.pdf";
             JasperExportManager.exportReportToPdfFile(jasperPrint, pdfFilePath);
 
-            // Imprime o PDF
-            File pdfFile = new File(pdfFilePath);
-            imprimirPDF(pdfFile);
+            // Abre o PDF no leitor padrão
+            abrirPDF(new File(pdfFilePath));
 
         } catch (JRException | SQLException ex) {
             Logger.getLogger(OrcamentoGUI.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, "Erro ao gerar relatório: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }          
+        }
     }
     
-    private void imprimirPDF(File pdfFile) {
+    private void abrirPDF(File pdfFile) {
         try {
-            PDDocument document = PDDocument.load(pdfFile);
-            PrintService impressora = PrintServiceLookup.lookupDefaultPrintService();
-
-            if (impressora != null) {
-                PrinterJob printerJob = PrinterJob.getPrinterJob();
-                printerJob.setPrintService(impressora);
-                printerJob.setPageable(new PDFPageable(document));
-
-                if (printerJob.printDialog()) {
-                    printerJob.print();
-                    JOptionPane.showMessageDialog(this, "PDF enviado para a impressora: " + impressora.getName());
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                if (pdfFile.exists()) {
+                    desktop.open(pdfFile); // Abre o PDF no aplicativo padrão do sistema
                 } else {
-                    JOptionPane.showMessageDialog(this, "Impressão cancelada pelo usuário.");
+                    JOptionPane.showMessageDialog(this, "O arquivo PDF não foi encontrado: " + pdfFile.getPath(), "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Nenhuma impressora padrão encontrada.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Abrir arquivos PDF não é suportado neste sistema.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
-
-            document.close();
-        } catch (IOException | PrinterException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(OrcamentoGUI.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Erro ao imprimir PDF: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir o PDF: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
     
