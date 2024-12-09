@@ -93,6 +93,12 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         column.setPreferredWidth(0);
         column.setWidth(0);
         
+        // Configs do campo de observações
+        jTextObs.setLineWrap(true);
+        jTextObs.setWrapStyleWord(true);
+        paneObs.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        paneObs.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        
         //WindowListener para redefinir a instância ao fechar:
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -130,10 +136,13 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                     lblDataHora.setText("");
                 }
 
+                // Atualiza o campo de observações
+                jTextObs.setText(orcamento.getObservacoes() != null ? orcamento.getObservacoes() : "");
+
                 atualizarGridItens(); // Atualiza a lista de itens
                 calcularTotais(orcamento.getItensOrcamento()); // Atualiza os totais
             } else {
-                //JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -141,7 +150,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         }
     }
 
- 
     //Método para calcular os totais ao abrir um orçamento já existente 
     private void calcularTotais(List<ItemOrcamento> itens) {
         double totalPecas = 0.0;
@@ -461,7 +469,27 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         DefaultTableCellRenderer renderizadorTitulo = (DefaultTableCellRenderer) tblListagem.getTableHeader().getDefaultRenderer();
         renderizadorTitulo.setHorizontalAlignment(SwingConstants.LEFT);
     }
-
+    
+    private void atualizarObservacoes(Long idOrcamento, String observacoes) {
+        Session session = SessionManager.getInstance().getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            String comandoSql = "UPDATE orcamentos SET observacoes = :observacoes WHERE id_orcamento_ = :idOrcamento";
+            session.createNativeQuery(comandoSql)
+                    .setParameter("observacoes", observacoes)
+                    .setParameter("idOrcamento", idOrcamento)
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar observações: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            session.close();
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -500,7 +528,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         txtTotalPecas = new javax.swing.JTextField();
         txtValorFinal = new javax.swing.JTextField();
         paneObs = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        jTextObs = new javax.swing.JTextArea();
         btnImprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -741,9 +769,9 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        paneObs.setViewportView(jTextArea2);
+        jTextObs.setColumns(20);
+        jTextObs.setRows(5);
+        paneObs.setViewportView(jTextObs);
 
         btnImprimir.setText("Imprimir F12");
         btnImprimir.addActionListener(new java.awt.event.ActionListener() {
@@ -851,7 +879,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
     
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // Verifica se os campos Cliente e Veículo foram preenchidos
+// Verifica se os campos Cliente e Veículo foram preenchidos
         if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
             JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
         } else {
@@ -863,11 +891,19 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         JOptionPane.WARNING_MESSAGE);
             }
 
+            // Captura o conteúdo do campo de observações
+            String observacoes = jTextObs.getText().trim();
+
             if (idOrcamentoGlobal <= 0) {
-                SalvarOrcamento(false); // Cria o orçamento se ele não existir
+                long idOrcamento = SalvarOrcamento(false); // Cria o orçamento se ele não existir
+                if (idOrcamento > 0) {
+                    atualizarObservacoes(idOrcamento, observacoes);
+                }
             } else {
                 vincularClienteAoOrcamento(idClienteSelecionado); // Atualiza o cliente no orçamento existente
+                atualizarObservacoes(idOrcamentoGlobal, observacoes); // Atualiza as observações no orçamento existente
             }
+
             JOptionPane.showMessageDialog(this, "Orçamento salvo com sucesso!");
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
@@ -880,6 +916,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         String nome = txtCliente.getText().trim();
         String veiculo = txtVeiculo.getText().trim();
         String placa = txtPlaca.getText().trim();
+        String observacoes = jTextObs.getText().trim();
 
         // Validação dos campos obrigatórios
         if (nome.isEmpty() || veiculo.isEmpty() /*|| placa.isEmpty()*/) {
@@ -948,8 +985,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             idOrcamentoGlobal = idOrcamento; // Atualiza a variável global
             lblHead.setText("ORÇAMENTO Nº: " + idOrcamentoGlobal);
 
-            String comandoSqlOrcamento = "INSERT INTO orcamentos (id_cliente, id_orcamento_, placa, carro, data_hora) VALUES ("
-                    + idCliente + ", " + idOrcamento + ", '" + placa + "', '" + veiculo + "', current_timestamp)";
+            String comandoSqlOrcamento = "INSERT INTO orcamentos (id_cliente, id_orcamento_, placa, carro, data_hora, observacoes) VALUES ("
+                    + idCliente + ", " + idOrcamento + ", '" + placa + "', '" + veiculo + "', current_timestamp, '" + observacoes + "')";
             session.createNativeQuery(comandoSqlOrcamento).executeUpdate();
 
             transaction.commit();
@@ -1270,7 +1307,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnServico;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextObs;
     private javax.swing.JLabel lbl1;
     private javax.swing.JLabel lblCliente;
     private javax.swing.JLabel lblDataHora;

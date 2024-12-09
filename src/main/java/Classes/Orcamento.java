@@ -34,6 +34,9 @@ public class Orcamento {
 
     @Column(name = "placa")
     private String placa;
+    
+    @Column(name = "observacoes")
+    private String observacoes;
 
     @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ItemOrcamento> itensOrcamento;
@@ -123,5 +126,13 @@ public class Orcamento {
 
     public void setItensOrcamento(List<ItemOrcamento> itensOrcamento) {
         this.itensOrcamento = itensOrcamento;
+    }
+    
+    public String getObservacoes() {
+        return observacoes;
+    }
+
+    public void setObservacoes(String observacoes) {
+        this.observacoes = observacoes;
     }
 }
