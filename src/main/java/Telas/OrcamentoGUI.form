@@ -372,9 +372,13 @@
         <Component class="javax.swing.JTextField" name="txtVeiculo">
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtVeiculoActionPerformed"/>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtVeiculoKeyTyped"/>
           </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="txtPlaca">
+          <Events>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtPlacaKeyTyped"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JPanel" name="paneBot">
 

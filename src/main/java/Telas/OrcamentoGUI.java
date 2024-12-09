@@ -93,6 +93,13 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         column.setPreferredWidth(0);
         column.setWidth(0);
         
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                instance = null; // Reseta a instância ao fechar
+            }
+        });
+        
         // Configs do campo de observações
         jTextObs.setLineWrap(true);
         jTextObs.setWrapStyleWord(true);
@@ -172,12 +179,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         });*/
         
         //WindowListener para redefinir a instância ao fechar:
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                instance = null; // Reseta a instância ao fechar
-            }
-        });   
+               
     }
     
     //MÉTODOS ESPECÍFICOS PARA ESTA TELA
@@ -798,6 +800,17 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 txtVeiculoActionPerformed(evt);
             }
         });
+        txtVeiculo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtVeiculoKeyTyped(evt);
+            }
+        });
+
+        txtPlaca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPlacaKeyTyped(evt);
+            }
+        });
 
         jLabel1.setText("Obs.:");
 
@@ -998,25 +1011,35 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
         } else {
+            // Captura o conteúdo do campo Placa
+            String placa = txtPlaca.getText().trim().toUpperCase();
+
+            // Verifica se a placa está no formato correto
+            if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
+                JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
+                return; // Interrompe o salvamento se a placa estiver no formato incorreto
+            }
+
             // Exibe um aviso se a placa não for preenchida
-            if (txtPlaca.getText().equals("")) {
+            if (placa.isEmpty()) {
                 JOptionPane.showMessageDialog(this,
                         "Atenção: O campo Placa está vazio!",
                         "Aviso",
                         JOptionPane.WARNING_MESSAGE);
             }
 
+            // Continua com o salvamento do orçamento
             if (idOrcamentoGlobal <= 0) {
                 long idOrcamento = SalvarOrcamento(false); // Cria o orçamento se ele não existir
                 if (idOrcamento > 0) {
                     atualizarVeiculo(idOrcamento, txtVeiculo.getText().trim());
-                    atualizarPlaca(idOrcamento, txtPlaca.getText().trim());
+                    atualizarPlaca(idOrcamento, placa);
                     atualizarObservacoes(idOrcamento, jTextObs.getText().trim());
                 }
             } else {
                 vincularClienteAoOrcamento(idClienteSelecionado); // Atualiza o cliente no orçamento existente
                 atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
-                atualizarPlaca(idOrcamentoGlobal, txtPlaca.getText().trim());
+                atualizarPlaca(idOrcamentoGlobal, placa);
                 atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
             }
 
@@ -1123,8 +1146,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
         // Validação dos campos obrigatórios
-        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty() /*|| txtPlaca.getText().isEmpty()*/) {
+        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
+            return;
+        }
+
+        // Validação do campo Placa
+        String placa = txtPlaca.getText().trim().toUpperCase();
+        if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
+            JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -1228,8 +1258,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
         // Validação dos campos obrigatórios
-        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty() /*|| txtPlaca.getText().isEmpty()*/) {
+        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
+            return;
+        }
+
+        // Validação do campo Placa
+        String placa = txtPlaca.getText().trim().toUpperCase();
+        if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
+            JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -1374,6 +1411,64 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private void txtClienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtClienteKeyPressed
+
+    private void txtPlacaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlacaKeyTyped
+        String textoAtual = txtPlaca.getText().toUpperCase(); // Obtém o texto atual e converte para maiúsculas
+        char caractere = evt.getKeyChar(); // Obtém o caractere digitado
+
+        // Permitir teclas de controle como backspace, delete e setas
+        if (Character.isISOControl(caractere)) {
+            return;
+        }
+
+        // Permitir apenas letras e números
+        if (!Character.isLetterOrDigit(caractere)) {
+            evt.consume(); // Ignora caracteres especiais e pontuações
+            return;
+        }
+
+        // Limitar o comprimento para 7 caracteres
+        if (textoAtual.length() >= 7) {
+            evt.consume(); // Ignora o caractere adicional
+            return;
+        }
+
+        // Converte o caractere para maiúsculas automaticamente
+        caractere = Character.toUpperCase(caractere);
+
+        // Validação por posição
+        int posicao = textoAtual.length();
+        if (posicao < 3) {
+            // Primeiras 3 posições devem ser letras
+            if (!Character.isLetter(caractere)) {
+                evt.consume(); // Ignora caracteres inválidos
+                return;
+            }
+        } else if (posicao == 3 || posicao == 5 || posicao == 6) {
+            // Posições 3, 5 e 6 devem ser números
+            if (!Character.isDigit(caractere)) {
+                evt.consume(); // Ignora caracteres inválidos
+                return;
+            }
+        } else if (posicao == 4) {
+            // Posição 4 pode ser letra ou número (para ambos os formatos)
+            if (!Character.isLetter(caractere) && !Character.isDigit(caractere)) {
+                evt.consume(); // Ignora caracteres inválidos
+                return;
+            }
+        }
+
+        // Atualiza o texto no campo com o caractere validado
+        txtPlaca.setText(textoAtual + caractere);
+        evt.consume(); // Evita que o caractere seja processado novamente
+    }//GEN-LAST:event_txtPlacaKeyTyped
+
+    private void txtVeiculoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtVeiculoKeyTyped
+        // Verifica se o texto atual ultrapassará 24 caracteres
+        if (txtVeiculo.getText().length() >= 24) {
+            evt.consume(); // Impede que o caractere digitado seja adicionado
+        }
+    }//GEN-LAST:event_txtVeiculoKeyTyped
 
     /**
      * @param args the command line arguments
