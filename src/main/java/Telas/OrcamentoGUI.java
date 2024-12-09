@@ -2,7 +2,6 @@ package Telas;
 
 import Classes.Cliente;
 import Classes.ItemOrcamento;
-import Classes.Main;
 import Classes.Mercadoria;
 import Classes.Orcamento;
 import Classes.Produto;
@@ -12,9 +11,10 @@ import Classes.SessionManager;
 import DAO.ClienteDAO;
 import DAO.ItemOrcamentoDAO;
 import DAO.OrcamentoDAO;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.net.URL;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -93,13 +93,93 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         column.setPreferredWidth(0);
         column.setWidth(0);
         
-        //WindowListener para redefinir a instância ao fechar:
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
                 instance = null; // Reseta a instância ao fechar
             }
-        });   
+        });
+        
+        // Configs do campo de observações
+        jTextObs.setLineWrap(true);
+        jTextObs.setWrapStyleWord(true);
+        paneObs.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        paneObs.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        
+        // Listener para monitorar alterações no campo de observações
+        jTextObs.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) { // Verifica se há um orçamento válido carregado
+                    atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
+                }
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) { // Verifica se há um orçamento válido carregado
+                    atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
+                }
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) { // Verifica se há um orçamento válido carregado
+                    atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
+                }
+            }
+        });
+        
+        /*// Listener para monitorar mudanças em txtVeiculo 
+        txtVeiculo.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
+                }
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
+                }
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
+                }
+            }
+        });
+
+        // Listener para monitorar mudanças em txtPlaca
+        txtPlaca.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarPlaca(idOrcamentoGlobal, txtPlaca.getText().trim());
+                }
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarPlaca(idOrcamentoGlobal, txtPlaca.getText().trim());
+                }
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarPlaca(idOrcamentoGlobal, txtPlaca.getText().trim());
+                }
+            }
+        });*/
+        
+        //WindowListener para redefinir a instância ao fechar:
+               
     }
     
     //MÉTODOS ESPECÍFICOS PARA ESTA TELA
@@ -130,10 +210,13 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                     lblDataHora.setText("");
                 }
 
+                // Atualiza o campo de observações
+                jTextObs.setText(orcamento.getObservacoes() != null ? orcamento.getObservacoes() : "");
+
                 atualizarGridItens(); // Atualiza a lista de itens
                 calcularTotais(orcamento.getItensOrcamento()); // Atualiza os totais
             } else {
-                //JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Orçamento não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -141,7 +224,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         }
     }
 
- 
     //Método para calcular os totais ao abrir um orçamento já existente 
     private void calcularTotais(List<ItemOrcamento> itens) {
         double totalPecas = 0.0;
@@ -223,6 +305,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 btnServico.doClick(); // Simula o clique no botão Inserir Serviço
+            }
+        });
+        
+        // Mapeamento global da tecla F12 para Imprimir orçamento
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F12"), "Imprimir");
+        rootPane.getActionMap().put("Imprimir", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnImprimir.doClick(); // Simula o clique no botão Imprimir
             }
         });
 
@@ -452,6 +543,69 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         DefaultTableCellRenderer renderizadorTitulo = (DefaultTableCellRenderer) tblListagem.getTableHeader().getDefaultRenderer();
         renderizadorTitulo.setHorizontalAlignment(SwingConstants.LEFT);
     }
+    
+    private void atualizarObservacoes(Long idOrcamento, String observacoes) {
+        Session session = SessionManager.getInstance().getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            String comandoSql = "UPDATE orcamentos SET observacoes = :observacoes WHERE id_orcamento_ = :idOrcamento";
+            session.createNativeQuery(comandoSql)
+                    .setParameter("observacoes", observacoes)
+                    .setParameter("idOrcamento", idOrcamento)
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar observações: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            session.close();
+        }
+    }
+    
+    private void atualizarVeiculo(Long idOrcamento, String veiculo) {
+        Session session = SessionManager.getInstance().getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            String comandoSql = "UPDATE orcamentos SET carro = :veiculo WHERE id_orcamento_ = :idOrcamento";
+            session.createNativeQuery(comandoSql)
+                    .setParameter("veiculo", veiculo)
+                    .setParameter("idOrcamento", idOrcamento)
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar veículo: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            session.close();
+        }
+    }
+
+    private void atualizarPlaca(Long idOrcamento, String placa) {
+        Session session = SessionManager.getInstance().getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            String comandoSql = "UPDATE orcamentos SET placa = :placa WHERE id_orcamento_ = :idOrcamento";
+            session.createNativeQuery(comandoSql)
+                    .setParameter("placa", placa)
+                    .setParameter("idOrcamento", idOrcamento)
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar placa: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            session.close();
+        }
+    }
 
 
     /**
@@ -491,7 +645,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         txtTotalPecas = new javax.swing.JTextField();
         txtValorFinal = new javax.swing.JTextField();
         paneObs = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        jTextObs = new javax.swing.JTextArea();
         btnImprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -646,6 +800,17 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 txtVeiculoActionPerformed(evt);
             }
         });
+        txtVeiculo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtVeiculoKeyTyped(evt);
+            }
+        });
+
+        txtPlaca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPlacaKeyTyped(evt);
+            }
+        });
 
         jLabel1.setText("Obs.:");
 
@@ -732,9 +897,9 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        paneObs.setViewportView(jTextArea2);
+        jTextObs.setColumns(20);
+        jTextObs.setRows(5);
+        paneObs.setViewportView(jTextObs);
 
         btnImprimir.setText("Imprimir F12");
         btnImprimir.addActionListener(new java.awt.event.ActionListener() {
@@ -842,23 +1007,42 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
     
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // Verifica se os campos Nome e Veículo foram preenchidos
-        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+        // Verifica se os campos Cliente e Veículo foram preenchidos
+        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
         } else {
+            // Captura o conteúdo do campo Placa
+            String placa = txtPlaca.getText().trim().toUpperCase();
+
+            // Verifica se a placa está no formato correto
+            if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
+                JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
+                return; // Interrompe o salvamento se a placa estiver no formato incorreto
+            }
+
             // Exibe um aviso se a placa não for preenchida
-            if (txtPlaca.getText().equals("")) {
+            if (placa.isEmpty()) {
                 JOptionPane.showMessageDialog(this,
-                        "Atenção: O campo 'Placa' está vazio!",
+                        "Atenção: O campo Placa está vazio!",
                         "Aviso",
                         JOptionPane.WARNING_MESSAGE);
             }
 
+            // Continua com o salvamento do orçamento
             if (idOrcamentoGlobal <= 0) {
-                SalvarOrcamento(false); // Cria o orçamento se ele não existir
+                long idOrcamento = SalvarOrcamento(false); // Cria o orçamento se ele não existir
+                if (idOrcamento > 0) {
+                    atualizarVeiculo(idOrcamento, txtVeiculo.getText().trim());
+                    atualizarPlaca(idOrcamento, placa);
+                    atualizarObservacoes(idOrcamento, jTextObs.getText().trim());
+                }
             } else {
                 vincularClienteAoOrcamento(idClienteSelecionado); // Atualiza o cliente no orçamento existente
+                atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
+                atualizarPlaca(idOrcamentoGlobal, placa);
+                atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
             }
+
             JOptionPane.showMessageDialog(this, "Orçamento salvo com sucesso!");
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
@@ -871,10 +1055,11 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         String nome = txtCliente.getText().trim();
         String veiculo = txtVeiculo.getText().trim();
         String placa = txtPlaca.getText().trim();
+        String observacoes = jTextObs.getText().trim();
 
         // Validação dos campos obrigatórios
         if (nome.isEmpty() || veiculo.isEmpty() /*|| placa.isEmpty()*/) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
             return -1; // Retorna -1 em caso de erro de validação
         }
 
@@ -939,8 +1124,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             idOrcamentoGlobal = idOrcamento; // Atualiza a variável global
             lblHead.setText("ORÇAMENTO Nº: " + idOrcamentoGlobal);
 
-            String comandoSqlOrcamento = "INSERT INTO orcamentos (id_cliente, id_orcamento_, placa, carro, data_hora) VALUES ("
-                    + idCliente + ", " + idOrcamento + ", '" + placa + "', '" + veiculo + "', current_timestamp)";
+            String comandoSqlOrcamento = "INSERT INTO orcamentos (id_cliente, id_orcamento_, placa, carro, data_hora, observacoes) VALUES ("
+                    + idCliente + ", " + idOrcamento + ", '" + placa + "', '" + veiculo + "', current_timestamp, '" + observacoes + "')";
             session.createNativeQuery(comandoSqlOrcamento).executeUpdate();
 
             transaction.commit();
@@ -961,8 +1146,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
         // Validação dos campos obrigatórios
-        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty() /*|| txtPlaca.getText().isEmpty()*/) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
+            return;
+        }
+
+        // Validação do campo Placa
+        String placa = txtPlaca.getText().trim().toUpperCase();
+        if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
+            JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -1066,8 +1258,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
         // Validação dos campos obrigatórios
-        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty() /*|| txtPlaca.getText().isEmpty()*/) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
+            return;
+        }
+
+        // Validação do campo Placa
+        String placa = txtPlaca.getText().trim().toUpperCase();
+        if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
+            JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -1121,49 +1320,88 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        // Verifica se os campos Nome e Veículo foram preenchidos
+        // Verifica se os campos Cliente e Veículo foram preenchidos
         if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
         } else {
+            // Verifica se há itens na tabela
+            DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
+            if (model.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Adicione itens para imprimir o orçamento!", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // Exibe um aviso se a placa não for preenchida
             if (txtPlaca.getText().equals("")) {
-                JOptionPane.showMessageDialog(this,
-                        "Atenção: O campo 'Placa' está vazio!",
+                int resposta = JOptionPane.showConfirmDialog(
+                        this,
+                        "O campo Placa está vazio! Deseja continuar?",
                         "Aviso",
-                        JOptionPane.WARNING_MESSAGE);
-            } 
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+                if (resposta == JOptionPane.NO_OPTION) {
+                    return; // Interrompe o processo caso o usuário escolha "Não"
+                }
+            }
+
             imprimirRelatorioJasper();
         }
     }//GEN-LAST:event_btnImprimirActionPerformed
-
+    //URL reportPath = Main.class.getResource("/reports/orcamento.jasper");
     private void imprimirRelatorioJasper() {
-        
-        //URL reportPath = Main.class.getResource("/reports/orcamento.jasper");
-                String relativePath = "/home/daniel/JaspersoftWorkspace/MyReports/orcamento.jasper";
-                try {
-                    JasperReport reporte = (JasperReport) JRLoader.loadObject(new File(relativePath));                    
-                    Map<String, Object> parametros = new HashMap<String, Object>();
-                    Integer idOrcamentoInteger = (int) idOrcamentoGlobal;
-                    parametros.put("idOrcamento", idOrcamentoInteger);
-                            //idOrcamentoGlobal.intValue();
-                    
-                    //parametros.put("idOrcamento", idOrcamentoGlobal);
-                    String url = "jdbc:mysql://localhost:3306/test"; 
-                    String usuario = "root";
-                    String senha = "12345";
-                    Connection conexao = DriverManager.getConnection(url, usuario, senha);
+        String reportPath = getClass().getResource("/reports/orcamento.jasper").getPath();
+        String imagePath = getClass().getResource("/images/vr.png").getPath();
 
-                    JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, parametros, conexao);
+        try {
+            JasperReport reporte = (JasperReport) JRLoader.loadObject(new File(reportPath));
+            Map<String, Object> parametros = new HashMap<>();
+            Integer idOrcamentoInteger = (int) idOrcamentoGlobal;
+            parametros.put("idOrcamento", idOrcamentoInteger);
 
-                    JasperExportManager.exportReportToPdfFile(jasperPrint, "/home/daniel/JaspersoftWorkspace/MyReports/orcamento.pdf");
-                
-                } catch (JRException ex) {
-                    Logger.getLogger(OrcamentoGUI.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(OrcamentoGUI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
+            // Passe o caminho da imagem como parâmetro
+            parametros.put("IMAGE_PATH", imagePath);
+
+            String url = "jdbc:mysql://localhost:3306/test";
+            String usuario = "root";
+            String senha = "12345";
+            Connection conexao = DriverManager.getConnection(url, usuario, senha);
+
+            // Preenche o relatório
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, parametros, conexao);
+
+            // Gera o PDF no diretório de saída padrão do Maven
+            String pdfFilePath = "target/orcamento.pdf";
+            JasperExportManager.exportReportToPdfFile(jasperPrint, pdfFilePath);
+
+            // Abre o PDF no leitor padrão
+            abrirPDF(new File(pdfFilePath));
+
+        } catch (JRException | SQLException ex) {
+            Logger.getLogger(OrcamentoGUI.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao gerar relatório: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
+    
+    private void abrirPDF(File pdfFile) {
+        try {
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                if (pdfFile.exists()) {
+                    desktop.open(pdfFile); // Abre o PDF no aplicativo padrão do sistema
+                } else {
+                    JOptionPane.showMessageDialog(this, "O arquivo PDF não foi encontrado: " + pdfFile.getPath(), "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Abrir arquivos PDF não é suportado neste sistema.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(OrcamentoGUI.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir o PDF: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     private void txtClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtClienteMouseClicked
         ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
         clienteGUI.setModoVinculacao(true);
@@ -1173,6 +1411,64 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private void txtClienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtClienteKeyPressed
+
+    private void txtPlacaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlacaKeyTyped
+        String textoAtual = txtPlaca.getText().toUpperCase(); // Obtém o texto atual e converte para maiúsculas
+        char caractere = evt.getKeyChar(); // Obtém o caractere digitado
+
+        // Permitir teclas de controle como backspace, delete e setas
+        if (Character.isISOControl(caractere)) {
+            return;
+        }
+
+        // Permitir apenas letras e números
+        if (!Character.isLetterOrDigit(caractere)) {
+            evt.consume(); // Ignora caracteres especiais e pontuações
+            return;
+        }
+
+        // Limitar o comprimento para 7 caracteres
+        if (textoAtual.length() >= 7) {
+            evt.consume(); // Ignora o caractere adicional
+            return;
+        }
+
+        // Converte o caractere para maiúsculas automaticamente
+        caractere = Character.toUpperCase(caractere);
+
+        // Validação por posição
+        int posicao = textoAtual.length();
+        if (posicao < 3) {
+            // Primeiras 3 posições devem ser letras
+            if (!Character.isLetter(caractere)) {
+                evt.consume(); // Ignora caracteres inválidos
+                return;
+            }
+        } else if (posicao == 3 || posicao == 5 || posicao == 6) {
+            // Posições 3, 5 e 6 devem ser números
+            if (!Character.isDigit(caractere)) {
+                evt.consume(); // Ignora caracteres inválidos
+                return;
+            }
+        } else if (posicao == 4) {
+            // Posição 4 pode ser letra ou número (para ambos os formatos)
+            if (!Character.isLetter(caractere) && !Character.isDigit(caractere)) {
+                evt.consume(); // Ignora caracteres inválidos
+                return;
+            }
+        }
+
+        // Atualiza o texto no campo com o caractere validado
+        txtPlaca.setText(textoAtual + caractere);
+        evt.consume(); // Evita que o caractere seja processado novamente
+    }//GEN-LAST:event_txtPlacaKeyTyped
+
+    private void txtVeiculoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtVeiculoKeyTyped
+        // Verifica se o texto atual ultrapassará 24 caracteres
+        if (txtVeiculo.getText().length() >= 24) {
+            evt.consume(); // Impede que o caractere digitado seja adicionado
+        }
+    }//GEN-LAST:event_txtVeiculoKeyTyped
 
     /**
      * @param args the command line arguments
@@ -1222,7 +1518,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnServico;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextObs;
     private javax.swing.JLabel lbl1;
     private javax.swing.JLabel lblCliente;
     private javax.swing.JLabel lblDataHora;

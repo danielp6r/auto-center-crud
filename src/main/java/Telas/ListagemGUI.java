@@ -85,8 +85,6 @@ public class ListagemGUI extends javax.swing.JFrame {
         txtBusca.setText("");
         filtrarOrcamentos();
         
-        btnRelatorios.setVisible(false);
-        
         // Coluna num com tamanho pequeno definido
         TableColumnModel columnModel = tblListagem.getColumnModel();
         TableColumn column = columnModel.getColumn(0); // 0 é o índice da coluna num
@@ -361,6 +359,24 @@ public class ListagemGUI extends javax.swing.JFrame {
                 }
             }
         });
+        
+        // Mapeamento global da tecla F3 para abrir cadastro de serviços
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F3"), "Serviços");
+        rootPane.getActionMap().put("Serviços", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnServicos.doClick(); // Simula o clique no botão
+            }
+        });
+        
+        // Mapeamento global da tecla F4 para abrir relatório de recibos
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F4"), "Recibos");
+        rootPane.getActionMap().put("Recibos", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnRecibos.doClick(); // Simula o clique no botão
+            }
+        });
 
         // Mapeamento global da tecla Delete para Excluir
         rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE"), "excluirAction");
@@ -421,14 +437,16 @@ public class ListagemGUI extends javax.swing.JFrame {
         tblListagem = new javax.swing.JTable();
         btnNovoOrcamento = new javax.swing.JButton();
         btnCadastro = new javax.swing.JButton();
-        btnRelatorios = new javax.swing.JButton();
+        btnRecibos = new javax.swing.JButton();
         btnServicos = new javax.swing.JButton();
+        btnRelatorios = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Listagem de Orçamentos");
         setExtendedState(6);
         setFocusCycleRoot(false);
         setMinimumSize(new java.awt.Dimension(1366, 768));
+        setPreferredSize(new java.awt.Dimension(1366, 768));
 
         paneAll.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -491,7 +509,7 @@ public class ListagemGUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnExcluir))
                     .addComponent(lblPeriodo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 636, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 632, Short.MAX_VALUE)
                 .addComponent(lblImgLupa, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -557,11 +575,24 @@ public class ListagemGUI extends javax.swing.JFrame {
             }
         });
 
-        btnRelatorios.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
-        btnRelatorios.setText("Relatórios (F3)");
+        btnRecibos.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        btnRecibos.setText("Recibos (F4)");
+        btnRecibos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRecibosActionPerformed(evt);
+            }
+        });
 
         btnServicos.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
         btnServicos.setText("Serviços (F3)");
+
+        btnRelatorios.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        btnRelatorios.setText("Relatórios");
+        btnRelatorios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRelatoriosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout paneAllLayout = new javax.swing.GroupLayout(paneAll);
         paneAll.setLayout(paneAllLayout);
@@ -576,17 +607,19 @@ public class ListagemGUI extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(paneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(panebotoes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 1369, Short.MAX_VALUE)))
+                            .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 1365, Short.MAX_VALUE)))
                     .addGroup(paneAllLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
+                        .addGap(20, 20, 20)
                         .addComponent(btnNovoOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(70, 70, 70)
                         .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(70, 70, 70)
                         .addComponent(btnServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(70, 70, 70)
+                        .addComponent(btnRecibos, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(70, 70, 70)
                         .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         paneAllLayout.setVerticalGroup(
@@ -598,8 +631,9 @@ public class ListagemGUI extends javax.swing.JFrame {
                 .addGroup(paneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNovoOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnRecibos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(59, 59, 59)
                 .addComponent(panebotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -702,6 +736,14 @@ public class ListagemGUI extends javax.swing.JFrame {
         txtBusca.setToolTipText("Digite a tecla de espaço para exibir todos os Orçamentos.");
     }//GEN-LAST:event_txtBuscaMouseEntered
 
+    private void btnRecibosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecibosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRecibosActionPerformed
+
+    private void btnRelatoriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatoriosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRelatoriosActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -748,6 +790,7 @@ public class ListagemGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnCadastro;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnNovoOrcamento;
+    private javax.swing.JButton btnRecibos;
     private javax.swing.JButton btnRelatorios;
     private javax.swing.JButton btnServicos;
     private com.toedter.calendar.JDateChooser jDateChooser1;
