@@ -99,6 +99,78 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         paneObs.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         paneObs.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         
+        // Listener para monitorar alterações no campo de observações
+        jTextObs.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) { // Verifica se há um orçamento válido carregado
+                    atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
+                }
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) { // Verifica se há um orçamento válido carregado
+                    atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
+                }
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) { // Verifica se há um orçamento válido carregado
+                    atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
+                }
+            }
+        });
+        
+        /*// Listener para monitorar mudanças em txtVeiculo 
+        txtVeiculo.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
+                }
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
+                }
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
+                }
+            }
+        });
+
+        // Listener para monitorar mudanças em txtPlaca
+        txtPlaca.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarPlaca(idOrcamentoGlobal, txtPlaca.getText().trim());
+                }
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarPlaca(idOrcamentoGlobal, txtPlaca.getText().trim());
+                }
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                if (idOrcamentoGlobal > 0) {
+                    atualizarPlaca(idOrcamentoGlobal, txtPlaca.getText().trim());
+                }
+            }
+        });*/
+        
         //WindowListener para redefinir a instância ao fechar:
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -490,6 +562,49 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             session.close();
         }
     }
+    
+    private void atualizarVeiculo(Long idOrcamento, String veiculo) {
+        Session session = SessionManager.getInstance().getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            String comandoSql = "UPDATE orcamentos SET carro = :veiculo WHERE id_orcamento_ = :idOrcamento";
+            session.createNativeQuery(comandoSql)
+                    .setParameter("veiculo", veiculo)
+                    .setParameter("idOrcamento", idOrcamento)
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar veículo: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            session.close();
+        }
+    }
+
+    private void atualizarPlaca(Long idOrcamento, String placa) {
+        Session session = SessionManager.getInstance().getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            String comandoSql = "UPDATE orcamentos SET placa = :placa WHERE id_orcamento_ = :idOrcamento";
+            session.createNativeQuery(comandoSql)
+                    .setParameter("placa", placa)
+                    .setParameter("idOrcamento", idOrcamento)
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception ex) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar placa: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            session.close();
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -879,8 +994,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
     
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-// Verifica se os campos Cliente e Veículo foram preenchidos
-        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
+        // Verifica se os campos Cliente e Veículo foram preenchidos
+        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
         } else {
             // Exibe um aviso se a placa não for preenchida
@@ -891,17 +1006,18 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         JOptionPane.WARNING_MESSAGE);
             }
 
-            // Captura o conteúdo do campo de observações
-            String observacoes = jTextObs.getText().trim();
-
             if (idOrcamentoGlobal <= 0) {
                 long idOrcamento = SalvarOrcamento(false); // Cria o orçamento se ele não existir
                 if (idOrcamento > 0) {
-                    atualizarObservacoes(idOrcamento, observacoes);
+                    atualizarVeiculo(idOrcamento, txtVeiculo.getText().trim());
+                    atualizarPlaca(idOrcamento, txtPlaca.getText().trim());
+                    atualizarObservacoes(idOrcamento, jTextObs.getText().trim());
                 }
             } else {
                 vincularClienteAoOrcamento(idClienteSelecionado); // Atualiza o cliente no orçamento existente
-                atualizarObservacoes(idOrcamentoGlobal, observacoes); // Atualiza as observações no orçamento existente
+                atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
+                atualizarPlaca(idOrcamentoGlobal, txtPlaca.getText().trim());
+                atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
             }
 
             JOptionPane.showMessageDialog(this, "Orçamento salvo com sucesso!");
