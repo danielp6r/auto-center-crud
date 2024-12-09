@@ -225,6 +225,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 btnServico.doClick(); // Simula o clique no botão Inserir Serviço
             }
         });
+        
+        // Mapeamento global da tecla F12 para Imprimir orçamento
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F12"), "Imprimir");
+        rootPane.getActionMap().put("Imprimir", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnImprimir.doClick(); // Simula o clique no botão Imprimir
+            }
+        });
 
 
         // Mapeamento global da tecla Delete para Excluir
@@ -842,14 +851,14 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
     
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // Verifica se os campos Nome e Veículo foram preenchidos
+        // Verifica se os campos Cliente e Veículo foram preenchidos
         if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
         } else {
             // Exibe um aviso se a placa não for preenchida
             if (txtPlaca.getText().equals("")) {
                 JOptionPane.showMessageDialog(this,
-                        "Atenção: O campo 'Placa' está vazio!",
+                        "Atenção: O campo Placa está vazio!",
                         "Aviso",
                         JOptionPane.WARNING_MESSAGE);
             }
@@ -874,7 +883,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
         // Validação dos campos obrigatórios
         if (nome.isEmpty() || veiculo.isEmpty() /*|| placa.isEmpty()*/) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
             return -1; // Retorna -1 em caso de erro de validação
         }
 
@@ -962,7 +971,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
         // Validação dos campos obrigatórios
         if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty() /*|| txtPlaca.getText().isEmpty()*/) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
             return;
         }
 
@@ -1067,7 +1076,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
         // Validação dos campos obrigatórios
         if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty() /*|| txtPlaca.getText().isEmpty()*/) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
             return;
         }
 
@@ -1121,17 +1130,32 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        // Verifica se os campos Nome e Veículo foram preenchidos
+        // Verifica se os campos Cliente e Veículo foram preenchidos
         if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
-            JOptionPane.showMessageDialog(this, "Os campos Nome e Veículo devem ser preenchidos!");
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
         } else {
+            // Verifica se há itens na tabela
+            DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
+            if (model.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Adicione itens para imprimir o orçamento!", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // Exibe um aviso se a placa não for preenchida
             if (txtPlaca.getText().equals("")) {
-                JOptionPane.showMessageDialog(this,
-                        "Atenção: O campo 'Placa' está vazio!",
+                int resposta = JOptionPane.showConfirmDialog(
+                        this,
+                        "O campo Placa está vazio! Deseja continuar?",
                         "Aviso",
-                        JOptionPane.WARNING_MESSAGE);
-            } 
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+                if (resposta == JOptionPane.NO_OPTION) {
+                    return; // Interrompe o processo caso o usuário escolha "Não"
+                }
+            }
+
             imprimirRelatorioJasper();
         }
     }//GEN-LAST:event_btnImprimirActionPerformed
