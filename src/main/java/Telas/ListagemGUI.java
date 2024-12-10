@@ -1,6 +1,5 @@
 package Telas;
 
-import Classes.ItemOrcamento;
 import Classes.Orcamento;
 import Classes.SessionManager;
 import DAO.OrcamentoDAO;
@@ -11,7 +10,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import javax.swing.table.DefaultTableModel;
@@ -27,6 +25,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
@@ -57,6 +56,8 @@ public class ListagemGUI extends javax.swing.JFrame {
         ajustarAlinhamentoTabela();
         atalhos();
         
+        jMenuBar1.setVisible(false);
+        
         // Remove foco de todos os componentes
         setFocusable(true);
         requestFocusInWindow(); // Remove o foco de qualquer componente
@@ -75,7 +76,10 @@ public class ListagemGUI extends javax.swing.JFrame {
         // Listeners para os JDateChooser
         jDateChooser1.addPropertyChangeListener(evt -> filtrarPorData());
         jDateChooser2.addPropertyChangeListener(evt -> filtrarPorData());
-        
+        // Impede que o texto seja editado diretamente no JTextField
+        ((JTextField) jDateChooser1.getDateEditor().getUiComponent()).setEditable(false);
+        ((JTextField) jDateChooser2.getDateEditor().getUiComponent()).setEditable(false);
+
         // Adicionar listener ao campo de busca
         addSearchListener();
         
@@ -440,13 +444,14 @@ public class ListagemGUI extends javax.swing.JFrame {
         btnRecibos = new javax.swing.JButton();
         btnServicos = new javax.swing.JButton();
         btnRelatorios = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Listagem de Orçamentos");
         setExtendedState(6);
         setFocusCycleRoot(false);
         setMinimumSize(new java.awt.Dimension(1366, 768));
-        setPreferredSize(new java.awt.Dimension(1366, 768));
 
         paneAll.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -627,7 +632,7 @@ public class ListagemGUI extends javax.swing.JFrame {
             .addGroup(paneAllLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblHead, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addGroup(paneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNovoOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -637,8 +642,13 @@ public class ListagemGUI extends javax.swing.JFrame {
                 .addGap(59, 59, 59)
                 .addComponent(panebotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE))
+                .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE))
         );
+
+        jMenu1.setText("Menu");
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -795,6 +805,8 @@ public class ListagemGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnServicos;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JLabel lblHead;
     private javax.swing.JLabel lblImgLupa;
     private javax.swing.JLabel lblPeriodo;

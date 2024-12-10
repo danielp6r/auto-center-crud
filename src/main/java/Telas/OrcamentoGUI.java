@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import net.sf.jasperreports.engine.JRException;
@@ -97,7 +99,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         btnServico.setVisible(false);
         btnServicos.setVisible(false);
         btnImprimir.setVisible(false);
-        jMenu2.setVisible(false);
         
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -620,10 +621,14 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         jMenuNovaPeca = new javax.swing.JMenuItem();
         jMenuServico = new javax.swing.JMenuItem();
         jMenuNovoServico = new javax.swing.JMenuItem();
+        jMenuEditar = new javax.swing.JMenu();
         jMenuExcluirItem = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuEditar1 = new javax.swing.JMenu();
         jMenuCadastroServicos = new javax.swing.JMenuItem();
+        jMenuEditar2 = new javax.swing.JMenu();
         jMenuImprimir = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Orçamentos");
@@ -962,7 +967,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 .addGap(14, 14, 14))
         );
 
-        jMenuInserir.setText("Menu");
+        jMenuInserir.setText("Inserir");
         jMenuInserir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuInserirActionPerformed(evt);
@@ -996,6 +1001,10 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         });
         jMenuInserir.add(jMenuNovoServico);
 
+        jMenuBar.add(jMenuInserir);
+
+        jMenuEditar.setText("Editar");
+
         jMenuExcluirItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         jMenuExcluirItem.setText("Excluir Item");
         jMenuExcluirItem.addActionListener(new java.awt.event.ActionListener() {
@@ -1003,7 +1012,24 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 jMenuExcluirItemActionPerformed(evt);
             }
         });
-        jMenuInserir.add(jMenuExcluirItem);
+        jMenuEditar.add(jMenuExcluirItem);
+
+        jMenuBar.add(jMenuEditar);
+
+        jMenu1.setText("Janela");
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        jMenuItem1.setText("Atualizar");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuBar.add(jMenu1);
+
+        jMenuEditar1.setText("Cadastros");
 
         jMenuCadastroServicos.setText("Serviços Cadastrados");
         jMenuCadastroServicos.addActionListener(new java.awt.event.ActionListener() {
@@ -1011,7 +1037,11 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 jMenuCadastroServicosActionPerformed(evt);
             }
         });
-        jMenuInserir.add(jMenuCadastroServicos);
+        jMenuEditar1.add(jMenuCadastroServicos);
+
+        jMenuBar.add(jMenuEditar1);
+
+        jMenuEditar2.setText("Imprimir");
 
         jMenuImprimir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F12, 0));
         jMenuImprimir.setText("Imprimir Orçamento");
@@ -1020,10 +1050,9 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 jMenuImprimirActionPerformed(evt);
             }
         });
-        jMenuInserir.add(jMenuImprimir);
+        jMenuEditar2.add(jMenuImprimir);
 
-        jMenuBar.add(jMenuInserir);
-        jMenuBar.add(jMenu2);
+        jMenuBar.add(jMenuEditar2);
 
         setJMenuBar(jMenuBar);
 
@@ -1542,6 +1571,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuInserirActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // Simula o pressionamento da tecla F5
+        ActionMap actionMap = rootPane.getActionMap();
+        Action action = actionMap.get("reset");
+        if (action != null) {
+            action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1590,12 +1628,16 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnServico;
     private javax.swing.JButton btnServicos;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenuItem jMenuCadastroServicos;
+    private javax.swing.JMenu jMenuEditar;
+    private javax.swing.JMenu jMenuEditar1;
+    private javax.swing.JMenu jMenuEditar2;
     private javax.swing.JMenuItem jMenuExcluirItem;
     private javax.swing.JMenuItem jMenuImprimir;
     private javax.swing.JMenu jMenuInserir;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuNovaPeca;
     private javax.swing.JMenuItem jMenuNovoServico;
     private javax.swing.JMenuItem jMenuServico;
