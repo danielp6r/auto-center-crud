@@ -93,6 +93,12 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         column.setPreferredWidth(0);
         column.setWidth(0);
         
+        btnProduto.setVisible(false);
+        btnServico.setVisible(false);
+        btnServicos.setVisible(false);
+        btnImprimir.setVisible(false);
+        jMenu2.setVisible(false);
+        
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
@@ -244,7 +250,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         txtValorFinal.setText(String.format("R$%.2f", totalPecas + totalServicos));
     }
 
-
     // Método para atualizar lblDataHora com a data e hora no formato correto
     public void atualizarDataHora() {
         try {
@@ -270,12 +275,14 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private void atalhos() {
         JRootPane rootPane = this.getRootPane();
 
-        // Mapeamento global da tecla F1 para Salvar
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F1"), "salvarAction");
-        rootPane.getActionMap().put("salvarAction", new AbstractAction() {
+        // Mapeamento global da tecla F1 para Vincular cliente ao Orçamento
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F1"), "ClienteOrcamento");
+        rootPane.getActionMap().put("ClienteOrcamento", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btnSalvar.doClick(); // Simula o clique no botão Salvar
+                ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
+                clienteGUI.setModoVinculacao(true);
+                clienteGUI.setVisible(true); // Exibe ClienteGUI
             }
         });
 
@@ -286,44 +293,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("F2 pressionado - Inserir Peça (dentro da JTable)"); // Para depuração
                 btnProduto.doClick(); // Simula o clique no botão inserir Peça
-            }
-        });
-
-        // Mapeamento da tecla F2 para inserir peça (fora da JTable)
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F2"), "inserirPeça");
-        rootPane.getActionMap().put("inserirPeça", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("F2 pressionado - Inserir Peça (fora da JTable)"); // Para depuração
-                btnProduto.doClick(); // Simula o clique no botão Inserir Peça
-            }
-        });
-        
-        // Mapeamento global da tecla F3 para Inserir Serviço
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F3"), "InserirServiço");
-        rootPane.getActionMap().put("InserirServiço", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                btnServico.doClick(); // Simula o clique no botão Inserir Serviço
-            }
-        });
-        
-        // Mapeamento global da tecla F12 para Imprimir orçamento
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F12"), "Imprimir");
-        rootPane.getActionMap().put("Imprimir", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                btnImprimir.doClick(); // Simula o clique no botão Imprimir
-            }
-        });
-
-
-        // Mapeamento global da tecla Delete para Excluir
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE"), "excluirAction");
-        rootPane.getActionMap().put("excluirAction", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                btnExcluir.doClick(); // Simula o clique no botão Excluir
             }
         });
 
@@ -369,7 +338,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         return instance;
     }
 
-    
     // Método para abrir a tela de novo orçamento
     public static void abrirNovaInstancia() {
         if (instance == null) {
@@ -606,8 +574,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             session.close();
         }
     }
-
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -626,6 +593,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         btnProduto = new javax.swing.JButton();
         btnServico = new javax.swing.JButton();
         btnExcluir = new javax.swing.JButton();
+        btnServicos = new javax.swing.JButton();
         paneListagem = new javax.swing.JScrollPane();
         tblListagem = new javax.swing.JTable();
         lblCliente = new javax.swing.JLabel();
@@ -647,6 +615,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         paneObs = new javax.swing.JScrollPane();
         jTextObs = new javax.swing.JTextArea();
         btnImprimir = new javax.swing.JButton();
+        jMenuBar = new javax.swing.JMenuBar();
+        jMenuInserir = new javax.swing.JMenu();
+        jMenuNovaPeca = new javax.swing.JMenuItem();
+        jMenuServico = new javax.swing.JMenuItem();
+        jMenuNovoServico = new javax.swing.JMenuItem();
+        jMenuExcluirItem = new javax.swing.JMenuItem();
+        jMenuCadastroServicos = new javax.swing.JMenuItem();
+        jMenuImprimir = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Orçamentos");
@@ -704,6 +681,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             }
         });
 
+        btnServicos.setText("Serviços");
+
         javax.swing.GroupLayout paneBotoesLayout = new javax.swing.GroupLayout(paneBotoes);
         paneBotoes.setLayout(paneBotoesLayout);
         paneBotoesLayout.setHorizontalGroup(
@@ -714,7 +693,9 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                     .addComponent(btnProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnServico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(btnExcluir)
+                .addGroup(paneBotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnServicos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lbl1, javax.swing.GroupLayout.PREFERRED_SIZE, 672, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(140, 140, 140)
@@ -736,7 +717,9 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                             .addComponent(lbl1))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(paneBotoesLayout.createSequentialGroup()
-                        .addComponent(btnProduto)
+                        .addGroup(paneBotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnProduto)
+                            .addComponent(btnServicos))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(paneBotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnServico)
@@ -968,7 +951,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 .addGap(13, 13, 13)
                 .addComponent(paneBotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+                .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(PaneAllLayout.createSequentialGroup()
@@ -978,6 +961,71 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                     .addComponent(paneObs, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(14, 14, 14))
         );
+
+        jMenuInserir.setText("Menu");
+        jMenuInserir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuInserirActionPerformed(evt);
+            }
+        });
+
+        jMenuNovaPeca.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
+        jMenuNovaPeca.setText("Inserir Nova Peça");
+        jMenuNovaPeca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuNovaPecaActionPerformed(evt);
+            }
+        });
+        jMenuInserir.add(jMenuNovaPeca);
+
+        jMenuServico.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
+        jMenuServico.setText("Inserir Serviço Cadastrado");
+        jMenuServico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuServicoActionPerformed(evt);
+            }
+        });
+        jMenuInserir.add(jMenuServico);
+
+        jMenuNovoServico.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
+        jMenuNovoServico.setText("Inserir Novo Serviço");
+        jMenuNovoServico.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuNovoServicoActionPerformed(evt);
+            }
+        });
+        jMenuInserir.add(jMenuNovoServico);
+
+        jMenuExcluirItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+        jMenuExcluirItem.setText("Excluir Item");
+        jMenuExcluirItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuExcluirItemActionPerformed(evt);
+            }
+        });
+        jMenuInserir.add(jMenuExcluirItem);
+
+        jMenuCadastroServicos.setText("Serviços Cadastrados");
+        jMenuCadastroServicos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuCadastroServicosActionPerformed(evt);
+            }
+        });
+        jMenuInserir.add(jMenuCadastroServicos);
+
+        jMenuImprimir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F12, 0));
+        jMenuImprimir.setText("Imprimir Orçamento");
+        jMenuImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuImprimirActionPerformed(evt);
+            }
+        });
+        jMenuInserir.add(jMenuImprimir);
+
+        jMenuBar.add(jMenuInserir);
+        jMenuBar.add(jMenu2);
+
+        setJMenuBar(jMenuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1189,9 +1237,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             session.close(); // Garantir que a sessão seja fechada
         }
     }
-
-        
-        
+ 
     private double valorTotalGlobal;
     public void atualizarGridItens() {
         DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
@@ -1254,8 +1300,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         orcamentoDAO.atualizarValoresOrcamento(idOrcamentoGlobal, valorPecas, valorServicos, valorTotal);
     }
 
-
-    
     private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
         // Validação dos campos obrigatórios
         if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty()) {
@@ -1470,6 +1514,34 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtVeiculoKeyTyped
 
+    private void jMenuNovaPecaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuNovaPecaActionPerformed
+        btnProduto.doClick();
+    }//GEN-LAST:event_jMenuNovaPecaActionPerformed
+
+    private void jMenuNovoServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuNovoServicoActionPerformed
+        btnServico.doClick();
+    }//GEN-LAST:event_jMenuNovoServicoActionPerformed
+
+    private void jMenuServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuServicoActionPerformed
+        btnServicos.doClick();
+    }//GEN-LAST:event_jMenuServicoActionPerformed
+
+    private void jMenuExcluirItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuExcluirItemActionPerformed
+        btnExcluir.doClick();
+    }//GEN-LAST:event_jMenuExcluirItemActionPerformed
+
+    private void jMenuImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuImprimirActionPerformed
+        btnImprimir.doClick();
+    }//GEN-LAST:event_jMenuImprimirActionPerformed
+
+    private void jMenuCadastroServicosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCadastroServicosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuCadastroServicosActionPerformed
+
+    private void jMenuInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuInserirActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuInserirActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1508,7 +1580,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         });
     }
     
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PaneAll;
     private javax.swing.JButton btnCancelar;
@@ -1517,7 +1588,17 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnProduto;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnServico;
+    private javax.swing.JButton btnServicos;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar;
+    private javax.swing.JMenuItem jMenuCadastroServicos;
+    private javax.swing.JMenuItem jMenuExcluirItem;
+    private javax.swing.JMenuItem jMenuImprimir;
+    private javax.swing.JMenu jMenuInserir;
+    private javax.swing.JMenuItem jMenuNovaPeca;
+    private javax.swing.JMenuItem jMenuNovoServico;
+    private javax.swing.JMenuItem jMenuServico;
     private javax.swing.JTextArea jTextObs;
     private javax.swing.JLabel lbl1;
     private javax.swing.JLabel lblCliente;
