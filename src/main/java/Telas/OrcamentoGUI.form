@@ -65,12 +65,15 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="jMenuJanela">
           <Properties>
             <Property name="text" type="java.lang.String" value="Janela"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuJanelaActionPerformed"/>
+          </Events>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuAtualizar">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="F5"/>
@@ -78,12 +81,12 @@
                 <Property name="text" type="java.lang.String" value="Atualizar"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuAtualizarActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenuEditar1">
+        <Menu class="javax.swing.JMenu" name="jMenuCadastros">
           <Properties>
             <Property name="text" type="java.lang.String" value="Cadastros"/>
           </Properties>
@@ -98,7 +101,7 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenuEditar2">
+        <Menu class="javax.swing.JMenu" name="jMenuImprime">
           <Properties>
             <Property name="text" type="java.lang.String" value="Imprimir"/>
           </Properties>
@@ -196,7 +199,7 @@
                           <Component id="lblDataHora" min="-2" pref="125" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btnImprimir" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -216,8 +219,8 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="lblHead" min="-2" pref="34" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="lblHead" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -244,17 +247,17 @@
                   <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
                   <Component id="paneBotoes" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="paneListagem" min="-2" pref="340" max="-2" attributes="0"/>
+                  <Component id="paneListagem" min="-2" pref="320" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <Component id="paneValores" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="paneBot" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="paneObs" min="-2" pref="131" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="37" max="32767" attributes="0"/>
+                  <EmptySpace pref="67" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -295,8 +298,8 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="btnProduto" max="32767" attributes="0"/>
                           <Component id="btnServico" max="32767" attributes="0"/>
+                          <Component id="btnProduto" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -305,8 +308,8 @@
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="lbl1" min="-2" pref="672" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="140" max="-2" attributes="0"/>
-                      <Component id="btnSalvar" min="-2" pref="90" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="166" max="-2" attributes="0"/>
+                      <Component id="btnSalvar" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="btnCancelar" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -380,7 +383,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnProduto">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Inserir Pe&#xe7;a"/>
+                <Property name="text" type="java.lang.String" value="Nova Pe&#xe7;a"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProdutoActionPerformed"/>
@@ -388,7 +391,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnServico">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Inserir Servi&#xe7;o"/>
+                <Property name="text" type="java.lang.String" value="Novo Servi&#xe7;o"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnServicoActionPerformed"/>
@@ -404,7 +407,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnServicos">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Servi&#xe7;os"/>
+                <Property name="text" type="java.lang.String" value="Servi&#xe7;o Cad."/>
               </Properties>
             </Component>
           </SubComponents>
@@ -576,7 +579,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="lblTotalPecas" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lblTotalServicos" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -588,7 +591,6 @@
                           <Component id="txtTotalPecas" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="txtValorFinal" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -685,7 +687,7 @@
         </Container>
         <Component class="javax.swing.JButton" name="btnImprimir">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Imprimir F12"/>
+            <Property name="text" type="java.lang.String" value="Imprimir"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnImprimirActionPerformed"/>

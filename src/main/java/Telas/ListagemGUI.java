@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -57,8 +59,9 @@ public class ListagemGUI extends javax.swing.JFrame {
         ajustarAlinhamentoTabela();
         atalhos();
         
-        jMenuBar1.setVisible(true);
+        //SERÁ REMOVIDO APÓS IMPLEMENTAÇÃO...
         
+
         // Remove foco de todos os componentes
         setFocusable(true);
         requestFocusInWindow(); // Remove o foco de qualquer componente
@@ -333,24 +336,6 @@ public class ListagemGUI extends javax.swing.JFrame {
     private void atalhos() {
         JRootPane rootPane = this.getRootPane();
 
-        // Mapeamento global da tecla F1 para Criar Novo Orçamento
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F1"), "NovoOrçamento");
-        rootPane.getActionMap().put("NovoOrçamento", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                btnNovoOrcamento.doClick(); // Simula o clique no botão
-            }
-        });
-
-        // Mapeamento global da tecla F2 para abrir a tela de cadastros
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F2"), "Cadastros");
-        rootPane.getActionMap().put("Cadastros", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                btnCadastro.doClick(); // Simula o clique no botão
-            }
-        });
-        
         // Mapeamento da tecla F2 para abrir cadastros se tiver dentro da jTable
         tblListagem.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("F2"), "Cadastros");
         tblListagem.getActionMap().put("Cadastros", new AbstractAction() {
@@ -364,34 +349,7 @@ public class ListagemGUI extends javax.swing.JFrame {
                 }
             }
         });
-        
-        // Mapeamento global da tecla F3 para abrir cadastro de serviços
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F3"), "Serviços");
-        rootPane.getActionMap().put("Serviços", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                btnServicos.doClick(); // Simula o clique no botão
-            }
-        });
-        
-        // Mapeamento global da tecla F4 para abrir relatório de recibos
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F4"), "Recibos");
-        rootPane.getActionMap().put("Recibos", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                btnRecibos.doClick(); // Simula o clique no botão
-            }
-        });
 
-        // Mapeamento global da tecla Delete para Excluir
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE"), "excluirAction");
-        rootPane.getActionMap().put("excluirAction", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                btnExcluir.doClick(); // Simula o clique no botão Excluir
-            }
-        });
-        
         // Mapeamento global da tecla F5 para atualizar a tela (reset)
         rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F5"), "reset");
         rootPane.getActionMap().put("reset", new AbstractAction() {
@@ -446,7 +404,18 @@ public class ListagemGUI extends javax.swing.JFrame {
         btnServicos = new javax.swing.JButton();
         btnRelatorios = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
+        jMenuOrcamento = new javax.swing.JMenu();
+        jMenuNovoOrcamento = new javax.swing.JMenuItem();
+        jMenuExcluirOrcamento = new javax.swing.JMenuItem();
+        jMenuCadastros = new javax.swing.JMenu();
+        jMenuCadClientes = new javax.swing.JMenuItem();
+        jMenuCadServicos = new javax.swing.JMenuItem();
+        jMenuRecibos = new javax.swing.JMenu();
+        jMenuNovoRecibo = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuRelatorios = new javax.swing.JMenu();
+        jMenuRelatorio = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Listagem de Orçamentos");
@@ -454,7 +423,6 @@ public class ListagemGUI extends javax.swing.JFrame {
         setFocusCycleRoot(false);
         setMaximumSize(new java.awt.Dimension(1360, 718));
         setMinimumSize(new java.awt.Dimension(1360, 718));
-        setPreferredSize(new java.awt.Dimension(1360, 718));
         setSize(new java.awt.Dimension(1360, 718));
 
         paneAll.setBackground(new java.awt.Color(255, 255, 255));
@@ -577,7 +545,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         });
 
         btnCadastro.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
-        btnCadastro.setText("Cadastros (F2)");
+        btnCadastro.setText("Cadastro de Clientes (F2)");
         btnCadastro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCadastroActionPerformed(evt);
@@ -585,7 +553,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         });
 
         btnRecibos.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
-        btnRecibos.setText("Recibos (F4)");
+        btnRecibos.setText("Novo Recibo Avulso (F4)");
         btnRecibos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRecibosActionPerformed(evt);
@@ -593,10 +561,10 @@ public class ListagemGUI extends javax.swing.JFrame {
         });
 
         btnServicos.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
-        btnServicos.setText("Serviços (F3)");
+        btnServicos.setText("Cadastro de Serviços (F3)");
 
         btnRelatorios.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
-        btnRelatorios.setText("Relatórios");
+        btnRelatorios.setText("Relatórios (F6)");
         btnRelatorios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRelatoriosActionPerformed(evt);
@@ -630,22 +598,112 @@ public class ListagemGUI extends javax.swing.JFrame {
             .addGroup(paneAllLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblHead, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addGap(35, 35, 35)
                 .addGroup(paneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNovoOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRecibos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(59, 59, 59)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addComponent(panebotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(paneListagem, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32))
         );
 
-        jMenu1.setText("Menu");
+        jMenuOrcamento.setText("Orçamentos");
+
+        jMenuNovoOrcamento.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        jMenuNovoOrcamento.setText("Novo Orçamento");
+        jMenuNovoOrcamento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuNovoOrcamentoActionPerformed(evt);
+            }
+        });
+        jMenuOrcamento.add(jMenuNovoOrcamento);
+
+        jMenuExcluirOrcamento.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+        jMenuExcluirOrcamento.setText("Excluir Orçamento");
+        jMenuExcluirOrcamento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuExcluirOrcamentoActionPerformed(evt);
+            }
+        });
+        jMenuOrcamento.add(jMenuExcluirOrcamento);
+
+        jMenuBar1.add(jMenuOrcamento);
+
+        jMenuCadastros.setText("Cadastros");
+
+        jMenuCadClientes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
+        jMenuCadClientes.setText("Cadastro de Clientes");
+        jMenuCadClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuCadClientesActionPerformed(evt);
+            }
+        });
+        jMenuCadastros.add(jMenuCadClientes);
+
+        jMenuCadServicos.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
+        jMenuCadServicos.setText("Cadastro de Serviços ");
+        jMenuCadServicos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuCadServicosActionPerformed(evt);
+            }
+        });
+        jMenuCadastros.add(jMenuCadServicos);
+
+        jMenuBar1.add(jMenuCadastros);
+
+        jMenuRecibos.setText("Recibos");
+        jMenuRecibos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuRecibosActionPerformed(evt);
+            }
+        });
+
+        jMenuNovoRecibo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
+        jMenuNovoRecibo.setText("Novo Recibo Avulso");
+        jMenuNovoRecibo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuNovoReciboActionPerformed(evt);
+            }
+        });
+        jMenuRecibos.add(jMenuNovoRecibo);
+
+        jMenuBar1.add(jMenuRecibos);
+
+        jMenu1.setText("Janela");
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        jMenuItem1.setText("Atualizar");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
         jMenuBar1.add(jMenu1);
+
+        jMenuRelatorios.setText("Relatórios");
+        jMenuRelatorios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuRelatoriosActionPerformed(evt);
+            }
+        });
+
+        jMenuRelatorio.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
+        jMenuRelatorio.setText("Relatórios");
+        jMenuRelatorio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuRelatorioActionPerformed(evt);
+            }
+        });
+        jMenuRelatorios.add(jMenuRelatorio);
+
+        jMenuBar1.add(jMenuRelatorios);
 
         setJMenuBar(jMenuBar1);
 
@@ -753,6 +811,47 @@ public class ListagemGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnRelatoriosActionPerformed
 
+    private void jMenuCadClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCadClientesActionPerformed
+        btnCadastro.doClick();
+    }//GEN-LAST:event_jMenuCadClientesActionPerformed
+
+    private void jMenuNovoReciboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuNovoReciboActionPerformed
+        btnRecibos.doClick();
+    }//GEN-LAST:event_jMenuNovoReciboActionPerformed
+
+    private void jMenuRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuRelatorioActionPerformed
+        btnRelatorios.doClick();
+    }//GEN-LAST:event_jMenuRelatorioActionPerformed
+
+    private void jMenuNovoOrcamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuNovoOrcamentoActionPerformed
+        btnNovoOrcamento.doClick();
+    }//GEN-LAST:event_jMenuNovoOrcamentoActionPerformed
+
+    private void jMenuExcluirOrcamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuExcluirOrcamentoActionPerformed
+        btnExcluir.doClick();
+    }//GEN-LAST:event_jMenuExcluirOrcamentoActionPerformed
+
+    private void jMenuCadServicosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCadServicosActionPerformed
+        btnServicos.doClick();
+    }//GEN-LAST:event_jMenuCadServicosActionPerformed
+
+    private void jMenuRecibosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuRecibosActionPerformed
+        
+    }//GEN-LAST:event_jMenuRecibosActionPerformed
+
+    private void jMenuRelatoriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuRelatoriosActionPerformed
+      
+    }//GEN-LAST:event_jMenuRelatoriosActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // Simula o pressionamento da tecla F5
+        ActionMap actionMap = rootPane.getActionMap();
+        Action action = actionMap.get("reset");
+        if (action != null) {
+            action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -806,6 +905,17 @@ public class ListagemGUI extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuCadClientes;
+    private javax.swing.JMenuItem jMenuCadServicos;
+    private javax.swing.JMenu jMenuCadastros;
+    private javax.swing.JMenuItem jMenuExcluirOrcamento;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuNovoOrcamento;
+    private javax.swing.JMenuItem jMenuNovoRecibo;
+    private javax.swing.JMenu jMenuOrcamento;
+    private javax.swing.JMenu jMenuRecibos;
+    private javax.swing.JMenuItem jMenuRelatorio;
+    private javax.swing.JMenu jMenuRelatorios;
     private javax.swing.JLabel lblHead;
     private javax.swing.JLabel lblImgLupa;
     private javax.swing.JLabel lblPeriodo;
