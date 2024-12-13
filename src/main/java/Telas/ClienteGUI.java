@@ -23,6 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableColumn;
@@ -656,8 +657,8 @@ public class ClienteGUI extends javax.swing.JFrame {
             paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneTelaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblHead, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
+                .addComponent(lblHead)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(paneTelaLayout.createSequentialGroup()
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -667,8 +668,8 @@ public class ClienteGUI extends javax.swing.JFrame {
                             .addComponent(btnPF))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtNome, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
-                            .addComponent(txtTel))
+                            .addComponent(txtTel, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
+                            .addComponent(txtNome))
                         .addGap(18, 18, 18)
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblCPFouCNPJ)
@@ -841,7 +842,30 @@ public class ClienteGUI extends javax.swing.JFrame {
     private void txtNomeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNomeKeyTyped
         if (txtNome.getText().length() >= 30) {
             evt.consume(); // Limita o tamanho a 30 caracteres
-        } 
+            return; // Sai do método para evitar processamento adicional
+        }
+
+        // Aguarda a digitação concluir antes de processar a formatação
+        SwingUtilities.invokeLater(() -> {
+            String texto = txtNome.getText();
+            String[] palavras = texto.split("\\s+");
+            StringBuilder nomeFormatado = new StringBuilder();
+
+            for (String palavra : palavras) {
+                if (!palavra.isEmpty()) {
+                    nomeFormatado.append(Character.toUpperCase(palavra.charAt(0))) // Primeira letra maiúscula
+                            .append(palavra.substring(1)) // Mantém as demais letras como estão
+                            .append(" "); // Adiciona o espaço após a palavra
+                }
+            }
+
+            // Define o texto formatado, preservando o espaço ao final durante a digitação
+            if (texto.endsWith(" ")) {
+                txtNome.setText(nomeFormatado.toString()); // Mantém o espaço final
+            } else {
+                txtNome.setText(nomeFormatado.toString().trim()); // Remove espaços extras no final
+            }
+        });
     }//GEN-LAST:event_txtNomeKeyTyped
 
     private Long clienteIdEdicao = null;
