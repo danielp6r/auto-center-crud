@@ -13,6 +13,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -499,7 +500,30 @@ public class ProdutoGUI extends javax.swing.JFrame {
     private void txtDescricaoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescricaoKeyTyped
         if (txtDescricao.getText().length() >= 50) {
             evt.consume(); // Limita o tamanho a 50 caracteres
+            return; // Sai do método para evitar processamento adicional
         }
+
+        // Aguarda a digitação concluir antes de processar a formatação
+        SwingUtilities.invokeLater(() -> {
+            String texto = txtDescricao.getText();
+            String[] palavras = texto.split("\\s+");
+            StringBuilder descricaoFormatada = new StringBuilder();
+
+            for (String palavra : palavras) {
+                if (!palavra.isEmpty()) {
+                    descricaoFormatada.append(Character.toUpperCase(palavra.charAt(0))) // Primeira letra maiúscula
+                            .append(palavra.substring(1)) // Mantém as demais letras como estão
+                            .append(" "); // Adiciona o espaço após a palavra
+                }
+            }
+
+            // Define o texto formatado, preservando o espaço ao final durante a digitação
+            if (texto.endsWith(" ")) {
+                txtDescricao.setText(descricaoFormatada.toString()); // Mantém o espaço final
+            } else {
+                txtDescricao.setText(descricaoFormatada.toString().trim()); // Remove espaços extras no final
+            }
+        });
     }//GEN-LAST:event_txtDescricaoKeyTyped
     // Método para impedir a digitação de caracteres inválidos no campo de Valor Unitário
     private void txtValorUnKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorUnKeyTyped

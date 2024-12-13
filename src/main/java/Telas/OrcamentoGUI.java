@@ -46,6 +46,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.util.JRLoader;
+import javax.swing.SwingUtilities;
+
 
 /**
  *
@@ -1554,7 +1556,18 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         // Verifica se o texto atual ultrapassará 24 caracteres
         if (txtVeiculo.getText().length() >= 24) {
             evt.consume(); // Impede que o caractere digitado seja adicionado
+            return;
         }
+
+        SwingUtilities.invokeLater(() -> {
+            String textoAtual = txtVeiculo.getText();
+            if (!textoAtual.isEmpty()) {
+                // Apenas a primeira letra da primeira palavra em maiúscula
+                String primeiraLetra = textoAtual.substring(0, 1).toUpperCase();
+                String restanteTexto = textoAtual.substring(1); // Resto do texto permanece inalterado
+                txtVeiculo.setText(primeiraLetra + restanteTexto);
+            }
+        });
     }//GEN-LAST:event_txtVeiculoKeyTyped
 
     private void jMenuNovaPecaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuNovaPecaActionPerformed
