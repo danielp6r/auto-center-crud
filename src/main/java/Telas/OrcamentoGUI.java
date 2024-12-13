@@ -282,17 +282,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private void atalhos() {
         JRootPane rootPane = this.getRootPane();
 
-        // Mapeamento global da tecla F1 para Vincular cliente ao Orçamento
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F1"), "ClienteOrcamento");
-        rootPane.getActionMap().put("ClienteOrcamento", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
-                clienteGUI.setModoVinculacao(true);
-                clienteGUI.setVisible(true); // Exibe ClienteGUI
-            }
-        });
-
         // Mapeamento da tecla F2 para inserir peça (dentro da JTable)
         tblListagem.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("F2"), "inserirPeça");
         tblListagem.getActionMap().put("inserirPeça", new AbstractAction() {
@@ -624,6 +613,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         btnImprimir = new javax.swing.JButton();
         jMenuBar = new javax.swing.JMenuBar();
         jMenuInserir = new javax.swing.JMenu();
+        jMenuCliente = new javax.swing.JMenuItem();
         jMenuNovaPeca = new javax.swing.JMenuItem();
         jMenuServico = new javax.swing.JMenuItem();
         jMenuNovoServico = new javax.swing.JMenuItem();
@@ -943,24 +933,26 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             .addGroup(PaneAllLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblHead)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PaneAllLayout.createSequentialGroup()
-                        .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblVeiculo)
-                            .addComponent(lblCliente))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(PaneAllLayout.createSequentialGroup()
+                                .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lblVeiculo)
+                                    .addComponent(lblCliente))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(PaneAllLayout.createSequentialGroup()
+                                .addComponent(lblPlaca)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(PaneAllLayout.createSequentialGroup()
-                        .addComponent(lblPlaca)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(PaneAllLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(btnImprimir))
-                    .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(30, 30, 30)
+                        .addComponent(btnImprimir)))
                 .addGap(13, 13, 13)
                 .addComponent(paneBotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -981,6 +973,15 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 jMenuInserirActionPerformed(evt);
             }
         });
+
+        jMenuCliente.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        jMenuCliente.setText("Vincular Cliente");
+        jMenuCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuClienteActionPerformed(evt);
+            }
+        });
+        jMenuInserir.add(jMenuCliente);
 
         jMenuNovaPeca.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         jMenuNovaPeca.setText("Inserir Nova Peça");
@@ -1597,6 +1598,12 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuJanelaActionPerformed
 
+    private void jMenuClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuClienteActionPerformed
+        ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
+        clienteGUI.setModoVinculacao(true);
+        clienteGUI.setVisible(true); // Exibe ClienteGUI
+    }//GEN-LAST:event_jMenuClienteActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1649,6 +1656,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenuItem jMenuCadastroServicos;
     private javax.swing.JMenu jMenuCadastros;
+    private javax.swing.JMenuItem jMenuCliente;
     private javax.swing.JMenu jMenuEditar;
     private javax.swing.JMenuItem jMenuExcluirItem;
     private javax.swing.JMenu jMenuImprime;
