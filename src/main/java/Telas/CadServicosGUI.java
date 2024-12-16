@@ -1,14 +1,21 @@
 package Telas;
 
+import Classes.Mercadoria;
+import Classes.Servico;
+import Classes.SessionManager;
+import DAO.ItemOrcamentoDAO;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 /**
  *
@@ -87,6 +94,55 @@ public class CadServicosGUI extends javax.swing.JFrame {
                 dispose(); // Fecha a janela
             }
         });
+    }
+    
+    private long cadastrarServico() {
+        String descricaoProduto = txtDescricao.getText();
+        String precoTexto = txtValorUn.getText().replace(",", ".");
+        double precoProduto;
+
+        // Validação do preço
+        try {
+            precoProduto = Double.parseDouble(precoTexto);
+            if (precoProduto <= 0) {
+                throw new NumberFormatException("O preço deve ser maior que zero.");
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Preço inválido. Insira um valor numérico positivo.");
+            return -1;
+        }
+
+        Session session = SessionManager.getInstance().getSession();
+        Transaction transaction = session.beginTransaction();
+        long produtoId = -1;
+
+        try {
+            produtoId = new ItemOrcamentoDAO().findNextId(session);
+            Object tipoProduto = "Servico";
+
+            if ("Mercadoria".equals(tipoProduto)) {
+                Mercadoria mercadoria = new Mercadoria(descricaoProduto, precoProduto);
+                mercadoria.setIdProduto(produtoId);
+                session.save(mercadoria);
+            } else if ("Servico".equals(tipoProduto)) {
+                Servico servico = new Servico(descricaoProduto, precoProduto);
+                servico.setIdProduto(produtoId);
+                session.save(servico);
+            } else {
+                throw new IllegalArgumentException("Tipo de produto inválido!");
+            }
+
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao salvar produto: " + e.getMessage());
+            return -1;
+        } finally {
+            session.close();
+        }
+
+        return produtoId;
     }
     
     /**
@@ -374,7 +430,28 @@ public class CadServicosGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_txtValorUnKeyTyped
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // TODO add your handling code here:
+        // Verifica se todos os campos obrigatórios estão preenchidos
+        if (txtDescricao.getText().trim().isEmpty() || txtValorUn.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Os campos são obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validação do valor unitário
+        double valorUnitario;
+        try {
+            valorUnitario = Double.parseDouble(txtValorUn.getText().replace(",", "."));
+            if (valorUnitario <= 0) {
+                JOptionPane.showMessageDialog(this, "O valor unitário deve ser maior que zero.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "O valor unitário deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        cadastrarServico();
+        //atualizarGridItens();
+        //limparCampos();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
