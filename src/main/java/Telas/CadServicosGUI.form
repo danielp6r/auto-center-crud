@@ -194,10 +194,10 @@
         <Component class="javax.swing.JTable" name="TabelaListagem">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="3" rowCount="4">
-                <Column editable="false" title="cod_servico" type="java.lang.Object"/>
-                <Column editable="false" title="descricao" type="java.lang.Object"/>
-                <Column editable="false" title="preco_produto" type="java.lang.Object"/>
+              <Table columnCount="3" rowCount="0">
+                <Column editable="false" title="Cod." type="java.lang.Object"/>
+                <Column editable="false" title="Descri&#xe7;&#xe3;o" type="java.lang.Object"/>
+                <Column editable="false" title="Valor Un." type="java.lang.Object"/>
               </Table>
             </Property>
           </Properties>

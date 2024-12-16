@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -32,6 +34,15 @@ public class CadServicosGUI extends javax.swing.JFrame {
         initComponents();
         atalhos();
         addListeners();
+        atualizarTabelaServicos();
+        
+        // Ajustando a largura da coluna Cod.
+        TableColumnModel columnModel = TabelaListagem.getColumnModel();
+        TableColumn column = columnModel.getColumn(0); // 0 é o índice da coluna Cod.
+        column.setMinWidth(50);        // Define a largura mínima
+        column.setMaxWidth(50);        // Define a largura máxima
+        column.setPreferredWidth(50); // Define a largura preferida
+        
         setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE); // Fecha apenas a tela atual        
         setResizable(false); // Não redimensionável
         setLocationRelativeTo(null); // Centraliza a janela na tela
@@ -114,37 +125,75 @@ public class CadServicosGUI extends javax.swing.JFrame {
 
         Session session = SessionManager.getInstance().getSession();
         Transaction transaction = session.beginTransaction();
-        long produtoId = -1;
+        long idServico = -1;
 
         try {
-            produtoId = new ItemOrcamentoDAO().findNextId(session);
-            Object tipoProduto = "Servico";
+            // Verificar se já existe um serviço com o mesmo nome
+            Long count = (Long) session.createQuery(
+                    "SELECT COUNT(s) FROM Servico s WHERE s.descricao = :descricao")
+                    .setParameter("descricao", descricaoProduto)
+                    .uniqueResult();
 
-            if ("Mercadoria".equals(tipoProduto)) {
-                Mercadoria mercadoria = new Mercadoria(descricaoProduto, precoProduto);
-                mercadoria.setIdProduto(produtoId);
-                session.save(mercadoria);
-            } else if ("Servico".equals(tipoProduto)) {
-                Servico servico = new Servico(descricaoProduto, precoProduto);
-                servico.setIdProduto(produtoId);
-                session.save(servico);
-            } else {
-                throw new IllegalArgumentException("Tipo de produto inválido!");
+            if (count != null && count > 0) {
+                JOptionPane.showMessageDialog(this, "Já existe um serviço com esta descrição.");
+                return -1;
             }
 
+            // Recuperar o último código de serviço
+            String ultimoCodServico = (String) session.createQuery("SELECT MAX(s.codServico) FROM Servico s").uniqueResult();
+            int novoCodNumero = (ultimoCodServico != null)
+                    ? Integer.parseInt(ultimoCodServico.replaceAll("\\D+", "")) + 1 // Remove caracteres não numéricos e incrementa
+                    : 1;
+            String novoCodServico = String.format("%03d", novoCodNumero); // Formata como 001, 002, etc.
+
+            Servico servico = new Servico(descricaoProduto, precoProduto);
+            servico.setCodServico(novoCodServico); // Define o código do serviço
+            session.save(servico);
+
             transaction.commit();
+
+            // Atualizar tabela
+            atualizarTabelaServicos();
+
+            idServico = servico.getIdProduto(); // Retorna o ID do produto relacionado ao serviço
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao salvar produto: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Erro ao salvar serviço: " + e.getMessage());
             return -1;
         } finally {
             session.close();
         }
 
-        return produtoId;
+        return idServico;
     }
     
+    private void atualizarTabelaServicos() {
+        Session session = SessionManager.getInstance().getSession();
+        try {
+            // Busca todos os serviços que possuem codServico não nulo
+            java.util.List<Servico> servicos = session.createQuery(
+                    "FROM Servico WHERE codServico IS NOT NULL", Servico.class).getResultList();
+
+            // Atualiza a tabela
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) TabelaListagem.getModel();
+            model.setRowCount(0); // Limpar a tabela antes de inserir os novos dados
+
+            for (Servico servico : servicos) {
+                model.addRow(new Object[]{
+                    servico.getCodServico(),
+                    servico.getDescricao(),
+                    String.format("%.2f", servico.getPrecoProduto())
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar tabela de serviços: " + e.getMessage());
+        } finally {
+            session.close();
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -245,13 +294,10 @@ public class CadServicosGUI extends javax.swing.JFrame {
 
         TabelaListagem.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "cod_servico", "descricao", "preco_produto"
+                "Cod.", "Descrição", "Valor Un."
             }
         ) {
             boolean[] canEdit = new boolean [] {
