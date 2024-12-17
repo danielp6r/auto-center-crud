@@ -401,7 +401,7 @@ public class ListagemGUI extends javax.swing.JFrame {
         btnNovoOrcamento = new javax.swing.JButton();
         btnCadastro = new javax.swing.JButton();
         btnRecibos = new javax.swing.JButton();
-        btnServicos = new javax.swing.JButton();
+        btnCadServicos = new javax.swing.JButton();
         btnRelatorios = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuOrcamento = new javax.swing.JMenu();
@@ -560,8 +560,13 @@ public class ListagemGUI extends javax.swing.JFrame {
             }
         });
 
-        btnServicos.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
-        btnServicos.setText("Cadastro de Serviços (F3)");
+        btnCadServicos.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        btnCadServicos.setText("Cadastro de Serviços (F3)");
+        btnCadServicos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadServicosActionPerformed(evt);
+            }
+        });
 
         btnRelatorios.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
         btnRelatorios.setText("Relatórios (F6)");
@@ -586,7 +591,7 @@ public class ListagemGUI extends javax.swing.JFrame {
                         .addGap(87, 87, 87)
                         .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(87, 87, 87)
-                        .addComponent(btnServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnCadServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(87, 87, 87)
                         .addComponent(btnRecibos, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -603,7 +608,7 @@ public class ListagemGUI extends javax.swing.JFrame {
                     .addComponent(btnNovoOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRecibos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCadServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addComponent(panebotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -832,7 +837,7 @@ public class ListagemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuExcluirOrcamentoActionPerformed
 
     private void jMenuCadServicosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCadServicosActionPerformed
-        btnServicos.doClick();
+        btnCadServicos.doClick();
     }//GEN-LAST:event_jMenuCadServicosActionPerformed
 
     private void jMenuRecibosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuRecibosActionPerformed
@@ -851,6 +856,15 @@ public class ListagemGUI extends javax.swing.JFrame {
             action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
         }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void btnCadServicosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadServicosActionPerformed
+        CadServicosGUI cadServicos = CadServicosGUI.getInstance(); // Obtém a instância única
+        if (!cadServicos.isVisible()) {
+            cadServicos.setVisible(true); // Torna visível se não estiver visível
+        } else {
+            cadServicos.toFront(); // Traz a tela para frente se já estiver aberta
+        }
+    }//GEN-LAST:event_btnCadServicosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -895,12 +909,12 @@ public class ListagemGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCadServicos;
     private javax.swing.JButton btnCadastro;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnNovoOrcamento;
     private javax.swing.JButton btnRecibos;
     private javax.swing.JButton btnRelatorios;
-    private javax.swing.JButton btnServicos;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JMenu jMenu1;

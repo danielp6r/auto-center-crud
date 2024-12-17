@@ -194,14 +194,14 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         });
         
-        // Mapeamento global da tecla F5 para atualizar a tela (reset)
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F5"), "reset");
-        rootPane.getActionMap().put("reset", new AbstractAction() {
+        // Mapeamento global da tecla F5 para fechar e reabrir a tela
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F5"), "refresh");
+        rootPane.getActionMap().put("refresh", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
-                new ClienteGUI().setVisible(true);
-                
+                dispose(); // Fecha a tela atual
+                instance = null; // Nulifica a instância para recriação
+                ClienteGUI.getInstance().setVisible(true); // Reabre a tela
             }
         });
         

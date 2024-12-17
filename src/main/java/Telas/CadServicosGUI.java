@@ -1,9 +1,7 @@
 package Telas;
 
-import Classes.Mercadoria;
 import Classes.Servico;
 import Classes.SessionManager;
-import DAO.ItemOrcamentoDAO;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -22,11 +20,11 @@ import org.hibernate.Transaction;
 
 /**
  *
- * @author Edu
+ * @author Daniel
  */
 public class CadServicosGUI extends javax.swing.JFrame {
     
-    private static CadServicosGUI instance;
+    private static CadServicosGUI instance = null;
     private Long servicoIdEdicao = null; // Variável para controlar edição
 
     /**
@@ -48,9 +46,24 @@ public class CadServicosGUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE); // Fecha apenas a tela atual        
         setResizable(false); // Não redimensionável
         setLocationRelativeTo(null); // Centraliza a janela na tela
+        
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                instance = null; // Nulifica a instância ao fechar
+            }
+        });
     }
     
     // MÉTODOS ESPECÍFICOS PARA ESTA TELA:
+    
+    // Método para obter a instância única
+    public static CadServicosGUI getInstance() {
+        if (instance == null) {
+            instance = new CadServicosGUI();
+        }
+        return instance;
+    }
     
     // Método personalizado para configurar os atalhos de teclado
     private void atalhos() {
@@ -103,15 +116,24 @@ public class CadServicosGUI extends javax.swing.JFrame {
             }
         });
         
-        // Mapeamento global da tecla F5 para atualizar a tela (reset)
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F5"), "reset");
-        rootPane.getActionMap().put("reset", new AbstractAction() {
+        // Mapeamento global da tecla F5 para fechar e reabrir a tela
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F5"), "refresh");
+        rootPane.getActionMap().put("refresh", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
-                new CadServicosGUI().setVisible(true);
+                dispose(); // Fecha a tela atual
+                instance = null; // Nulifica a instância para recriação
+                CadServicosGUI.getInstance().setVisible(true); // Reabre a tela
             }
         });
+    }
+    
+    // Método para resetar os campos da tela sem perder a instância
+    private void resetarTela() {
+        txtDescricao.setText("");
+        txtValorUn.setText("0,00");
+        lblHead.setText("Cadastro de Serviços");
+        atualizarTabelaServicos(); // Recarrega a tabela de serviços
     }
     
     private void addListeners() {
@@ -262,6 +284,7 @@ public class CadServicosGUI extends javax.swing.JFrame {
         TabelaListagem = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Cadastro de Serviços");
 
         lblDescricao.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lblDescricao.setText("Descrição do Serviço");
