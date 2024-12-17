@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.hibernate.Session;
@@ -26,6 +27,7 @@ import org.hibernate.Transaction;
 public class CadServicosGUI extends javax.swing.JFrame {
     
     private static CadServicosGUI instance;
+    private Long servicoIdEdicao = null; // Variável para controlar edição
 
     /**
      * Creates new form CadServicosGUI
@@ -60,6 +62,34 @@ public class CadServicosGUI extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 btnSalvar.doClick(); // Simula o clique no botão Salvar
+            }
+        });
+        
+        // Mapeamento global da tecla F2 para Editar
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("F2"), "Editar");
+        rootPane.getActionMap().put("Editar", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnEditar.doClick(); // Simula o clique no botão Editar
+            }
+        });
+        
+        // Mapeamento global da tecla F2 para Editar, dentro da JTable
+        TabelaListagem.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .put(KeyStroke.getKeyStroke("F2"), "Editar");
+        TabelaListagem.getActionMap().put("Editar", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnEditar.doClick(); // Simula o clique no botão Editar
+            }
+        });
+        
+        // Mapeamento global da tecla DEL para Excluir
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE"), "Excluir");
+        rootPane.getActionMap().put("Excluir", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnExcluir.doClick(); // Simula o clique no botão Excluir
             }
         });
         
@@ -193,6 +223,22 @@ public class CadServicosGUI extends javax.swing.JFrame {
             session.close();
         }
     }
+    
+    private String gerarProximoCodServico(Session session) {
+        String ultimoCodServico = (String) session.createQuery("SELECT MAX(s.codServico) FROM Servico s").uniqueResult();
+        int novoCodNumero = (ultimoCodServico != null)
+                ? Integer.parseInt(ultimoCodServico.replaceAll("\\D+", "")) + 1
+                : 1;
+        return String.format("%03d", novoCodNumero);
+    }
+
+    private void limparCampos() {
+        txtDescricao.setText("");
+        txtValorUn.setText("0,00");
+        servicoIdEdicao = null;
+        lblHead.setText("Cadastro de Serviços");
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -476,36 +522,120 @@ public class CadServicosGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_txtValorUnKeyTyped
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // Verifica se todos os campos obrigatórios estão preenchidos
-        if (txtDescricao.getText().trim().isEmpty() || txtValorUn.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Os campos são obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
+        String descricao = txtDescricao.getText().trim();
+        String precoTexto = txtValorUn.getText().replace(",", ".").trim();
+
+        if (descricao.isEmpty() || precoTexto.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Os campos Descrição e Valor Unitário são obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Validação do valor unitário
-        double valorUnitario;
+        double precoProduto;
         try {
-            valorUnitario = Double.parseDouble(txtValorUn.getText().replace(",", "."));
-            if (valorUnitario <= 0) {
+            precoProduto = Double.parseDouble(precoTexto);
+            if (precoProduto <= 0) {
                 JOptionPane.showMessageDialog(this, "O valor unitário deve ser maior que zero.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "O valor unitário deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Insira um valor numérico válido.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        cadastrarServico();
-        //atualizarGridItens();
-        //limparCampos();
+        Session session = SessionManager.getInstance().getSession();
+        Transaction transaction = session.beginTransaction();
+
+        try {
+            if (servicoIdEdicao != null) { // Atualização de serviço
+                Servico servico = session.get(Servico.class, servicoIdEdicao);
+                servico.setDescricao(descricao);
+                servico.setPrecoProduto(precoProduto);
+                session.update(servico);
+                JOptionPane.showMessageDialog(this, "Serviço atualizado com sucesso!");
+            } else { // Novo serviço
+                Servico servico = new Servico(descricao, precoProduto);
+                servico.setCodServico(gerarProximoCodServico(session));
+                session.save(servico);
+                JOptionPane.showMessageDialog(this, "Serviço cadastrado com sucesso!");
+            }
+            transaction.commit();
+            atualizarTabelaServicos();
+            limparCampos();
+        } catch (Exception e) {
+            transaction.rollback();
+            JOptionPane.showMessageDialog(this, "Erro ao salvar serviço: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            session.close();
+        }
+        servicoIdEdicao = null;
+        lblHead.setText("Cadastro de Serviços");
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = TabelaListagem.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um serviço para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String codServico = (String) TabelaListagem.getValueAt(selectedRow, 0);
+        Session session = SessionManager.getInstance().getSession();
+
+        try {
+            Servico servico = session.createQuery("FROM Servico WHERE codServico = :cod", Servico.class)
+                    .setParameter("cod", codServico)
+                    .uniqueResult();
+            if (servico != null) {
+                txtDescricao.setText(servico.getDescricao());
+                txtValorUn.setText(String.format("%.2f", servico.getPrecoProduto()).replace(".", ","));
+                lblHead.setText("Editando Serviço: " + servico.getDescricao());
+                servicoIdEdicao = servico.getIdProduto();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar serviço para edição: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            session.close();
+        }
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = TabelaListagem.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um serviço para excluir.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Substitui os botões padrão Yes/No por Sim/Não
+        UIManager.put("OptionPane.yesButtonText", "Sim");
+        UIManager.put("OptionPane.noButtonText", "Não");
+
+        String codServico = (String) TabelaListagem.getValueAt(selectedRow, 0);
+        String descricaoServico = (String) TabelaListagem.getValueAt(selectedRow, 1); // Obtém o nome do serviço
+        int confirmacao = JOptionPane.showConfirmDialog(this,
+                "Tem certeza que deseja excluir o serviço " + descricaoServico  + "?",
+                "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+
+        if (confirmacao == JOptionPane.YES_OPTION) {
+            Session session = SessionManager.getInstance().getSession();
+            Transaction transaction = session.beginTransaction();
+
+            try {
+                Servico servico = session.createQuery("FROM Servico WHERE codServico = :cod", Servico.class)
+                        .setParameter("cod", codServico)
+                        .uniqueResult();
+                if (servico != null) {
+                    session.delete(servico);
+                    transaction.commit();
+                    JOptionPane.showMessageDialog(this, "Serviço excluído com sucesso!");
+                    atualizarTabelaServicos();
+                }
+            } catch (Exception e) {
+                transaction.rollback();
+                JOptionPane.showMessageDialog(this, "Erro ao excluir serviço: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            } finally {
+                session.close();
+            }
+        }
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     /**
