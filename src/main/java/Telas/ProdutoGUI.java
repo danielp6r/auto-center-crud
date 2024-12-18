@@ -39,6 +39,15 @@ public class ProdutoGUI extends javax.swing.JFrame {
         setResizable(false); // Não redimensionável
         setLocationRelativeTo(null); // Centraliza a janela na tela
         
+        // Listener para fechar a janela ao perder o foco
+        addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                dispose(); // Fecha a janela
+                ProdutoGUI.instance = null; // Nulifica a instância
+            }
+        });
+        
     }
     
     // MÉTODOS ESPECÍFICOS PARA ESTA TELA:
