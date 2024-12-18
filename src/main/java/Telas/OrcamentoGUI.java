@@ -300,19 +300,20 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Recupera o ID do orçamento atualmente carregado
-                Long idAtual = getIdOrcamento();
+                Long idAtual = getIdOrcamento(); // Método existente que retorna o ID do orçamento carregado
 
                 // Fecha a instância atual
                 dispose();
+                instance = null; // Nulifica a instância para permitir recriação no singleton
 
                 if (idAtual != null) {
-                    // Reabre a mesma instância com o mesmo ID
-                    OrcamentoGUI orcamentoGUI = new OrcamentoGUI();
-                    orcamentoGUI.carregarOrcamento(idAtual);
+                    // Reabre a tela carregando o mesmo orçamento pelo ID
+                    OrcamentoGUI orcamentoGUI = OrcamentoGUI.getInstance();
+                    orcamentoGUI.carregarOrcamento(idAtual); // Método existente para carregar dados do orçamento
                     orcamentoGUI.setVisible(true);
                 } else {
-                    // Caso não tenha ID (é uma nova instância), cria uma nova tela em branco
-                    OrcamentoGUI.abrirNovaInstancia();
+                    // Reabre uma nova tela de orçamento em branco
+                    OrcamentoGUI.getInstance().setVisible(true);
                 }
             }
         });

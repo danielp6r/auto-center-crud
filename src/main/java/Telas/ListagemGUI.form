@@ -192,7 +192,7 @@
                           <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
                           <Component id="btnCadastro" min="-2" pref="200" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
-                          <Component id="btnServicos" min="-2" pref="200" max="-2" attributes="0"/>
+                          <Component id="btnCadServicos" min="-2" pref="200" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
                           <Component id="btnRecibos" min="-2" pref="200" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
@@ -213,7 +213,7 @@
                       <Component id="btnNovoOrcamento" alignment="3" min="-2" pref="79" max="-2" attributes="0"/>
                       <Component id="btnCadastro" alignment="3" min="-2" pref="79" max="-2" attributes="0"/>
                       <Component id="btnRecibos" alignment="3" min="-2" pref="79" max="-2" attributes="0"/>
-                      <Component id="btnServicos" alignment="3" min="-2" pref="79" max="-2" attributes="0"/>
+                      <Component id="btnCadServicos" alignment="3" min="-2" pref="79" max="-2" attributes="0"/>
                       <Component id="btnRelatorios" alignment="3" min="-2" pref="79" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="37" max="32767" attributes="0"/>
@@ -444,13 +444,16 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRecibosActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="btnServicos">
+        <Component class="javax.swing.JButton" name="btnCadServicos">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="DejaVu Sans" size="12" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Cadastro de Servi&#xe7;os (F3)"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCadServicosActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnRelatorios">
           <Properties>
