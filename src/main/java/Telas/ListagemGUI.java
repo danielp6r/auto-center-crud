@@ -73,7 +73,22 @@ public class ListagemGUI extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH); // Inicializa Maximizado
         
         // Fecha todas as janelas quando clicar no x
-        setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE); 
+        //setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int resposta = JOptionPane.showConfirmDialog(
+                        null,
+                        "Tem certeza que deseja sair?",
+                        "Confirmação",
+                        JOptionPane.YES_NO_OPTION
+                );
+                if (resposta == JOptionPane.YES_OPTION) {
+                    System.exit(0); // Fecha todas as janelas e encerra o programa
+                }
+            }
+        });
         
         setarDatasPadrao();
         
