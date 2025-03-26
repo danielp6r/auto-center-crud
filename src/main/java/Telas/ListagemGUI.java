@@ -824,7 +824,12 @@ public class ListagemGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_txtBuscaMouseEntered
 
     private void btnRecibosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecibosActionPerformed
-        // TODO add your handling code here:
+        //ReciboGUI recibo = ReciboGUI.getInstance(); // Obtém a instância única
+        //if (!recibo.isVisible()) {
+        //    recibo.setVisible(true); // Torna visível se não estiver visível
+        //} else {
+        //    recibo.toFront(); // Traz a tela para frente se já estiver aberta
+        //}
     }//GEN-LAST:event_btnRecibosActionPerformed
 
     private void btnRelatoriosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatoriosActionPerformed

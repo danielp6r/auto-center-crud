@@ -666,28 +666,28 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             }
         });
 
-        btnProduto.setText("Nova Peça");
+        btnProduto.setText("Nova Peça (F2)");
         btnProduto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnProdutoActionPerformed(evt);
             }
         });
 
-        btnServico.setText("Novo Serviço");
+        btnServico.setText("Novo Serviço (F3)");
         btnServico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnServicoActionPerformed(evt);
             }
         });
 
-        btnExcluir.setText("Excluir Item");
+        btnExcluir.setText("Excluir Item (DEL)");
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcluirActionPerformed(evt);
             }
         });
 
-        btnServicos.setText("Serviço Cad.");
+        btnServicos.setText("Serviço Cad. (F4)");
 
         javax.swing.GroupLayout paneBotoesLayout = new javax.swing.GroupLayout(paneBotoes);
         paneBotoes.setLayout(paneBotoesLayout);
@@ -696,13 +696,13 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneBotoesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(paneBotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnServico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnServico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(paneBotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnServicos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnServicos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
                 .addComponent(lbl1, javax.swing.GroupLayout.PREFERRED_SIZE, 672, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(166, 166, 166)
                 .addComponent(btnSalvar)
@@ -889,7 +889,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         jTextObs.setRows(5);
         paneObs.setViewportView(jTextObs);
 
-        btnImprimir.setText("Imprimir");
+        btnImprimir.setText("Imprimir (F12)");
         btnImprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnImprimirActionPerformed(evt);
@@ -995,7 +995,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         });
         jMenuInserir.add(jMenuNovaPeca);
 
-        jMenuServico.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
+        jMenuServico.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
         jMenuServico.setText("Inserir Serviço Cadastrado");
         jMenuServico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1004,7 +1004,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         });
         jMenuInserir.add(jMenuServico);
 
-        jMenuNovoServico.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
+        jMenuNovoServico.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
         jMenuNovoServico.setText("Inserir Novo Serviço");
         jMenuNovoServico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -6,6 +6,15 @@ package Telas;
  */
 public class ReciboGUI extends javax.swing.JFrame {
 
+    private static ReciboGUI instance; // Instância única da classe
+
+    public static ReciboGUI getInstance() {
+        if (instance == null) {
+            instance = new ReciboGUI(); // Cria a instância se ainda não existir
+        }
+        return instance;
+    }
+
     /**
      * Creates new form ReciboGUI
      */
