@@ -4,12 +4,14 @@ import Classes.Mercadoria;
 import Classes.Servico;
 import Classes.SessionManager;
 import DAO.ItemOrcamentoDAO;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
@@ -43,10 +45,18 @@ public class ProdutoGUI extends javax.swing.JFrame {
         addWindowFocusListener(new WindowAdapter() {
             @Override
             public void windowLostFocus(WindowEvent e) {
+                // Percorre todas as janelas abertas
+                for (Window window : Window.getWindows()) {
+                    if (window instanceof JDialog && window.isVisible()) {
+                        return; // Se houver um JDialog (JOptionPane), não fecha a tela
+                    }
+                }
+
                 dispose(); // Fecha a janela
                 ProdutoGUI.instance = null; // Nulifica a instância
             }
         });
+
         
     }
     

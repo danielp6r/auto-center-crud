@@ -37,7 +37,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuServico">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="F3"/>
+                  <KeyStroke key="F4"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Inserir Servi&#xe7;o Cadastrado"/>
               </Properties>
@@ -48,7 +48,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuNovoServico">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="F4"/>
+                  <KeyStroke key="F3"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Inserir Novo Servi&#xe7;o"/>
               </Properties>
@@ -313,15 +313,15 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="btnServico" max="32767" attributes="0"/>
                           <Component id="btnProduto" max="32767" attributes="0"/>
+                          <Component id="btnServico" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="btnExcluir" max="32767" attributes="0"/>
                           <Component id="btnServicos" max="32767" attributes="0"/>
+                          <Component id="btnExcluir" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="68" max="32767" attributes="0"/>
                       <Component id="lbl1" min="-2" pref="672" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="166" max="-2" attributes="0"/>
                       <Component id="btnSalvar" min="-2" max="-2" attributes="0"/>
@@ -398,7 +398,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnProduto">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Nova Pe&#xe7;a"/>
+                <Property name="text" type="java.lang.String" value="Nova Pe&#xe7;a (F2)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProdutoActionPerformed"/>
@@ -406,7 +406,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnServico">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Novo Servi&#xe7;o"/>
+                <Property name="text" type="java.lang.String" value="Novo Servi&#xe7;o (F3)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnServicoActionPerformed"/>
@@ -414,7 +414,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnExcluir">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Excluir Item"/>
+                <Property name="text" type="java.lang.String" value="Excluir Item (DEL)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExcluirActionPerformed"/>
@@ -422,7 +422,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="btnServicos">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Servi&#xe7;o Cad."/>
+                <Property name="text" type="java.lang.String" value="Servi&#xe7;o Cad. (F4)"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -702,7 +702,7 @@
         </Container>
         <Component class="javax.swing.JButton" name="btnImprimir">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Imprimir"/>
+            <Property name="text" type="java.lang.String" value="Imprimir (F12)"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnImprimirActionPerformed"/>
