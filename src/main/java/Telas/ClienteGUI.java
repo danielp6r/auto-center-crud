@@ -501,7 +501,7 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         });
 
-        lblImgCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imgs/cliente.png"))); // NOI18N
+        lblImgCliente.setIcon(new javax.swing.ImageIcon("C:\\Users\\danie\\Documents\\Aulas\\auto-center-crud\\src\\main\\resources\\images\\cliente.png")); // NOI18N
 
         paneOpcoes.setBackground(new java.awt.Color(255, 255, 255));
         paneOpcoes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -528,7 +528,7 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         });
 
-        lblImgLupa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imgs/pesquisar.png"))); // NOI18N
+        lblImgLupa.setIcon(new javax.swing.ImageIcon("C:\\Users\\danie\\Documents\\Aulas\\auto-center-crud\\src\\main\\resources\\images\\pesquisar.png")); // NOI18N
         lblImgLupa.setText(" ");
 
         btnEditar.setForeground(new java.awt.Color(90, 155, 213));
