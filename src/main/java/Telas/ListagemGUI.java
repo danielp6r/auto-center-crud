@@ -3,7 +3,6 @@ package Telas;
 import Classes.Orcamento;
 import Classes.SessionManager;
 import DAO.OrcamentoDAO;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -45,6 +44,25 @@ import org.hibernate.Session;
  * @author danielp6r
  */
 public class ListagemGUI extends javax.swing.JFrame {
+
+    private static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
+
+    private static byte[] gerarHash(String senha) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            return md.digest(senha.getBytes("UTF-8")); // garante consistência
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     
     // Lista para gerenciar múltiplas instâncias de OrcamentoGUI abertas
     private final Map<Long, OrcamentoGUI> instanciasOrcamentos = new HashMap<>();
@@ -60,7 +78,13 @@ public class ListagemGUI extends javax.swing.JFrame {
         atalhos();
         
         //SERÁ REMOVIDO APÓS IMPLEMENTAÇÃO...
-        
+        //Setando botões invisíveis - Ainda falta implementar
+        btnCadServicos.setVisible(false);
+        btnRecibos.setVisible(false);
+        btnRelatorios.setVisible(false);
+        jMenuCadServicos.setVisible(false);
+        jMenuRecibos.setVisible(false);
+        jMenuRelatorios.setVisible(false);
 
         // Remove foco de todos os componentes
         setFocusable(true);
@@ -455,7 +479,7 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         lblPeriodo.setText("Período");
 
-        lblImgLupa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imgs/pesquisar.png"))); // NOI18N
+        lblImgLupa.setIcon(new javax.swing.ImageIcon("C:\\Users\\danie\\Documents\\Aulas\\auto-center-crud\\src\\main\\resources\\images\\pesquisar.png")); // NOI18N
         lblImgLupa.setText(" ");
         lblImgLupa.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseExited(java.awt.event.MouseEvent evt) {
@@ -501,7 +525,7 @@ public class ListagemGUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnExcluir))
                     .addComponent(lblPeriodo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 624, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblImgLupa, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -598,19 +622,20 @@ public class ListagemGUI extends javax.swing.JFrame {
             .addGroup(paneAllLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(paneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblHead, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panebotoes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(paneListagem, javax.swing.GroupLayout.DEFAULT_SIZE, 1348, Short.MAX_VALUE)
                     .addGroup(paneAllLayout.createSequentialGroup()
                         .addComponent(btnNovoOrcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(87, 87, 87)
+                        .addGap(90, 90, 90)
                         .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(87, 87, 87)
+                        .addGap(90, 90, 90)
                         .addComponent(btnCadServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(87, 87, 87)
+                        .addGap(90, 90, 90)
                         .addComponent(btnRecibos, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(90, 90, 90)
+                        .addComponent(btnRelatorios, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(lblHead, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panebotoes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(paneListagem))
                 .addContainerGap())
         );
         paneAllLayout.setVerticalGroup(
@@ -890,42 +915,37 @@ public class ListagemGUI extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ListagemGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ListagemGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ListagemGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ListagemGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+        // pede senha antes de abrir a tela
+        javax.swing.JPasswordField passwordField = new javax.swing.JPasswordField();
+        int option = javax.swing.JOptionPane.showConfirmDialog(
+                null,
+                passwordField,
+                "Digite a senha",
+                javax.swing.JOptionPane.OK_CANCEL_OPTION,
+                javax.swing.JOptionPane.PLAIN_MESSAGE
+        );
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ListagemGUI().setVisible(true);
+        if (option == javax.swing.JOptionPane.OK_OPTION) {
+            String senhaDigitada = new String(passwordField.getPassword());
+
+            // SHA-256 da senha
+            byte[] hashCorreto = hexStringToByteArray("469a60d419ec8de91048f47c37c67306913b85d0c60dff1158e00042683f7f5d");
+            byte[] hashDigitado = gerarHash(senhaDigitada);
+
+            if (java.util.Arrays.equals(hashDigitado, hashCorreto)) {
+                /* Create and display the form */
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        new ListagemGUI().setVisible(true);
+                    }
+                });
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(null, "Senha incorreta. Encerrando.");
+                System.exit(0);
             }
-        });
+        } else {
+            System.exit(0);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -184,20 +184,21 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="lblHead" max="32767" attributes="0"/>
-                      <Component id="panebotoes" alignment="1" max="32767" attributes="0"/>
-                      <Component id="paneListagem" pref="1348" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btnNovoOrcamento" min="-2" pref="200" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
                           <Component id="btnCadastro" min="-2" pref="200" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
                           <Component id="btnCadServicos" min="-2" pref="200" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
                           <Component id="btnRecibos" min="-2" pref="200" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
                           <Component id="btnRelatorios" min="-2" pref="200" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
+                      <Component id="lblHead" max="32767" attributes="0"/>
+                      <Component id="panebotoes" alignment="1" max="32767" attributes="0"/>
+                      <Component id="paneListagem" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -271,7 +272,7 @@
                           </Group>
                           <Component id="lblPeriodo" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="624" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="lblImgLupa" min="-2" pref="16" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="txtBusca" min="-2" pref="223" max="-2" attributes="0"/>
@@ -325,7 +326,7 @@
             <Component class="javax.swing.JLabel" name="lblImgLupa">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/Imgs/pesquisar.png"/>
+                  <Image iconType="2" name="C:\Users\danie\Documents\Aulas\auto-center-crud\src\main\resources\images\pesquisar.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value=" "/>
               </Properties>

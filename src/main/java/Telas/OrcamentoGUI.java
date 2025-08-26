@@ -15,6 +15,7 @@ import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -631,7 +632,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Orçamentos");
-        setMaximumSize(new java.awt.Dimension(1360, 718));
         setMinimumSize(new java.awt.Dimension(1360, 718));
         setSize(new java.awt.Dimension(1360, 718));
 
@@ -649,7 +649,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lbl1.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lbl1.setForeground(new java.awt.Color(0, 0, 0));
         lbl1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbl1.setText("LISTAGEM DE PEÇAS E SERVIÇOS");
+        lbl1.setText("LISTAGEM DE PEÇAS E SERVIÇOS                         ");
         lbl1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         btnCancelar.setText("Fechar");
@@ -702,9 +702,9 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 .addGroup(paneBotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnServicos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
-                .addComponent(lbl1, javax.swing.GroupLayout.PREFERRED_SIZE, 672, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(166, 166, 166)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSalvar)
                 .addGap(18, 18, 18)
                 .addComponent(btnCancelar)
@@ -764,7 +764,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lblPlaca.setText("Placa");
 
         lblDataHora.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
-        lblDataHora.setText("     Data - Hora");
+        lblDataHora.setText("Data - Hora");
 
         txtCliente.setEditable(false);
         txtCliente.setName("txtCliente"); // NOI18N
@@ -917,8 +917,8 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblPlaca)
                             .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(179, 179, 179)
-                        .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 422, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnImprimir)
                         .addGap(8, 8, 8))
@@ -936,25 +936,22 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             .addGroup(PaneAllLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblHead)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PaneAllLayout.createSequentialGroup()
+                        .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblVeiculo)
+                            .addComponent(lblCliente))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(PaneAllLayout.createSequentialGroup()
-                                .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(lblVeiculo)
-                                    .addComponent(lblCliente))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(PaneAllLayout.createSequentialGroup()
-                                .addComponent(lblPlaca)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(PaneAllLayout.createSequentialGroup()
-                        .addGap(30, 30, 30)
+                        .addComponent(lblPlaca)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnImprimir)))
                 .addGap(13, 13, 13)
                 .addComponent(paneBotoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1087,60 +1084,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtVeiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVeiculoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtVeiculoActionPerformed
-
-    private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtClienteActionPerformed
-
-    private void txtTotalPecasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalPecasActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTotalPecasActionPerformed
-
     
-    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // Verifica se os campos Cliente e Veículo foram preenchidos
-        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
-        } else {
-            // Captura o conteúdo do campo Placa
-            String placa = txtPlaca.getText().trim().toUpperCase();
-
-            // Verifica se a placa está no formato correto
-            if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
-                JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
-                return; // Interrompe o salvamento se a placa estiver no formato incorreto
-            }
-
-            // Exibe um aviso se a placa não for preenchida
-            if (placa.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Atenção: O campo Placa está vazio!",
-                        "Aviso",
-                        JOptionPane.WARNING_MESSAGE);
-            }
-
-            // Continua com o salvamento do orçamento
-            if (idOrcamentoGlobal <= 0) {
-                long idOrcamento = SalvarOrcamento(false); // Cria o orçamento se ele não existir
-                if (idOrcamento > 0) {
-                    atualizarVeiculo(idOrcamento, txtVeiculo.getText().trim());
-                    atualizarPlaca(idOrcamento, placa);
-                    atualizarObservacoes(idOrcamento, jTextObs.getText().trim());
-                }
-            } else {
-                vincularClienteAoOrcamento(idClienteSelecionado); // Atualiza o cliente no orçamento existente
-                atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
-                atualizarPlaca(idOrcamentoGlobal, placa);
-                atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
-            }
-
-            JOptionPane.showMessageDialog(this, "Orçamento salvo com sucesso!");
-        }
-    }//GEN-LAST:event_btnSalvarActionPerformed
-
     // Variável global para guardar a id do Orçamento;
     public long idOrcamentoGlobal;
 
@@ -1237,36 +1181,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
         return idOrcamento;
     }
-    
-    private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
-        // Validação dos campos obrigatórios
-        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
-            return;
-        }
-
-        // Validação do campo Placa
-        String placa = txtPlaca.getText().trim().toUpperCase();
-        if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
-            JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
-        produtoGUI.limparCampos();
-        produtoGUI.setDescricaoLabel("Descrição da Peça / Mercadoria");
-        produtoGUI.setTipoProduto("Mercadoria"); // Definindo o tipo como Mercadoria
-        produtoGUI.setVisible(true);
-
-        if (idOrcamentoGlobal <= 0) {
-            idOrcamentoGlobal = SalvarOrcamento(false);
-        }
-
-        if (idOrcamentoGlobal > 0) {
-            ProdutoGUI.abrirNovaInstancia(this);
-        }
-    }//GEN-LAST:event_btnProdutoActionPerformed
- 
+     
     private void UpdateValorTotalOrcamento() {
         Session session = SessionManager.getInstance().getSession();
         Transaction transaction = session.beginTransaction();
@@ -1345,114 +1260,28 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         OrcamentoDAO orcamentoDAO = OrcamentoDAO.getInstance();
         orcamentoDAO.atualizarValoresOrcamento(idOrcamentoGlobal, valorPecas, valorServicos, valorTotal);
     }
-
-    private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
-        // Validação dos campos obrigatórios
-        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
-            return;
-        }
-
-        // Validação do campo Placa
-        String placa = txtPlaca.getText().trim().toUpperCase();
-        if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
-            JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
-        produtoGUI.limparCampos();
-        produtoGUI.setDescricaoLabel("Descrição do Serviço");
-        produtoGUI.setTipoProduto("Servico"); // Definindo o tipo como Serviço
-        produtoGUI.setVisible(true);
-
-        if (idOrcamentoGlobal <= 0) {
-            idOrcamentoGlobal = SalvarOrcamento(false);
-        }
-
-        if (idOrcamentoGlobal > 0) {
-            ProdutoGUI.abrirNovaInstancia(this);
-        }
-    }//GEN-LAST:event_btnServicoActionPerformed
-
-    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        // TODO add your handling code here:
-        //pega a lnha selecionada
-        int selectedRow = tblListagem.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um item para excluir.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        long idOrcamentoItem = (long) tblListagem.getValueAt(selectedRow, 0); // 0 é o índice da coluna ID na tabela
-
-        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este item?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
-        if (confirmacao == JOptionPane.YES_OPTION) {
-            Session session = SessionManager.getInstance().getSession();
-            ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO();
-            try {
-                itemOrcamentoDAO.excluirItemPorId(idOrcamentoItem, session);
-                JOptionPane.showMessageDialog(this, "Item excluído com sucesso!");
-                atualizarGridItens();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Erro ao editar Item: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
-            } finally {
-                session.close(); // Fecha a sessão
-            }
-        }
-    }//GEN-LAST:event_btnExcluirActionPerformed
-
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        resetCampos(); // Limpa os campos antes de fechar
-        dispose(); // Fecha a janela atual
-        instance = null; // Reseta a instância
-    }//GEN-LAST:event_btnCancelarActionPerformed
-
-    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
-        // Verifica se os campos Cliente e Veículo foram preenchidos
-        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
-            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
-        } else {
-            // Verifica se há itens na tabela
-            DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
-            if (model.getRowCount() == 0) {
-                JOptionPane.showMessageDialog(this, "Adicione itens para imprimir o orçamento!", "Aviso", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            // Exibe um aviso se a placa não for preenchida
-            if (txtPlaca.getText().equals("")) {
-                int resposta = JOptionPane.showConfirmDialog(
-                        this,
-                        "O campo Placa está vazio! Deseja continuar?",
-                        "Aviso",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.WARNING_MESSAGE
-                );
-
-                if (resposta == JOptionPane.NO_OPTION) {
-                    return; // Interrompe o processo caso o usuário escolha "Não"
-                }
-            }
-
-            imprimirRelatorioJasper();
-        }
-    }//GEN-LAST:event_btnImprimirActionPerformed
     //URL reportPath = Main.class.getResource("/reports/orcamento.jasper");
     private void imprimirRelatorioJasper() {
-        String reportPath = getClass().getResource("/reports/orcamento.jasper").getPath();
-        String imagePath = getClass().getResource("/images/vr.png").getPath();
-
         try {
-            JasperReport reporte = (JasperReport) JRLoader.loadObject(new File(reportPath));
+            // Carrega o relatório como InputStream a partir do resources
+            InputStream jasperStream = getClass().getResourceAsStream("/reports/orcamento.jasper");
+            if (jasperStream == null) {
+                throw new JRException("Relatório não encontrado no caminho /reports/orcamento.jasper");
+            }
+            JasperReport reporte = (JasperReport) JRLoader.loadObject(jasperStream);
+
+            // Cria o mapa de parâmetros
             Map<String, Object> parametros = new HashMap<>();
-            Integer idOrcamentoInteger = (int) idOrcamentoGlobal;
-            parametros.put("idOrcamento", idOrcamentoInteger);
+            parametros.put("idOrcamento", (int) idOrcamentoGlobal);
 
-            // Passe o caminho da imagem como parâmetro
-            parametros.put("IMAGE_PATH", imagePath);
+            // Carrega a imagem do resources corretamente
+            InputStream imageStream = getClass().getResourceAsStream("/images/vr.png");
+            if (imageStream == null) {
+                throw new JRException("Imagem não encontrada no caminho /images/vr.png");
+            }
+            parametros.put("IMAGE_PATH", imageStream);
 
+            // Conexão com o banco
             String url = "jdbc:mysql://localhost:3306/test";
             String usuario = "root";
             String senha = "12345";
@@ -1461,12 +1290,13 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             // Preenche o relatório
             JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, parametros, conexao);
 
-            // Gera o PDF no diretório de saída padrão do Maven
-            String pdfFilePath = "target/orcamento.pdf";
-            JasperExportManager.exportReportToPdfFile(jasperPrint, pdfFilePath);
+            // Gera o PDF em pasta acessível (ex.: pasta do usuário)
+            String userHome = System.getProperty("user.home");
+            File pdfFile = new File(userHome, "orcamento.pdf");
+            JasperExportManager.exportReportToPdfFile(jasperPrint, pdfFile.getAbsolutePath());
 
-            // Abre o PDF no leitor padrão
-            abrirPDF(new File(pdfFilePath));
+            // Abre o PDF
+            abrirPDF(pdfFile);
 
         } catch (JRException | SQLException ex) {
             Logger.getLogger(OrcamentoGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -1492,15 +1322,87 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         }
     }
     
-    private void txtClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtClienteMouseClicked
+    private void jMenuNovaPecaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuNovaPecaActionPerformed
+        btnProduto.doClick();
+    }//GEN-LAST:event_jMenuNovaPecaActionPerformed
+
+    private void jMenuNovoServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuNovoServicoActionPerformed
+        btnServico.doClick();
+    }//GEN-LAST:event_jMenuNovoServicoActionPerformed
+
+    private void jMenuServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuServicoActionPerformed
+        btnServicos.doClick();
+    }//GEN-LAST:event_jMenuServicoActionPerformed
+
+    private void jMenuExcluirItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuExcluirItemActionPerformed
+        btnExcluir.doClick();
+    }//GEN-LAST:event_jMenuExcluirItemActionPerformed
+
+    private void jMenuImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuImprimirActionPerformed
+        btnImprimir.doClick();
+    }//GEN-LAST:event_jMenuImprimirActionPerformed
+
+    private void jMenuCadastroServicosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCadastroServicosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuCadastroServicosActionPerformed
+
+    private void jMenuInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuInserirActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuInserirActionPerformed
+
+    private void jMenuAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAtualizarActionPerformed
+        // Simula o pressionamento da tecla F5
+        ActionMap actionMap = rootPane.getActionMap();
+        Action action = actionMap.get("reset");
+        if (action != null) {
+            action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+        }
+    }//GEN-LAST:event_jMenuAtualizarActionPerformed
+
+    private void jMenuJanelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuJanelaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuJanelaActionPerformed
+
+    private void jMenuClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuClienteActionPerformed
         ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
         clienteGUI.setModoVinculacao(true);
         clienteGUI.setVisible(true); // Exibe ClienteGUI
-    }//GEN-LAST:event_txtClienteMouseClicked
+    }//GEN-LAST:event_jMenuClienteActionPerformed
 
-    private void txtClienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyPressed
+    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
+        // Verifica se os campos Cliente e Veículo foram preenchidos
+        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("") /*|| txtPlaca.getText().equals("")*/) {
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
+        } else {
+            // Verifica se há itens na tabela
+            DefaultTableModel model = (DefaultTableModel) tblListagem.getModel();
+            if (model.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Adicione itens para imprimir o orçamento!", "Aviso", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Exibe um aviso se a placa não for preenchida
+            if (txtPlaca.getText().equals("")) {
+                int resposta = JOptionPane.showConfirmDialog(
+                    this,
+                    "O campo Placa está vazio! Deseja continuar?",
+                    "Aviso",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+                );
+
+                if (resposta == JOptionPane.NO_OPTION) {
+                    return; // Interrompe o processo caso o usuário escolha "Não"
+                }
+            }
+
+            imprimirRelatorioJasper();
+        }
+    }//GEN-LAST:event_btnImprimirActionPerformed
+
+    private void txtTotalPecasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalPecasActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtClienteKeyPressed
+    }//GEN-LAST:event_txtTotalPecasActionPerformed
 
     private void txtPlacaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlacaKeyTyped
         String textoAtual = txtPlaca.getText().toUpperCase(); // Obtém o texto atual e converte para maiúsculas
@@ -1571,52 +1473,156 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_txtVeiculoKeyTyped
 
-    private void jMenuNovaPecaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuNovaPecaActionPerformed
-        btnProduto.doClick();
-    }//GEN-LAST:event_jMenuNovaPecaActionPerformed
-
-    private void jMenuNovoServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuNovoServicoActionPerformed
-        btnServico.doClick();
-    }//GEN-LAST:event_jMenuNovoServicoActionPerformed
-
-    private void jMenuServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuServicoActionPerformed
-        btnServicos.doClick();
-    }//GEN-LAST:event_jMenuServicoActionPerformed
-
-    private void jMenuExcluirItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuExcluirItemActionPerformed
-        btnExcluir.doClick();
-    }//GEN-LAST:event_jMenuExcluirItemActionPerformed
-
-    private void jMenuImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuImprimirActionPerformed
-        btnImprimir.doClick();
-    }//GEN-LAST:event_jMenuImprimirActionPerformed
-
-    private void jMenuCadastroServicosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuCadastroServicosActionPerformed
+    private void txtVeiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVeiculoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuCadastroServicosActionPerformed
+    }//GEN-LAST:event_txtVeiculoActionPerformed
 
-    private void jMenuInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuInserirActionPerformed
+    private void txtClienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuInserirActionPerformed
+    }//GEN-LAST:event_txtClienteKeyPressed
 
-    private void jMenuAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAtualizarActionPerformed
-        // Simula o pressionamento da tecla F5
-        ActionMap actionMap = rootPane.getActionMap();
-        Action action = actionMap.get("reset");
-        if (action != null) {
-            action.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
-        }
-    }//GEN-LAST:event_jMenuAtualizarActionPerformed
-
-    private void jMenuJanelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuJanelaActionPerformed
+    private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuJanelaActionPerformed
+    }//GEN-LAST:event_txtClienteActionPerformed
 
-    private void jMenuClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuClienteActionPerformed
+    private void txtClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtClienteMouseClicked
         ClienteGUI clienteGUI = ClienteGUI.getInstance(); // Garante instância única
         clienteGUI.setModoVinculacao(true);
         clienteGUI.setVisible(true); // Exibe ClienteGUI
-    }//GEN-LAST:event_jMenuClienteActionPerformed
+    }//GEN-LAST:event_txtClienteMouseClicked
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        // TODO add your handling code here:
+        //pega a lnha selecionada
+        int selectedRow = tblListagem.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um item para excluir.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        long idOrcamentoItem = (long) tblListagem.getValueAt(selectedRow, 0); // 0 é o índice da coluna ID na tabela
+
+        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir este item?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+        if (confirmacao == JOptionPane.YES_OPTION) {
+            Session session = SessionManager.getInstance().getSession();
+            ItemOrcamentoDAO itemOrcamentoDAO = new ItemOrcamentoDAO();
+            try {
+                itemOrcamentoDAO.excluirItemPorId(idOrcamentoItem, session);
+                JOptionPane.showMessageDialog(this, "Item excluído com sucesso!");
+                atualizarGridItens();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao editar Item: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            } finally {
+                session.close(); // Fecha a sessão
+            }
+        }
+    }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void btnServicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicoActionPerformed
+        // Validação dos campos obrigatórios
+        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
+            return;
+        }
+
+        // Validação do campo Placa
+        String placa = txtPlaca.getText().trim().toUpperCase();
+        if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
+            JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
+        produtoGUI.limparCampos();
+        produtoGUI.setDescricaoLabel("Descrição do Serviço");
+        produtoGUI.setTipoProduto("Servico"); // Definindo o tipo como Serviço
+        produtoGUI.setVisible(true);
+
+        if (idOrcamentoGlobal <= 0) {
+            idOrcamentoGlobal = SalvarOrcamento(false);
+        }
+
+        if (idOrcamentoGlobal > 0) {
+            ProdutoGUI.abrirNovaInstancia(this);
+        }
+    }//GEN-LAST:event_btnServicoActionPerformed
+
+    private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
+        // Validação dos campos obrigatórios
+        if (txtCliente.getText().isEmpty() || txtVeiculo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
+            return;
+        }
+
+        // Validação do campo Placa
+        String placa = txtPlaca.getText().trim().toUpperCase();
+        if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
+            JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        ProdutoGUI produtoGUI = ProdutoGUI.getInstance();
+        produtoGUI.limparCampos();
+        produtoGUI.setDescricaoLabel("Descrição da Peça / Mercadoria");
+        produtoGUI.setTipoProduto("Mercadoria"); // Definindo o tipo como Mercadoria
+        produtoGUI.setVisible(true);
+
+        if (idOrcamentoGlobal <= 0) {
+            idOrcamentoGlobal = SalvarOrcamento(false);
+        }
+
+        if (idOrcamentoGlobal > 0) {
+            ProdutoGUI.abrirNovaInstancia(this);
+        }
+    }//GEN-LAST:event_btnProdutoActionPerformed
+
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        // Verifica se os campos Cliente e Veículo foram preenchidos
+        if (txtCliente.getText().equals("") || txtVeiculo.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Os campos Cliente e Veículo devem ser preenchidos!");
+        } else {
+            // Captura o conteúdo do campo Placa
+            String placa = txtPlaca.getText().trim().toUpperCase();
+
+            // Verifica se a placa está no formato correto
+            if (!placa.isEmpty() && !placa.matches("^[A-Z]{3}[0-9]{4}$") && !placa.matches("^[A-Z]{3}[0-9][A-Z][0-9]{2}$")) {
+                JOptionPane.showMessageDialog(this, "A placa deve estar no formato ABC1234 ou ABC1D23.", "Formato Inválido", JOptionPane.ERROR_MESSAGE);
+                return; // Interrompe o salvamento se a placa estiver no formato incorreto
+            }
+
+            // Exibe um aviso se a placa não for preenchida
+            if (placa.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                    "Atenção: O campo Placa está vazio!",
+                    "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
+            }
+
+            // Continua com o salvamento do orçamento
+            if (idOrcamentoGlobal <= 0) {
+                long idOrcamento = SalvarOrcamento(false); // Cria o orçamento se ele não existir
+                if (idOrcamento > 0) {
+                    atualizarVeiculo(idOrcamento, txtVeiculo.getText().trim());
+                    atualizarPlaca(idOrcamento, placa);
+                    atualizarObservacoes(idOrcamento, jTextObs.getText().trim());
+                }
+            } else {
+                vincularClienteAoOrcamento(idClienteSelecionado); // Atualiza o cliente no orçamento existente
+                atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
+                atualizarPlaca(idOrcamentoGlobal, placa);
+                atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
+            }
+
+            JOptionPane.showMessageDialog(this, "Orçamento salvo com sucesso!");
+        }
+    }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        resetCampos(); // Limpa os campos antes de fechar
+        dispose(); // Fecha a janela atual
+        instance = null; // Reseta a instância
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     /**
      * @param args the command line arguments
