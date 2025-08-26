@@ -631,7 +631,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Orçamentos");
-        setMaximumSize(new java.awt.Dimension(1360, 718));
         setMinimumSize(new java.awt.Dimension(1360, 718));
         setSize(new java.awt.Dimension(1360, 718));
 
@@ -649,7 +648,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         lbl1.setFont(new java.awt.Font("Liberation Sans", 1, 15)); // NOI18N
         lbl1.setForeground(new java.awt.Color(0, 0, 0));
         lbl1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbl1.setText("LISTAGEM DE PEÇAS E SERVIÇOS");
+        lbl1.setText("LISTAGEM DE PEÇAS E SERVIÇOS                         ");
         lbl1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         btnCancelar.setText("Fechar");
@@ -702,9 +701,9 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 .addGroup(paneBotoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnServicos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnExcluir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
-                .addComponent(lbl1, javax.swing.GroupLayout.PREFERRED_SIZE, 672, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(166, 166, 166)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSalvar)
                 .addGap(18, 18, 18)
                 .addComponent(btnCancelar)
@@ -917,7 +916,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblPlaca)
                             .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(179, 179, 179)
+                        .addGap(183, 183, 183)
                         .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnImprimir)
@@ -952,7 +951,7 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                                 .addComponent(lblPlaca)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(lblDataHora, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(PaneAllLayout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addComponent(btnImprimir)))
