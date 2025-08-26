@@ -44,6 +44,25 @@ import org.hibernate.Session;
  * @author danielp6r
  */
 public class ListagemGUI extends javax.swing.JFrame {
+
+    private static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
+
+    private static byte[] gerarHash(String senha) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            return md.digest(senha.getBytes("UTF-8")); // garante consistência
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     
     // Lista para gerenciar múltiplas instâncias de OrcamentoGUI abertas
     private final Map<Long, OrcamentoGUI> instanciasOrcamentos = new HashMap<>();
@@ -59,7 +78,13 @@ public class ListagemGUI extends javax.swing.JFrame {
         atalhos();
         
         //SERÁ REMOVIDO APÓS IMPLEMENTAÇÃO...
-        
+        //Setando botões invisíveis - Ainda falta implementar
+        btnCadServicos.setVisible(false);
+        btnRecibos.setVisible(false);
+        btnRelatorios.setVisible(false);
+        jMenuCadServicos.setVisible(false);
+        jMenuRecibos.setVisible(false);
+        jMenuRelatorios.setVisible(false);
 
         // Remove foco de todos os componentes
         setFocusable(true);
@@ -890,22 +915,37 @@ public class ListagemGUI extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+        // pede senha antes de abrir a tela
+        javax.swing.JPasswordField passwordField = new javax.swing.JPasswordField();
+        int option = javax.swing.JOptionPane.showConfirmDialog(
+                null,
+                passwordField,
+                "Digite a senha",
+                javax.swing.JOptionPane.OK_CANCEL_OPTION,
+                javax.swing.JOptionPane.PLAIN_MESSAGE
+        );
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ListagemGUI().setVisible(true);
+        if (option == javax.swing.JOptionPane.OK_OPTION) {
+            String senhaDigitada = new String(passwordField.getPassword());
+
+            // SHA-256 da senha
+            byte[] hashCorreto = hexStringToByteArray("469a60d419ec8de91048f47c37c67306913b85d0c60dff1158e00042683f7f5d");
+            byte[] hashDigitado = gerarHash(senhaDigitada);
+
+            if (java.util.Arrays.equals(hashDigitado, hashCorreto)) {
+                /* Create and display the form */
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        new ListagemGUI().setVisible(true);
+                    }
+                });
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(null, "Senha incorreta. Encerrando.");
+                System.exit(0);
             }
-        });
+        } else {
+            System.exit(0);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
