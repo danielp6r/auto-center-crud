@@ -479,7 +479,6 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         lblPeriodo.setText("Período");
 
-        lblImgLupa.setIcon(new javax.swing.ImageIcon("C:\\Users\\danie\\Documents\\Aulas\\auto-center-crud\\src\\main\\resources\\images\\pesquisar.png")); // NOI18N
         lblImgLupa.setText(" ");
         lblImgLupa.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseExited(java.awt.event.MouseEvent evt) {
