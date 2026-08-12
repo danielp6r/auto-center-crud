@@ -953,12 +953,12 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                             .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblVeiculo)
-                            .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblPlaca))
                         .addGap(18, 18, 18)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblPlaca)
-                            .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblVeiculo)
+                            .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 422, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -982,16 +982,14 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PaneAllLayout.createSequentialGroup()
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblVeiculo)
-                            .addComponent(lblCliente))
+                            .addComponent(lblCliente)
+                            .addComponent(lblPlaca)
+                            .addComponent(lblVeiculo))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(PaneAllLayout.createSequentialGroup()
-                        .addComponent(lblPlaca)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(PaneAllLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(lblDataHora, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnImprimir)))
@@ -1446,79 +1444,6 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTotalPecasActionPerformed
 
-    private void txtPlacaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlacaKeyTyped
-        String textoAtual = txtPlaca.getText().toUpperCase(); // Obtém o texto atual e converte para maiúsculas
-        char caractere = evt.getKeyChar(); // Obtém o caractere digitado
-
-        // Permitir teclas de controle como backspace, delete e setas
-        if (Character.isISOControl(caractere)) {
-            return;
-        }
-
-        // Permitir apenas letras e números
-        if (!Character.isLetterOrDigit(caractere)) {
-            evt.consume(); // Ignora caracteres especiais e pontuações
-            return;
-        }
-
-        // Limitar o comprimento para 7 caracteres
-        if (textoAtual.length() >= 7) {
-            evt.consume(); // Ignora o caractere adicional
-            return;
-        }
-
-        // Converte o caractere para maiúsculas automaticamente
-        caractere = Character.toUpperCase(caractere);
-
-        // Validação por posição
-        int posicao = textoAtual.length();
-        if (posicao < 3) {
-            // Primeiras 3 posições devem ser letras
-            if (!Character.isLetter(caractere)) {
-                evt.consume(); // Ignora caracteres inválidos
-                return;
-            }
-        } else if (posicao == 3 || posicao == 5 || posicao == 6) {
-            // Posições 3, 5 e 6 devem ser números
-            if (!Character.isDigit(caractere)) {
-                evt.consume(); // Ignora caracteres inválidos
-                return;
-            }
-        } else if (posicao == 4) {
-            // Posição 4 pode ser letra ou número (para ambos os formatos)
-            if (!Character.isLetter(caractere) && !Character.isDigit(caractere)) {
-                evt.consume(); // Ignora caracteres inválidos
-                return;
-            }
-        }
-
-        // Atualiza o texto no campo com o caractere validado
-        txtPlaca.setText(textoAtual + caractere);
-        evt.consume(); // Evita que o caractere seja processado novamente
-    }//GEN-LAST:event_txtPlacaKeyTyped
-
-    private void txtVeiculoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtVeiculoKeyTyped
-        // Verifica se o texto atual ultrapassará 24 caracteres
-        if (txtVeiculo.getText().length() >= 24) {
-            evt.consume(); // Impede que o caractere digitado seja adicionado
-            return;
-        }
-
-        SwingUtilities.invokeLater(() -> {
-            String textoAtual = txtVeiculo.getText();
-            if (!textoAtual.isEmpty()) {
-                // Apenas a primeira letra da primeira palavra em maiúscula
-                String primeiraLetra = textoAtual.substring(0, 1).toUpperCase();
-                String restanteTexto = textoAtual.substring(1); // Resto do texto permanece inalterado
-                txtVeiculo.setText(primeiraLetra + restanteTexto);
-            }
-        });
-    }//GEN-LAST:event_txtVeiculoKeyTyped
-
-    private void txtVeiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVeiculoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtVeiculoActionPerformed
-
     private void txtClienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClienteKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtClienteKeyPressed
@@ -1665,6 +1590,79 @@ public class OrcamentoGUI extends javax.swing.JFrame {
         dispose(); // Fecha a janela atual
         instance = null; // Reseta a instância
     }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void txtPlacaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlacaKeyTyped
+        String textoAtual = txtPlaca.getText().toUpperCase(); // Obtém o texto atual e converte para maiúsculas
+        char caractere = evt.getKeyChar(); // Obtém o caractere digitado
+
+        // Permitir teclas de controle como backspace, delete e setas
+        if (Character.isISOControl(caractere)) {
+            return;
+        }
+
+        // Permitir apenas letras e números
+        if (!Character.isLetterOrDigit(caractere)) {
+            evt.consume(); // Ignora caracteres especiais e pontuações
+            return;
+        }
+
+        // Limitar o comprimento para 7 caracteres
+        if (textoAtual.length() >= 7) {
+            evt.consume(); // Ignora o caractere adicional
+            return;
+        }
+
+        // Converte o caractere para maiúsculas automaticamente
+        caractere = Character.toUpperCase(caractere);
+
+        // Validação por posição
+        int posicao = textoAtual.length();
+        if (posicao < 3) {
+            // Primeiras 3 posições devem ser letras
+            if (!Character.isLetter(caractere)) {
+                evt.consume(); // Ignora caracteres inválidos
+                return;
+            }
+        } else if (posicao == 3 || posicao == 5 || posicao == 6) {
+            // Posições 3, 5 e 6 devem ser números
+            if (!Character.isDigit(caractere)) {
+                evt.consume(); // Ignora caracteres inválidos
+                return;
+            }
+        } else if (posicao == 4) {
+            // Posição 4 pode ser letra ou número (para ambos os formatos)
+            if (!Character.isLetter(caractere) && !Character.isDigit(caractere)) {
+                evt.consume(); // Ignora caracteres inválidos
+                return;
+            }
+        }
+
+        // Atualiza o texto no campo com o caractere validado
+        txtPlaca.setText(textoAtual + caractere);
+        evt.consume(); // Evita que o caractere seja processado novamente
+    }//GEN-LAST:event_txtPlacaKeyTyped
+
+    private void txtVeiculoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtVeiculoKeyTyped
+        // Verifica se o texto atual ultrapassará 24 caracteres
+        if (txtVeiculo.getText().length() >= 24) {
+            evt.consume(); // Impede que o caractere digitado seja adicionado
+            return;
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            String textoAtual = txtVeiculo.getText();
+            if (!textoAtual.isEmpty()) {
+                // Apenas a primeira letra da primeira palavra em maiúscula
+                String primeiraLetra = textoAtual.substring(0, 1).toUpperCase();
+                String restanteTexto = textoAtual.substring(1); // Resto do texto permanece inalterado
+                txtVeiculo.setText(primeiraLetra + restanteTexto);
+            }
+        });
+    }//GEN-LAST:event_txtVeiculoKeyTyped
+
+    private void txtVeiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVeiculoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtVeiculoActionPerformed
 
     /**
      * @param args the command line arguments

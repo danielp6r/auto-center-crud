@@ -195,13 +195,13 @@
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lblVeiculo" min="-2" max="-2" attributes="0"/>
-                              <Component id="txtVeiculo" min="-2" pref="140" max="-2" attributes="0"/>
+                              <Component id="txtPlaca" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                              <Component id="lblPlaca" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lblPlaca" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="txtPlaca" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                              <Component id="lblVeiculo" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtVeiculo" min="-2" pref="140" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="lblDataHora" min="-2" pref="422" max="-2" attributes="0"/>
@@ -232,19 +232,16 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="lblVeiculo" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lblCliente" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblPlaca" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblVeiculo" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="txtVeiculo" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="txtCliente" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtPlaca" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtVeiculo" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <Component id="lblPlaca" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="txtPlaca" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" alignment="0" groupAlignment="1" attributes="0">
                           <Component id="lblDataHora" min="-2" pref="47" max="-2" attributes="0"/>
