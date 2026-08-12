@@ -55,7 +55,6 @@ public class ClienteGUI extends javax.swing.JFrame {
         adicionarEventoDuploClique();
         atalhos();
         
-        
         // Ajusta para fechar apenas a janela atual
         setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         
@@ -82,7 +81,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         });
         
         // Adiciona o MouseListener à lupa
-        addLupaClickListener();
+        //addLupaClickListener();
         
         // Adiciona o DocumentListener para filtrar os clientes
         addSearchListener();
@@ -109,8 +108,8 @@ public class ClienteGUI extends javax.swing.JFrame {
                 }
 
                 if (clienteIdEdicao == null) { // Verifica se estamos criando um cliente
-                    lblCliente.setText(txtNome.getText()); // Atualiza o nome enquanto digita
-                    lblCriandoOuEditando.setText("Criando Novo Cliente"); // Atualiza para "Criando Novo Cliente"
+                    lblHead.setText(txtNome.getText()); // Atualiza o nome enquanto digita
+                    lblHead.setText("Criando Novo Cliente"); // Atualiza para "Criando Novo Cliente"
                 }
             }
         });
@@ -119,7 +118,7 @@ public class ClienteGUI extends javax.swing.JFrame {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowActivated(java.awt.event.WindowEvent e) {
-                txtNome.requestFocusInWindow(); // Garante o foco no campo txtNome
+                txtBusca.requestFocusInWindow(); // Garante o foco no campo txtNome
             }
         });
         
@@ -129,6 +128,13 @@ public class ClienteGUI extends javax.swing.JFrame {
             public void windowActivated(WindowEvent e) {
                 carregarClientes();
                 }
+        });
+        
+        txtBusca.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                lblHead.setText("Cadastro de Clientes");
+            }
         });
              
     }
@@ -226,17 +232,18 @@ public class ClienteGUI extends javax.swing.JFrame {
         lblCPFouCNPJ.setText("CPF");
         tblListagem.clearSelection();
         txtNome.requestFocusInWindow();
+        lblHead.setText("Cadastro de Clientes");
     }
     
     // Método para adicionar o MouseListener à lupa
-    private void addLupaClickListener() {
+    /* private void addLupaClickListener() {
         lblImgLupa.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 txtBusca.requestFocus();
             }
         });
-    }
+    } */
     
     // Método para obter a instância única da tela
     public static ClienteGUI getInstance() {
@@ -277,8 +284,6 @@ public class ClienteGUI extends javax.swing.JFrame {
         txtTel.setText("");
         txtEmail.setText("");
         txtCPFouCNPJ.setText("");
-        lblCliente.setText(""); // Limpa o label de nome do cliente
-        lblCriandoOuEditando.setText(""); // Limpa o label de estado
         clienteIdEdicao = null; // Reseta o ID do cliente em edição
     }
     
@@ -374,8 +379,10 @@ public class ClienteGUI extends javax.swing.JFrame {
         String text = txtBusca.getText();
         if (text.trim().length() == 0) {
             sorter.setRowFilter(null);
+            lblHead.setText("Cadastro de Clientes"); // Se apagou a busca, volta ao padrão
         } else {
             sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text)); // Ignora maiúsculas/minúsculas
+            lblHead.setText("Buscando Cliente"); // Se digitou algo, avisa no cabeçalho
         }
     }
     
@@ -448,14 +455,12 @@ public class ClienteGUI extends javax.swing.JFrame {
         btnSalvar = new javax.swing.JButton();
         btnExcluir = new javax.swing.JButton();
         txtBusca = new javax.swing.JTextField();
-        lblImgLupa = new javax.swing.JLabel();
         btnEditar = new javax.swing.JButton();
+        lblImgLupa = new javax.swing.JLabel();
         btnPF = new javax.swing.JRadioButton();
         btnPJ = new javax.swing.JRadioButton();
         lblCPFouCNPJ = new javax.swing.JLabel();
         txtCPFouCNPJ = new javax.swing.JTextField();
-        lblCliente = new javax.swing.JLabel();
-        lblCriandoOuEditando = new javax.swing.JLabel();
         paneListagem = new javax.swing.JScrollPane();
         tblListagem = new javax.swing.JTable();
 
@@ -501,8 +506,6 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         });
 
-        lblImgCliente.setIcon(new javax.swing.ImageIcon("C:\\Users\\danie\\Documents\\Aulas\\auto-center-crud\\src\\main\\resources\\images\\cliente.png")); // NOI18N
-
         paneOpcoes.setBackground(new java.awt.Color(255, 255, 255));
         paneOpcoes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -528,9 +531,6 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         });
 
-        lblImgLupa.setIcon(new javax.swing.ImageIcon("C:\\Users\\danie\\Documents\\Aulas\\auto-center-crud\\src\\main\\resources\\images\\pesquisar.png")); // NOI18N
-        lblImgLupa.setText(" ");
-
         btnEditar.setForeground(new java.awt.Color(90, 155, 213));
         btnEditar.setText("Editar (F2)");
         btnEditar.addActionListener(new java.awt.event.ActionListener() {
@@ -539,35 +539,40 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         });
 
+        lblImgLupa.setText("🔎");
+        lblImgLupa.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblImgLupaMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout paneOpcoesLayout = new javax.swing.GroupLayout(paneOpcoes);
         paneOpcoes.setLayout(paneOpcoesLayout);
         paneOpcoesLayout.setHorizontalGroup(
             paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneOpcoesLayout.createSequentialGroup()
-                .addGap(8, 8, 8)
+                .addContainerGap()
+                .addComponent(lblImgLupa)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtBusca, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                .addGap(42, 42, 42)
                 .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnExcluir)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblImgLupa, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(21, 21, 21))
         );
         paneOpcoesLayout.setVerticalGroup(
             paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneOpcoesLayout.createSequentialGroup()
                 .addContainerGap(8, Short.MAX_VALUE)
-                .addGroup(paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblImgLupa))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnSalvar)
-                        .addComponent(btnEditar)
-                        .addComponent(btnExcluir)))
+                .addGroup(paneOpcoesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSalvar)
+                    .addComponent(btnEditar)
+                    .addComponent(btnExcluir)
+                    .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblImgLupa))
                 .addContainerGap())
         );
 
@@ -584,11 +589,6 @@ public class ClienteGUI extends javax.swing.JFrame {
                 txtCPFouCNPJKeyTyped(evt);
             }
         });
-
-        lblCliente.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
-        lblCriandoOuEditando.setForeground(new java.awt.Color(153, 153, 153));
-        lblCriandoOuEditando.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         tblListagem.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -621,17 +621,7 @@ public class ClienteGUI extends javax.swing.JFrame {
                             .addComponent(paneListagem)
                             .addComponent(paneOpcoes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(paneTelaLayout.createSequentialGroup()
-                        .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(paneTelaLayout.createSequentialGroup()
-                                .addGap(80, 80, 80)
-                                .addComponent(lblImgCliente))
-                            .addGroup(paneTelaLayout.createSequentialGroup()
-                                .addGap(37, 37, 37)
-                                .addComponent(lblCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(paneTelaLayout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addComponent(lblCriandoOuEditando, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(29, 29, 29)
+                        .addGap(26, 26, 26)
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(txtNome, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -646,11 +636,13 @@ public class ClienteGUI extends javax.swing.JFrame {
                             .addComponent(txtCPFouCNPJ, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+                            .addComponent(txtEmail)
                             .addComponent(lblEmail)
                             .addComponent(lblTel)
-                            .addComponent(txtTel))
-                        .addGap(0, 11, Short.MAX_VALUE)))
+                            .addComponent(txtTel, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblImgCliente)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         paneTelaLayout.setVerticalGroup(
@@ -658,7 +650,7 @@ public class ClienteGUI extends javax.swing.JFrame {
             .addGroup(paneTelaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblHead)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(paneTelaLayout.createSequentialGroup()
                         .addGroup(paneTelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -679,11 +671,8 @@ public class ClienteGUI extends javax.swing.JFrame {
                             .addComponent(txtCPFouCNPJ, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(paneTelaLayout.createSequentialGroup()
-                        .addComponent(lblCriandoOuEditando, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblImgCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(26, 26, 26)))
                 .addGap(27, 27, 27)
                 .addComponent(paneOpcoes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -695,7 +684,10 @@ public class ClienteGUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(paneTela, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(paneTela, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -704,6 +696,116 @@ public class ClienteGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtCPFouCNPJKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCPFouCNPJKeyTyped
+
+    }//GEN-LAST:event_txtCPFouCNPJKeyTyped
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+
+        txtNome.requestFocusInWindow();
+
+        int selectedRow = tblListagem.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um cliente para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else {
+            btnPF.setEnabled(false); // Desabilita o botão Pessoa Física
+            btnPJ.setEnabled(false); // Desabilita o botão Pessoa Jurídica
+        }
+
+        // Pega os dados da linha selecionada
+        String nome = (String) tblListagem.getValueAt(selectedRow, 0); // Nome
+        String telefone = (String) tblListagem.getValueAt(selectedRow, 1); // Telefone
+        String email = (String) tblListagem.getValueAt(selectedRow, 2); // Email
+        String cpfOuCnpj = (String) tblListagem.getValueAt(selectedRow, 3); // CPF ou CNPJ
+        Long idCliente = (Long) tblListagem.getValueAt(selectedRow, 4); // ID
+
+        // Preenche os campos de edição com os dados do cliente
+        txtNome.setText(nome);
+        txtTel.setText(telefone);
+        txtEmail.setText(email);
+        txtCPFouCNPJ.setText(cpfOuCnpj);
+
+        // Atualiza o label para mostrar que está editando
+        lblHead.setText(nome);
+        lblHead.setText("Editando Cliente"); // Atualiza o label para indicar que está editando
+
+        // Muda o estado para edição
+        isEditing = true; // Adicione esta linha
+
+        // Verifique se o cliente é Pessoa Física ou Jurídica e selecione o radio button correspondente
+        Session session = SessionManager.getInstance().getSession();
+        ClienteDAO clienteDAO = new ClienteDAO();
+        Cliente cliente = clienteDAO.getClienteById(idCliente);
+
+        if (cliente instanceof PessoaFisica) {
+            btnPF.setSelected(true);  // Seleciona Pessoa Física
+            btnPJ.setSelected(false); // Desmarca Pessoa Jurídica
+            lblCPFouCNPJ.setText("CPF");
+        } else if (cliente instanceof PessoaJuridica) {
+            btnPJ.setSelected(true);  // Seleciona Pessoa Jurídica
+            btnPF.setSelected(false); // Desmarca Pessoa Física
+            lblCPFouCNPJ.setText("CNPJ");
+        }
+
+        // Guarda o ID do cliente em edição para usá-lo no botão Salvar
+        clienteIdEdicao = idCliente; // Aqui foi utilizado clienteIdEdicao para armazenar o ID
+
+        session.close(); // Fecha a sessão
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void txtBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscaActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        int selectedRow = tblListagem.getSelectedRow();
+
+        // Verifica se algum cliente está selecionado
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um cliente para excluir.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Obtém o ID do cliente a partir da tabela
+        long idCliente = (long) tblListagem.getValueAt(selectedRow, 4); // 4 é o índice da coluna ID na tabela
+
+        // Declaração da variável clienteDAO
+        ClienteDAO clienteDAO = new ClienteDAO(); // Cria uma instância do DAO
+
+        // Verifica se o cliente está vinculado a algum orçamento
+        if (clienteDAO.clienteTemOrcamento(idCliente)) {
+            JOptionPane.showMessageDialog(this, "Não é possível excluir o cliente! Há orçamento(s) vinculado(s).", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Cria a caixa de confirmação
+        int confirmacao = JOptionPane.showConfirmDialog(this,
+            "Tem certeza que deseja excluir o cliente " + tblListagem.getValueAt(selectedRow, 0) + "?",
+            "Confirmar Exclusão",
+            JOptionPane.YES_NO_OPTION);
+
+        // Verifica se o usuário confirmou a exclusão
+        if (confirmacao == JOptionPane.YES_OPTION) {
+            Session session = SessionManager.getInstance().getSession(); // Abre a sessão
+            try {
+                // Tenta excluir o cliente
+                clienteDAO.excluirClientePorId(idCliente);
+                JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                carregarClientes(); // Atualiza a lista de clientes na tabela após a exclusão
+            } catch (Exception ex) {
+                // Exibe uma mensagem de erro se a exclusão falhar
+                JOptionPane.showMessageDialog(this, "Erro ao excluir cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace(); // Imprime o erro no console para depuração
+            } finally {
+                session.close(); // Fecha a sessão
+                limparCampos(); // Limpa os campos de texto
+            }
+        }
+
+        padrao(); // Restaura o estado padrão
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         // Captura os dados da GUI
@@ -730,23 +832,29 @@ public class ClienteGUI extends javax.swing.JFrame {
             }
         }
 
-        // Verifica se já existe um cliente com o mesmo nome
         Session session = SessionManager.getInstance().getSession();
-        ClienteDAO clienteDAO = new ClienteDAO();
-        List<Cliente> clientes = clienteDAO.getAllClientes();
-        for (Cliente cliente : clientes) {
-            if (cliente.getNomeCliente().equalsIgnoreCase(nome) && cliente.getIdCliente() != clienteIdEdicao) {
-                JOptionPane.showMessageDialog(this, "Já existe um cliente cadastrado com o mesmo nome.", "Erro", JOptionPane.ERROR_MESSAGE);
-                session.close(); // Fecha a sessão
-                return;
-            }
-        }
-
-        // Continua com o salvamento do cliente
-        String telefone = txtTel.getText().trim();
-        String email = txtEmail.getText().trim();
 
         try {
+            ClienteDAO clienteDAO = new ClienteDAO();
+            List<Cliente> clientes = clienteDAO.getAllClientes();
+
+            // Validação de Duplicidade corrigida
+            for (Cliente cliente : clientes) {
+                boolean mesmoNome = cliente.getNomeCliente().equalsIgnoreCase(nome);
+
+                // Objects.equals compara os VALORES numéricos com segurança (e lida com null)
+                boolean mesmoCliente = java.util.Objects.equals(cliente.getIdCliente(), clienteIdEdicao);
+
+                if (mesmoNome && !mesmoCliente) {
+                    JOptionPane.showMessageDialog(this, "Já existe um cliente cadastrado com o mesmo nome.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return; // O bloco 'finally' abaixo vai fechar a sessão com segurança
+                }
+            }
+
+            // Continua com o salvamento do cliente
+            String telefone = txtTel.getText().trim();
+            String email = txtEmail.getText().trim();
+
             if (clienteIdEdicao != null) { // Se um cliente está sendo editado
                 clienteDAO.atualizarCliente(clienteIdEdicao, nome, telefone, email, cpfOuCnpj, isPessoaFisica, session);
                 JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
@@ -754,91 +862,42 @@ public class ClienteGUI extends javax.swing.JFrame {
                 clienteDAO.salvarCliente(nome, telefone, email, cpfOuCnpj, isPessoaFisica, session);
                 JOptionPane.showMessageDialog(this, "Cliente salvo com sucesso!");
             }
-            carregarClientes(); // Atualiza a lista de clientes na tabela
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            session.close(); // Fechar a sessão após o uso
-            limparCampos(); // Limpar os campos de texto
-            clienteIdEdicao = null; // Reseta o ID após a operação
-        }
-        // Limpa os labels após a ação
-        lblCliente.setText(""); // Limpa o nome do cliente
-        lblCriandoOuEditando.setText(""); // Limpa o texto de criando ou editando
 
-        padrao();
+            carregarClientes(); // Atualiza a lista de clientes na tabela
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // O finally é EXECUTADO SEMPRE (mesmo se der 'return' no meio do código)
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+            limparCampos();
+            clienteIdEdicao = null;
+            padrao();
+        }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
-    private void txtBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBuscaActionPerformed
-
-    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        int selectedRow = tblListagem.getSelectedRow();
-
-        // Verifica se algum cliente está selecionado
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um cliente para excluir.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
+    private void txtEmailKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isLetterOrDigit(c) && c != '@' && c != '.' && c != '-' && c != '_') {
+            evt.consume(); // Impede caracteres que não são válidos em endereços de e-mail
         }
-
-        // Obtém o ID do cliente a partir da tabela
-        long idCliente = (long) tblListagem.getValueAt(selectedRow, 4); // 4 é o índice da coluna ID na tabela
-        
-        
-        // Declaração da variável clienteDAO
-        ClienteDAO clienteDAO = new ClienteDAO(); // Cria uma instância do DAO
-        
-        // Verifica se o cliente está vinculado a algum orçamento
-        if (clienteDAO.clienteTemOrcamento(idCliente)) {
-            JOptionPane.showMessageDialog(this, "Não é possível excluir o cliente! Há orçamento(s) vinculado(s).", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
+        if (txtEmail.getText().length() >= 30) {
+            evt.consume(); // Limita o tamanho a 30 caracteres
         }
+    }//GEN-LAST:event_txtEmailKeyTyped
 
-        // Cria a caixa de confirmação
-        int confirmacao = JOptionPane.showConfirmDialog(this,
-                "Tem certeza que deseja excluir o cliente " + tblListagem.getValueAt(selectedRow, 0) + "?",
-                "Confirmar Exclusão",
-                JOptionPane.YES_NO_OPTION);
-
-        // Verifica se o usuário confirmou a exclusão
-        if (confirmacao == JOptionPane.YES_OPTION) {
-            Session session = SessionManager.getInstance().getSession(); // Abre a sessão
-            try {
-                // Tenta excluir o cliente
-                clienteDAO.excluirClientePorId(idCliente);
-                JOptionPane.showMessageDialog(this, "Cliente excluído com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                carregarClientes(); // Atualiza a lista de clientes na tabela após a exclusão
-            } catch (Exception ex) {
-                // Exibe uma mensagem de erro se a exclusão falhar
-                JOptionPane.showMessageDialog(this, "Erro ao excluir cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace(); // Imprime o erro no console para depuração
-            } finally {
-                session.close(); // Fecha a sessão
-                limparCampos(); // Limpa os campos de texto
-            }
-        }
-
-        // Limpa os labels após a ação
-        lblCliente.setText(""); // Limpa o nome do cliente
-        lblCriandoOuEditando.setText(""); // Limpa o texto de criando ou editando
-
-        padrao(); // Restaura o estado padrão
-    }//GEN-LAST:event_btnExcluirActionPerformed
-    
-    //Aceita somente entrada de números
-    private void txtCPFouCNPJKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCPFouCNPJKeyTyped
+    private void txtTelKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelKeyTyped
         char c = evt.getKeyChar();
         if (!Character.isDigit(c)) {
-            evt.consume(); // Impede a digitação de qualquer coisa que não seja número
+            evt.consume(); // impede a digitação de qualquer coisa que não seja número
         }
+        if (txtTel.getText().length() >= 15) {
+            evt.consume(); // Limita o tamanho a 11 caracteres
+        }
+    }//GEN-LAST:event_txtTelKeyTyped
 
-        int maxLength = btnPF.isSelected() ? 11 : 14; // 11 para CPF, 14 para CNPJ
-        if (txtCPFouCNPJ.getText().length() >= maxLength) {
-            evt.consume(); // Limita o tamanho conforme o tipo de cliente
-        }
-    }//GEN-LAST:event_txtCPFouCNPJKeyTyped
-    
     private void txtNomeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNomeKeyTyped
         if (txtNome.getText().length() >= 30) {
             evt.consume(); // Limita o tamanho a 30 caracteres
@@ -854,8 +913,8 @@ public class ClienteGUI extends javax.swing.JFrame {
             for (String palavra : palavras) {
                 if (!palavra.isEmpty()) {
                     nomeFormatado.append(Character.toUpperCase(palavra.charAt(0))) // Primeira letra maiúscula
-                            .append(palavra.substring(1)) // Mantém as demais letras como estão
-                            .append(" "); // Adiciona o espaço após a palavra
+                    .append(palavra.substring(1)) // Mantém as demais letras como estão
+                    .append(" "); // Adiciona o espaço após a palavra
                 }
             }
 
@@ -868,82 +927,18 @@ public class ClienteGUI extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_txtNomeKeyTyped
 
+    private void lblImgLupaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblImgLupaMouseClicked
+        lblImgLupa.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                txtBusca.requestFocus();
+            }
+        });
+    }//GEN-LAST:event_lblImgLupaMouseClicked
+    
+   
     private Long clienteIdEdicao = null;
     
-    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-       
-        txtNome.requestFocusInWindow();
-        
-        int selectedRow = tblListagem.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um cliente para editar.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        } else {
-            btnPF.setEnabled(false); // Desabilita o botão Pessoa Física
-            btnPJ.setEnabled(false); // Desabilita o botão Pessoa Jurídica
-        }
-
-        // Pega os dados da linha selecionada
-        String nome = (String) tblListagem.getValueAt(selectedRow, 0); // Nome
-        String telefone = (String) tblListagem.getValueAt(selectedRow, 1); // Telefone
-        String email = (String) tblListagem.getValueAt(selectedRow, 2); // Email
-        String cpfOuCnpj = (String) tblListagem.getValueAt(selectedRow, 3); // CPF ou CNPJ
-        Long idCliente = (Long) tblListagem.getValueAt(selectedRow, 4); // ID
-
-        // Preenche os campos de edição com os dados do cliente
-        txtNome.setText(nome);
-        txtTel.setText(telefone);
-        txtEmail.setText(email);
-        txtCPFouCNPJ.setText(cpfOuCnpj);
-
-        // Atualiza o label para mostrar que está editando
-        lblCliente.setText(nome);
-        lblCriandoOuEditando.setText("Editando Cliente"); // Atualiza o label para indicar que está editando
-
-        // Muda o estado para edição
-        isEditing = true; // Adicione esta linha
-
-        // Verifique se o cliente é Pessoa Física ou Jurídica e selecione o radio button correspondente
-        Session session = SessionManager.getInstance().getSession();
-        ClienteDAO clienteDAO = new ClienteDAO();
-        Cliente cliente = clienteDAO.getClienteById(idCliente);
-
-        if (cliente instanceof PessoaFisica) {
-            btnPF.setSelected(true);  // Seleciona Pessoa Física
-            btnPJ.setSelected(false); // Desmarca Pessoa Jurídica
-            lblCPFouCNPJ.setText("CPF");
-        } else if (cliente instanceof PessoaJuridica) {
-            btnPJ.setSelected(true);  // Seleciona Pessoa Jurídica
-            btnPF.setSelected(false); // Desmarca Pessoa Física
-            lblCPFouCNPJ.setText("CNPJ");
-        }
-
-        // Guarda o ID do cliente em edição para usá-lo no botão Salvar
-        clienteIdEdicao = idCliente; // Aqui foi utilizado clienteIdEdicao para armazenar o ID
-
-        session.close(); // Fecha a sessão
-    }//GEN-LAST:event_btnEditarActionPerformed
-
-    private void txtTelKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelKeyTyped
-        char c = evt.getKeyChar();
-        if (!Character.isDigit(c)) {
-            evt.consume(); // impede a digitação de qualquer coisa que não seja número
-        }
-        if (txtTel.getText().length() >= 15) {
-            evt.consume(); // Limita o tamanho a 11 caracteres
-        }
-    }//GEN-LAST:event_txtTelKeyTyped
-
-    private void txtEmailKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyTyped
-        char c = evt.getKeyChar();
-        if (!Character.isLetterOrDigit(c) && c != '@' && c != '.' && c != '-' && c != '_') {
-            evt.consume(); // Impede caracteres que não são válidos em endereços de e-mail
-        }
-        if (txtEmail.getText().length() >= 30) {
-            evt.consume(); // Limita o tamanho a 30 caracteres
-        }
-    }//GEN-LAST:event_txtEmailKeyTyped
-
     /**
      * @param args the command line arguments
      */
@@ -986,8 +981,6 @@ public class ClienteGUI extends javax.swing.JFrame {
     private javax.swing.JRadioButton btnPJ;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JLabel lblCPFouCNPJ;
-    private javax.swing.JLabel lblCliente;
-    private javax.swing.JLabel lblCriandoOuEditando;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblHead;
     private javax.swing.JLabel lblImgCliente;

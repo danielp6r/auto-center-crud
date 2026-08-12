@@ -479,7 +479,7 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         lblPeriodo.setText("Período");
 
-        lblImgLupa.setText(" ");
+        lblImgLupa.setText("🔎");
         lblImgLupa.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 lblImgLupaMouseExited(evt);
