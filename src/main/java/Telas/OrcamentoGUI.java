@@ -1424,16 +1424,25 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             // Exibe um aviso se a placa não for preenchida
             if (txtPlaca.getText().equals("")) {
                 int resposta = JOptionPane.showConfirmDialog(
-                    this,
-                    "O campo Placa está vazio! Deseja continuar?",
-                    "Aviso",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE
+                        this,
+                        "O campo Placa está vazio! Deseja continuar?",
+                        "Aviso",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
                 );
 
                 if (resposta == JOptionPane.NO_OPTION) {
                     return; // Interrompe o processo caso o usuário escolha "Não"
                 }
+            }
+
+            // --- SINCRONIZA DADOS E RECALCULA TOTAIS ANTES DE IMPRIMIR ---
+            if (idOrcamentoGlobal > 0) {
+                vincularClienteAoOrcamento(idClienteSelecionado);
+                atualizarVeiculo(idOrcamentoGlobal, txtVeiculo.getText().trim());
+                atualizarPlaca(idOrcamentoGlobal, txtPlaca.getText().trim());
+                atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
+                atualizarGridItens(); // Recalcula a soma dos itens e atualiza os valores no banco
             }
 
             imprimirRelatorioJasper();
