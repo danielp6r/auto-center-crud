@@ -116,6 +116,9 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             }
         });
         
+        // Força o foco inicial no campo de Placa assim que a tela abre
+        SwingUtilities.invokeLater(() -> txtPlaca.requestFocusInWindow());
+        
         // Configs do campo de observações
         jTextObs.setLineWrap(true);
         jTextObs.setWrapStyleWord(true);
@@ -143,6 +146,20 @@ public class OrcamentoGUI extends javax.swing.JFrame {
                 if (idOrcamentoGlobal > 0) { // Verifica se há um orçamento válido carregado
                     atualizarObservacoes(idOrcamentoGlobal, jTextObs.getText().trim());
                 }
+            }
+        });
+        
+        // No initComponents() ou no construtor de OrcamentoGUI:
+        txtPlaca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                puxarDadosPorPlaca();
+            }
+        });
+
+        txtPlaca.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                puxarDadosPorPlaca();
             }
         });
         
@@ -572,6 +589,31 @@ public class OrcamentoGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar placa: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         } finally {
             session.close();
+        }
+    }
+    
+    // Método para puxar ultimo cliente e veículo de acordo com a placa passada
+    private void puxarDadosPorPlaca() {
+        String placaDigitada = txtPlaca.getText().trim();
+
+        if (placaDigitada.isEmpty()) {
+            return;
+        }
+
+        // Busca o último orçamento cadastrado com essa placa
+        Orcamento ultimoOrcamento = OrcamentoDAO.getInstance().buscarUltimoPorPlaca(placaDigitada);
+
+        if (ultimoOrcamento != null) {
+            // 1. Puxa o nome do carro salvo no orçamento anterior
+            if (ultimoOrcamento.getCarro() != null && !ultimoOrcamento.getCarro().isEmpty()) {
+                txtVeiculo.setText(ultimoOrcamento.getCarro());
+            }
+
+            // 2. Puxa e vincula o cliente do orçamento anterior
+            Cliente clienteAnterior = ultimoOrcamento.getCliente();
+            if (clienteAnterior != null) {
+                setClienteSelecionado(clienteAnterior.getIdCliente(), clienteAnterior.getNomeCliente());
+            }
         }
     }
     

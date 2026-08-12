@@ -3,6 +3,7 @@ package DAO;
 import Classes.Orcamento;
 import Classes.HibernateUtil;
 import Classes.ItemOrcamento;
+import Classes.SessionManager;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import java.util.List;
@@ -151,6 +152,22 @@ public class OrcamentoDAO extends GenericDAO<Orcamento, Long> {
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    
+    public Orcamento buscarUltimoPorPlaca(String placa) {
+        Session session = SessionManager.getInstance().getSession();
+        try {
+            String hql = "FROM Orcamento o WHERE o.placa = :placa ORDER BY o.idOrcamento DESC";
+            return session.createQuery(hql, Orcamento.class)
+                    .setParameter("placa", placa)
+                    .setMaxResults(1)
+                    .uniqueResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            session.close();
         }
     }
 }
