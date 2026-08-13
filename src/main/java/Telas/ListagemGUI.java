@@ -174,6 +174,17 @@ public class ListagemGUI extends javax.swing.JFrame {
             }
         });
         
+        this.addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                // Coloque aqui o método que você já usa para preencher a tabela
+                // Exemplo: carregarTabela(); ou atualizarGrid();
+            }
+
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+                // Não precisa fazer nada aqui
+            }
+        });
+        
         // Listener para duplo clique na tabela com várias instancias (Não funciona)
         /*tblListagem.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
