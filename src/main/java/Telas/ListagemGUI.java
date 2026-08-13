@@ -916,6 +916,21 @@ public class ListagemGUI extends javax.swing.JFrame {
     public static void main(String args[]) {
         // pede senha antes de abrir a tela
         javax.swing.JPasswordField passwordField = new javax.swing.JPasswordField();
+        
+        // Força o foco automático no campo assim que o JOptionPane for desenhado na tela
+        passwordField.addAncestorListener(new javax.swing.event.AncestorListener() {
+            @Override
+            public void ancestorAdded(javax.swing.event.AncestorEvent event) {
+                passwordField.requestFocusInWindow();
+            }
+
+            @Override
+            public void ancestorRemoved(javax.swing.event.AncestorEvent event) { }
+
+            @Override
+            public void ancestorMoved(javax.swing.event.AncestorEvent event) { }
+        });
+        
         int option = javax.swing.JOptionPane.showConfirmDialog(
                 null,
                 passwordField,
@@ -926,7 +941,9 @@ public class ListagemGUI extends javax.swing.JFrame {
 
         if (option == javax.swing.JOptionPane.OK_OPTION) {
             String senhaDigitada = new String(passwordField.getPassword());
-
+            
+            // Senha forte: 2deb222dc418b0489577032d1a4e6efab663803f8be0e61cefa7f1ba669984a2
+            // Senha fraca: 469a60d419ec8de91048f47c37c67306913b85d0c60dff1158e00042683f7f5d
             // SHA-256 da senha
             byte[] hashCorreto = hexStringToByteArray("469a60d419ec8de91048f47c37c67306913b85d0c60dff1158e00042683f7f5d");
             byte[] hashDigitado = gerarHash(senhaDigitada);
